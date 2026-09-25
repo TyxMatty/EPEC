@@ -130,6 +130,8 @@ GameObject:
   - component: {fileID: 532437063}
   - component: {fileID: 532437062}
   - component: {fileID: 532437061}
+  - component: {fileID: 532437064}
+  - component: {fileID: 532437065}
   m_Layer: 0
   m_Name: Circle
   m_TagString: Untagged
@@ -226,6 +228,62 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &532437064
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532437060}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!114 &532437065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 532437060}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a61bbb1e8b302ab4488cbc3fc57c01f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScriptChange
+  walkUp: {fileID: 7482667652216324306, guid: 820dd6672d3310942b8024d1a5d8dfa9, type: 3}
+  walkDown: {fileID: -9095717837082945937, guid: ffbefe55c157303438d31f7bce75a8bc, type: 3}
+  walkLeft: {fileID: -5177388603050735206, guid: 8d7e1485d99412840bc3f619609205e2, type: 3}
+  walkRight: {fileID: -2135585597343286014, guid: e7ab1a1c1c290d443b67d2dd19c04b6a, type: 3}
+  idle1: {fileID: -2413806693520163455, guid: 8dfd5065a2ee90642afcb6f0991c1127, type: 3}
+  idle2: {fileID: -2413806693520163455, guid: 8dfd5065a2ee90642afcb6f0991c1127, type: 3}
+  idle3: {fileID: -2413806693520163455, guid: 8dfd5065a2ee90642afcb6f0991c1127, type: 3}
+  idle4: {fileID: -2413806693520163455, guid: 8dfd5065a2ee90642afcb6f0991c1127, type: 3}
+  runUp: {fileID: 0}
+  runDown: {fileID: 0}
+  runLeft: {fileID: 0}
+  runRight: {fileID: 0}
+  transUp: {fileID: 10917, guid: 0000000000000000f000000000000000, type: 0}
+  transDown: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
+  transLeft: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  transRight: {fileID: 3684732902739343859, guid: 474ce57d7c1704418af05d72d996ae5e, type: 3}
+  transitionSpeed: 0.15
 --- !u!1 &1471899964
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,6 +295,8 @@ GameObject:
   - component: {fileID: 1471899967}
   - component: {fileID: 1471899966}
   - component: {fileID: 1471899965}
+  - component: {fileID: 1471899968}
+  - component: {fileID: 1471899969}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -318,9 +378,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1471899968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471899964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
+--- !u!114 &1471899969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1471899964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b4b00a88749f43428134a8ba32136c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneFollow
+  target: {fileID: 532437063}
+  smoothSpeed: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1471899967}
   - {fileID: 532437063}
+  - {fileID: 1471899967}
