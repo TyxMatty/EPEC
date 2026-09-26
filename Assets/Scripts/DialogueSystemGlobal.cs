@@ -12,7 +12,7 @@
         [SerializeField] private TextMeshProUGUI dialogueText;
         [Header("Textos do Diálogo")]
         [TextArea(3, 5)]
-        private string[] dialogueLines; // armazena o dialogo escrito ali em cima.
+        [SerializeField] private string[] dialogueLines; // armazena o dialogo escrito ali em cima.
         [Header("Efeitos de Transição")] //opcional
         [SerializeField] private CanvasGroup canvasGroup; // armazena o canvas group do objeto, para poder fazer a transição de fade in e fade out
         [SerializeField] private float fadeDuration = 0.5f; // tempo de duração do fade in e fade out
@@ -90,7 +90,7 @@
                 }
                 canvasGroup.alpha = 0f;
             }
-            // Ativar a próxima caixa de diálogo
+            // ativar a próxima caixa de diálogo
             if (nextDialogueBox != null)
             {
                 nextDialogueBox.gameObject.SetActive(true);
