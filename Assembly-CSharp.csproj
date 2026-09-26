@@ -55,8 +55,10 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\MovementScript.cs" />
     <Compile Include="Assets\Scripts\SceneFollow.cs" />
+    <Compile Include="Assets\Scripts\ChoiceSystemGlobal.cs" />
     <Compile Include="Assets\Scripts\SpriteChange.cs" />
     <Compile Include="Assets\Scripts\CameraFollow.cs" />
+    <Compile Include="Assets\Scripts\DialogueSystemGlobal.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
