@@ -93,6 +93,7 @@
         {
             podeAvançar = true;
         }
+
         private IEnumerator DigitarLinha()
         {
         isTyping = true;
@@ -104,6 +105,7 @@
                 }
         isTyping = false;
         }
+
         private IEnumerator Transicao()
         {
             isTransitioning = true;
@@ -145,7 +147,7 @@
         }
         public void EncerrarPosEscolha() // opcional caso tenha uma escolha
         {
-          StartCoroutine(Transicao());
+           StartCoroutine(Transicao());
         }
     }
     
