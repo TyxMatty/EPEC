@@ -103,7 +103,7 @@
                 nextDialogueBox.gameObject.SetActive(true);
             }
             gameObject.SetActive(false); // desativar a caixa de diálogo atual
-            MovementScript movementScript = FindObjectOfType<MovementScript>();
+            MovementScript movementScript = FindAnyObjectByType<MovementScript>();
             if (movementScript != null)
             {
                 movementScript.podeMover = true; // ativa o movimento do player quando o sistema de diálogo terminar
