@@ -1,0 +1,12 @@
+{
+	"nodes":[
+		{"id":"649c5e6bd1e9d4db","type":"file","file":"Fluxogramas EPEC-Fluxograma Movimento.png","x":-240,"y":-280,"width":562,"height":548},
+		{"id":"63bef54f8863896d","type":"text","text":"`MovementScript.cs`","x":400,"y":-310,"width":194,"height":50},
+		{"id":"998cee3a881ca636","x":423,"y":256,"width":400,"height":312,"type":"file","file":"Fluxogramas EPEC-Interação.png"},
+		{"id":"9712f7cee8e9721a","x":615,"y":-12,"width":212,"height":60,"type":"text","text":"`InteractionSystem.cs` e `Interactable.cs`"}
+	],
+	"edges":[
+		{"id":"a3a8c007989b0018","fromNode":"63bef54f8863896d","fromSide":"bottom","toNode":"649c5e6bd1e9d4db","toSide":"right"},
+		{"id":"039fa6e5dc00f913","fromNode":"9712f7cee8e9721a","fromSide":"bottom","toNode":"998cee3a881ca636","toSide":"top"}
+	]
+}
