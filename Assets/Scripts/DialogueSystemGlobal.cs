@@ -133,18 +133,35 @@
                 movementScript.podeMover = true; // ativa o movimento do player quando o sistema de diálogo terminar
             }
         }
-        public void IniciarDialogo(Interactable interactable) // integração com o InteractionSystem, ele vai usar essa função(método em C#) para transformar o dialogueLines no array dele. O que está nesse script é para teste, mas o que vai ser usado é o que está no InteractionSystem, que é o array de falas do Interactable. 
-        // Então, quando o player interagir com um objeto, ele vai pegar as falas do Interactable e passar para o DialogueSystemGlobal.
+        public void IniciarDialogo(Interactable interactable) 
+    {
+        interacaoAtual = interactable; 
+        // se este objeto tiver falas alternativas e o GameManager existir:
+        if (interacaoAtual.temFrasesAlternativas && GameManager != null)
         {
-            interacaoAtual = interactable; // armazena a interação atual
-            dialogueLines = interacaoAtual.falas; // pega as falas do Interactable e passa para o DialogueSystemGlobal
-            isTransitioning = false;
-            if (canvasGroup != null)
-                {
-                    canvasGroup.alpha = 1f; // volta a tornar a caixa visível, após o fade out
-                }
-            StartDialogue();
+            // pergunta ao Dicionário se a variável tem o valor esperado (ex: isACapsule == true)
+            if (GameManager.ChecarCondicao(interacaoAtual.variavelDaCondicao) == interacaoAtual.valorEsperado)
+            {
+                dialogueLines = interacaoAtual.falasAlternativas; // Puxa a fala secreta
+            }
+            else
+            {
+                dialogueLines = interacaoAtual.falas; // Puxa a fala normal
+            }
         }
+        else
+        {
+            dialogueLines = interacaoAtual.falas; // Puxa a fala normal
+        }
+
+        // coisas de UI
+        isTransitioning = false;
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f; 
+        }
+        StartDialogue();
+    }
         public void EncerrarPosEscolha() // opcional caso tenha uma escolha
         {
            StartCoroutine(Transicao());

@@ -1,12 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+[System.Serializable]
+public class VariavelNarrativa
+{
+    public string nome;
+    public bool valor;
+}
 public class ChoiceSystemGlobal : MonoBehaviour
 {
     [Header("Variáveis Globais de Narrativa")]
     [Header("Variáveis Globais de Narrativa")]
-    [SerializeField] public Dictionary<string, object> variaveisGlobais = new Dictionary<string, object>();
+    [Header("Variáveis Globais de Narrativa")]
+    [SerializeField] public List<VariavelNarrativa> variaveisGlobais = new List<VariavelNarrativa>();
     [Header("UI de Escolha")]
     [SerializeField] private GameObject choiceUI; // UI de escolha
     [SerializeField] private TMPro.TextMeshProUGUI[] choiceTexts; // Textos
@@ -97,27 +103,36 @@ public class ChoiceSystemGlobal : MonoBehaviour
         DialogueSystemGlobal dialogueSystem = FindAnyObjectByType<DialogueSystemGlobal>();
         dialogueSystem.EncerrarPosEscolha(); // opcional caso tenha uma escolha, para o sistema de diálogo continuar a conversa com o objeto
     }
-    private void SalvarEscolha(string nomeVariavel, bool valor) // parte mais complicadada, salva a escolha do player na variável global
+    private void SalvarEscolha(string nomeVariavel, bool valor)
     {
-        if (variaveisGlobais.ContainsKey(nomeVariavel)) // se ja tiver no dicionario
+    // Procura se a variável já existe na lista
+    VariavelNarrativa varExistente = variaveisGlobais.Find(v => v.nome == nomeVariavel);
+
+    if (varExistente != null)
         {
-            variaveisGlobais[nomeVariavel] = valor; // atualiza o valor da variável global
-            Debug.Log($"Variável global '{nomeVariavel}' atualizada para: {valor}");
+            varExistente.valor = valor; // Atualiza se já existir
+            Debug.Log($"Variável '{nomeVariavel}' atualizada para: {valor}");
         }
-        else // se nao, so atualiza
-        {
-            variaveisGlobais.Add(nomeVariavel, valor); // adiciona a variável global se não existir
-            Debug.Log($"Variável global '{nomeVariavel}' adicionada com valor: {valor}");
-        }
-    }
-    public bool ChecarCondicao(string nomeVariavel) // esse metodo nao é usado aqui, mas pode ser util para outros scripts e testing, para checar o valor de uma variável global de narrativa
-    {
-        if (variaveisGlobais.ContainsKey(nomeVariavel)) return (bool)variaveisGlobais[nomeVariavel]; // se a variável global existir, retorna o valor dela
         else
         {
-            Debug.LogWarning($"Variável global '{nomeVariavel}' não encontrada.");
+        // Cria uma nova se não existir
+            variaveisGlobais.Add(new VariavelNarrativa { nome = nomeVariavel, valor = valor });
+            Debug.Log($"Variável '{nomeVariavel}' adicionada com valor: {valor}");
         }
-        return false; // se a variável global não existir, retorna false
+    }
+    public bool ChecarCondicao(string nomeVariavel)
+    {
+    VariavelNarrativa varExistente = variaveisGlobais.Find(v => v.nome == nomeVariavel);
+
+        if (varExistente != null)
+        {
+        return varExistente.valor;
+        }
+        else
+        {
+        Debug.LogWarning($"Variável '{nomeVariavel}' não encontrada. Assumindo false.");
+        return false;
+        }
     }
     
     
