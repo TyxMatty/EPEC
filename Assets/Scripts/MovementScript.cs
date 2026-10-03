@@ -21,6 +21,7 @@ public class MovementScript : MonoBehaviour // public class significa que qualqu
     {
         // coloca o componente no cache no início para otimizar
         rb = GetComponent<Rigidbody2D>();
+        currentSpeed = baseSpeed;
         
         // QUALQUER coisa que mexa com física, como gravidade, colisão, etc, deve ter essas 2 linhas, senão VAI bugar:
         rb.gravityScale = 0f; 
@@ -39,15 +40,19 @@ public class MovementScript : MonoBehaviour // public class significa que qualqu
         if (moveX == 0f && moveY == 0f)
         {
             movementDirection = Vector2.zero;
-            return;
-        }if (!podeMover) // se o player não pode se mover, não deixa ele se mover
-        {
-            movementDirection = Vector2.zero;
+            currentSpeed = 0f;
             return;
         }
+
+        if (!podeMover) // se o player não pode se mover, não deixa ele se mover
+        {
+            movementDirection = Vector2.zero;
+            currentSpeed = 0f;
+            return;
+        }
+
         movementDirection = new Vector2(moveX, moveY).normalized;
         currentSpeed = baseSpeed * (keyboard.leftShiftKey.isPressed ? shiftMultiplier : 1f);
-        
     }
 
     void FixedUpdate()
