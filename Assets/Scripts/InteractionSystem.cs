@@ -83,7 +83,8 @@ public class InteractionSystem : MonoBehaviour
                 }
                 movementScript.podeMover = false; // desativa o movimento do player quando o sistema de diálogo estiver ativo
                 dialogueSystem.gameObject.SetActive(true); // ativa a caixa de diálogo
-                dialogueSystem.IniciarDialogo(interactable.falas); // passa o array de falas do Interactable para o DialogueSystemGlobal
+                // Substitua a linha antiga por esta:
+                dialogueSystem.IniciarDialogo(interactable);
                 Debug.Log("funfou, no objeto: " +objectToInteractWith.name + " com as falas: " + string.Join(", ", interactable.falas));
             }
             else

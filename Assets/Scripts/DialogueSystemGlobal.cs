@@ -16,10 +16,14 @@
         [Header("Efeitos de Transição")] //opcional
         [SerializeField] private CanvasGroup canvasGroup; // armazena o canvas group do objeto, para poder fazer a transição de fade in e fade out
         [SerializeField] private float fadeDuration = 0.5f; // tempo de duração do fade in e fade out
+        [Header("Integração de Escolhas")]
+        public bool isChoiceDialogue; // define se este diálogo termina em uma escolha
+        [SerializeField] private ChoiceSystemGlobal GameManager; // pull no sistema de escolhas
         private int letraAtual = 0; // armazena a letra atual
         private bool isTyping = false; // armazena se o sistema de dialogo está digitando ou não
         private bool isTransitioning = false; // armazena se o sistema de dialogo está fazendo a transição ou não
-        private bool podeAvançar = false; // armazena se o sistema de dialogo pode avançar ou não, para evitar que o player avance antes do fade out terminar
+        public bool podeAvançar = false; // armazena se o sistema de dialogo pode avançar ou não, para evitar que o player avance antes do fade out terminar
+        private Interactable interacaoAtual; // armazena a interação atual, para poder passar as escolhas para o ChoiceSystemGlobal
         void Start()
         {
             if (nextDialogueBox != null)
@@ -62,10 +66,28 @@
         if (letraAtual < dialogueLines.Length)
         {
             StartCoroutine(DigitarLinha());
-        }   else
+        } 
+          else
         {
-            StartCoroutine(Transicao());
+            // checa se o objeto atual exige uma escolha
+            if (interacaoAtual != null && interacaoAtual.terminaEmEscolha && GameManager != null)
+            {
+                Debug.Log("$[DialogueSystem] Diálogo terminou em escolha. Iniciando...");
+                GameManager.IniciarTelaDeEscolhas( // envia as informações do Interactable para o ChoiceSystemGlobal
+                    interacaoAtual.variavelParaSalvar, // envia o nome da variável global para salvar a escolha do player
+                    interacaoAtual.textosDasOpcoes,
+                    interacaoAtual.valoresDasOpcoes,
+                    interacaoAtual.temTempoLimite,
+                    interacaoAtual.tempoLimite,
+                    interacaoAtual.escolhaNeutra
+                );
+                Debug.Log("$[DialogueSystem] Tela de escolhas iniciada. Aguardando escolha do player...");
             }
+            else
+            {
+                StartCoroutine(Transicao());
+            }
+        }
         }
         private void HabilitarAvanco()
         {
@@ -109,16 +131,21 @@
                 movementScript.podeMover = true; // ativa o movimento do player quando o sistema de diálogo terminar
             }
         }
-        public void IniciarDialogo(string[] linhas) // integração com o InteractionSystem, ele vai usar essa função(método em C#) para transformar o dialogueLines no array dele. O que está nesse script é para teste, mas o que vai ser usado é o que está no InteractionSystem, que é o array de falas do Interactable. 
+        public void IniciarDialogo(Interactable interactable) // integração com o InteractionSystem, ele vai usar essa função(método em C#) para transformar o dialogueLines no array dele. O que está nesse script é para teste, mas o que vai ser usado é o que está no InteractionSystem, que é o array de falas do Interactable. 
         // Então, quando o player interagir com um objeto, ele vai pegar as falas do Interactable e passar para o DialogueSystemGlobal.
         {
-            dialogueLines = linhas; // linhas que a string nova vai receber, que é o array de falas do Interactable
+            interacaoAtual = interactable; // armazena a interação atual
+            dialogueLines = interacaoAtual.falas; // pega as falas do Interactable e passa para o DialogueSystemGlobal
             isTransitioning = false;
             if (canvasGroup != null)
                 {
                     canvasGroup.alpha = 1f; // volta a tornar a caixa visível, após o fade out
                 }
             StartDialogue();
+        }
+        public void EncerrarPosEscolha() // opcional caso tenha uma escolha
+        {
+          StartCoroutine(Transicao());
         }
     }
     

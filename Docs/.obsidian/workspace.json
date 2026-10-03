@@ -4,29 +4,6 @@
     "type": "split",
     "children": [
       {
-        "id": "d25761ba2b667d2c",
-        "type": "tabs",
-        "children": [
-          {
-            "id": "10f676bed352d50a",
-            "type": "leaf",
-            "state": {
-              "type": "canvas",
-              "state": {
-                "file": "Sem título.canvas",
-                "viewState": {
-                  "x": 613.5799492385787,
-                  "y": 257.2469543147208,
-                  "zoom": -0.21935527773822242
-                }
-              },
-              "icon": "lucide-layout-dashboard",
-              "title": "Sem título"
-            }
-          }
-        ]
-      },
-      {
         "id": "a736f16e266a3812",
         "type": "tabs",
         "children": [
@@ -122,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Fluxogramas EPEC-Interação.png",
+                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -141,7 +118,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Fluxogramas EPEC-Interação.png",
+                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
@@ -184,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Fluxogramas EPEC-Interação.png",
+                "file": "README.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -211,12 +188,12 @@
       "bases:Criar nova base": false
     }
   },
-  "active": "10f676bed352d50a",
+  "active": "a13ee1befdc5e0aa",
   "lastOpenFiles": [
-    "Fluxogramas EPEC-Interação.png",
-    "Fluxogramas EPEC-Fluxograma Movimento.png",
     "Sem título.canvas",
     "README.md",
+    "Fluxogramas EPEC-Interação.png",
+    "Fluxogramas EPEC-Fluxograma Movimento.png",
     "ArvoreDeDialogosPrologo.jpeg",
     "Fluxogramas EPEC-Escolhas.png",
     "Bem-vindo.md",

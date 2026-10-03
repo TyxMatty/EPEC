@@ -1,14 +1,27 @@
 using UnityEngine;
+
 public class Interactable : MonoBehaviour
 {
     [Header("Diálogo do Objeto")]
     [TextArea(3, 5)]
-    public string[] falas; // As falas específicas deste NPC ou objeto
-    public bool hasSpecialInteraction; // Se o objeto tem uma interação especial, como abrir uma porta ou iniciar um minigame -> ser mais escalável;
-    public bool isNonPickableObject; // se é um objeto não pegável
-    public bool isNPC; // se é um NPC
-    public bool isPickableObject; // se é um objeto pegável
-// todas essas bools podem ou não ser usadas, dependendo do que o objeto for, mas é bom ter elas para organizar
-// melhor o código e deixar mais escalável, caso queira adicionar mais tipos de interação no futuro.
-// isso são boas práticas de programação, para deixar o código mais limpo e organizado, e também para facilitar a manutenção do código no futuro.
+    public string[] falas; 
+    
+    [Header("Configurações de Escolha (Final do Diálogo)")]
+    public bool terminaEmEscolha; // Marca se o diálogo abre uma escolha no fim
+    public string variavelParaSalvar; // Ex: "acordouPrimeiroDia"
+    
+    // Arrays para as 4 opções (0=W, 1=A, 2=D, 3=S). Deixe vazio as que não usar.
+    public string[] textosDasOpcoes = new string[4]; 
+    public bool[] valoresDasOpcoes = new bool[4];
+
+    [Header("Configurações de Tempo (Opcional)")]
+    public bool temTempoLimite;
+    public float tempoLimite = 5f;
+    public bool escolhaNeutra; // Valor salvo se o tempo se esgotar, pode ser negativo ou positivo, 
+
+    [Header("Tipos de Objeto")]
+    public bool hasSpecialInteraction; 
+    public bool isNonPickableObject; 
+    public bool isNPC; 
+    public bool isPickableObject; 
 }
