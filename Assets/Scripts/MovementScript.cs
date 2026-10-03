@@ -15,7 +15,8 @@ public class MovementScript : MonoBehaviour // public class significa que qualqu
     private Rigidbody2D rb;
     private Vector2 movementDirection;
     private float currentSpeed;
-
+    public bool podeMover = true; // variável para controlar se o player pode se mover ou não, 
+    // para quando o sistema de diálogo estiver ativo, o player não possa se mover; ou em eventos de
     void Start()
     {
         // coloca o componente no cache no início para otimizar
@@ -39,10 +40,14 @@ public class MovementScript : MonoBehaviour // public class significa que qualqu
         {
             movementDirection = Vector2.zero;
             return;
+        }if (!podeMover) // se o player não pode se mover, não deixa ele se mover
+        {
+            movementDirection = Vector2.zero;
+            return;
         }
-
         movementDirection = new Vector2(moveX, moveY).normalized;
         currentSpeed = baseSpeed * (keyboard.leftShiftKey.isPressed ? shiftMultiplier : 1f);
+        
     }
 
     void FixedUpdate()

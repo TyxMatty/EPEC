@@ -19,20 +19,22 @@
         private int letraAtual = 0; // armazena a letra atual
         private bool isTyping = false; // armazena se o sistema de dialogo está digitando ou não
         private bool isTransitioning = false; // armazena se o sistema de dialogo está fazendo a transição ou não
+        private bool podeAvançar = false; // armazena se o sistema de dialogo pode avançar ou não, para evitar que o player avance antes do fade out terminar
         void Start()
         {
             if (nextDialogueBox != null)
             {
                 nextDialogueBox.gameObject.SetActive(false);
             }
-            StartDialogue();
+            // StartDialogue(); // com nosso sistema de interação, o StartDialogue() vai ser chamado pelo InteractionSystem, então não precisa mais do StartDialogue() aqui, mas vou deixar ele comentado para caso queira testar o sistema de diálogo sozinho.
+            gameObject.SetActive(false); // desativa a caixa de diálogo no início, para só ativar quando o player interagir com um objeto
         }
         void Update()
         {
-            if(isTransitioning) return;
+            if(isTransitioning || !podeAvançar) return;
             var keyboard = Keyboard.current;
             if(keyboard == null) return;
-            if (keyboard.zKey.wasPressedThisFrame)
+            if (keyboard.enterKey.wasPressedThisFrame)
             {
                 if (isTyping)
                 {
@@ -53,6 +55,7 @@
             {
                 StartCoroutine(DigitarLinha());
             }
+            Invoke("HabilitarAvanco", 0.2f); // delay para evitar que o player avance antes do fade out terminar
         }
         private void ProximoDialogo(){
         letraAtual++;
@@ -63,6 +66,10 @@
         {
             StartCoroutine(Transicao());
             }
+        }
+        private void HabilitarAvanco()
+        {
+            podeAvançar = true;
         }
         private IEnumerator DigitarLinha()
         {
@@ -96,7 +103,22 @@
                 nextDialogueBox.gameObject.SetActive(true);
             }
             gameObject.SetActive(false); // desativar a caixa de diálogo atual
+            MovementScript movementScript = FindObjectOfType<MovementScript>();
+            if (movementScript != null)
+            {
+                movementScript.podeMover = true; // ativa o movimento do player quando o sistema de diálogo terminar
+            }
         }
-        
+        public void IniciarDialogo(string[] linhas) // integração com o InteractionSystem, ele vai usar essa função(método em C#) para transformar o dialogueLines no array dele. O que está nesse script é para teste, mas o que vai ser usado é o que está no InteractionSystem, que é o array de falas do Interactable. 
+        // Então, quando o player interagir com um objeto, ele vai pegar as falas do Interactable e passar para o DialogueSystemGlobal.
+        {
+            dialogueLines = linhas; // linhas que a string nova vai receber, que é o array de falas do Interactable
+            isTransitioning = false;
+            if (canvasGroup != null)
+                {
+                    canvasGroup.alpha = 1f; // volta a tornar a caixa visível
+                }
+            StartDialogue();
+        }
     }
     
