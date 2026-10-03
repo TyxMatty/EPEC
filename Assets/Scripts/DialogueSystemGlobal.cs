@@ -116,7 +116,7 @@
             isTransitioning = false;
             if (canvasGroup != null)
                 {
-                    canvasGroup.alpha = 1f; // volta a tornar a caixa visível
+                    canvasGroup.alpha = 1f; // volta a tornar a caixa visível, após o fade out
                 }
             StartDialogue();
         }
