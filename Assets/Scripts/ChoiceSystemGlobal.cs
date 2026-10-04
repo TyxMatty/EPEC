@@ -1,18 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-[System.Serializable]
-public class VariavelNarrativa
-{
-    public string nome;
-    public bool valor;
-}
 public class ChoiceSystemGlobal : MonoBehaviour
 {
     [Header("Variáveis Globais de Narrativa")]
     [Header("Variáveis Globais de Narrativa")]
     [Header("Variáveis Globais de Narrativa")]
-    [SerializeField] public List<VariavelNarrativa> variaveisGlobais = new List<VariavelNarrativa>();
+    [Header("Base de Dados")]
+    [SerializeField] private GlobalStateManager stateManager; // Liga o sistema ao cérebro do jogo
+    
+    // ATENÇÃO: Apague a linha antiga: public List variaveisGlobais = ...
     [Header("UI de Escolha")]
     [SerializeField] private GameObject choiceUI; // UI de escolha
     [SerializeField] private TMPro.TextMeshProUGUI[] choiceTexts; // Textos
@@ -106,7 +103,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
     private void SalvarEscolha(string nomeVariavel, bool valor)
     {
     // Procura se a variável já existe na lista
-    VariavelNarrativa varExistente = variaveisGlobais.Find(v => v.nome == nomeVariavel);
+    VariavelNarrativa varExistente = stateManager.variaveisGlobais.Find(v => v.nome == nomeVariavel);
 
     if (varExistente != null)
         {
@@ -116,13 +113,13 @@ public class ChoiceSystemGlobal : MonoBehaviour
         else
         {
         // Cria uma nova se não existir
-            variaveisGlobais.Add(new VariavelNarrativa { nome = nomeVariavel, valor = valor });
+            stateManager.variaveisGlobais.Add(new VariavelNarrativa { nome = nomeVariavel, valor = valor });
             Debug.Log($"Variável '{nomeVariavel}' adicionada com valor: {valor}");
         }
     }
     public bool ChecarCondicao(string nomeVariavel)
     {
-    VariavelNarrativa varExistente = variaveisGlobais.Find(v => v.nome == nomeVariavel);
+    VariavelNarrativa varExistente = stateManager.variaveisGlobais.Find(v => v.nome == nomeVariavel);
 
         if (varExistente != null)
         {
