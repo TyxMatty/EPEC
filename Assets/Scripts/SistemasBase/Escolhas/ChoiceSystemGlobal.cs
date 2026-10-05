@@ -129,20 +129,31 @@ public class ChoiceSystemGlobal : MonoBehaviour
         return false;
         }
     }
-    public bool ChecarItem(string nomeItem)
+    public bool ChecarItem(string nomeItem) 
     {
-        if (inventarioGlobal == null)
-        {
-            Debug.LogWarning("Inventário não referenciado no Inspector! Assumindo false.");
-            return false;
-        }
-        if (string.IsNullOrEmpty(nomeItem)) 
-        {
-            return false;
-        }
-        return inventarioGlobal.itens.Exists(item => item.itemName == nomeItem);
+    if (inventarioGlobal == null) 
+    {
+        Debug.LogWarning("[ChoiceSystemGlobal] Inventário não referenciado no Inspector! Assumindo false.");
+        return false;
     }
     
+    if (string.IsNullOrEmpty(nomeItem)) 
+    {
+        return false;
+    }
+
+    // retorna true se o item existe e atende à condição, ou false caso contrário
+    bool itemExiste = inventarioGlobal.itens.Exists(item => item.itemName == nomeItem);
+    
+        if (!itemExiste)
+        {
+            Debug.Log("Não achei item nao");
+            return false; // retorna false explicitamente se não achar
+        }
+
+        return true; 
+    }
+
     
     public void IniciarTelaDeEscolhas(string nomeDaVariavel, string[] textos, bool[] valoresCorrespondentes, bool temTempo = false, float tempo = 0f, bool escolhaNeutra = false)
     {

@@ -1,0 +1,17 @@
+{
+    "dialogueID": "maria_prologo_01",
+    "falas": [
+        "X!!",
+        "Oi!!!"
+    ],
+    "alteraVariavel": false,
+    "variavelAlteradaPorDialogo": "",
+    "temFrasesAlternativas": true,
+    "variavelDaCondicao":"aceitaAjudarTobias",
+    "valorEsperado": "true",
+    "falasAlternativas": [
+        "Você ajudou Tobias!!",
+        "Obrigado, você é incrível!!"
+    ],
+    "temTempoLimite": false
+}

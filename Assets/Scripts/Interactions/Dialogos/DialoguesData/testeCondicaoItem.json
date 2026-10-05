@@ -1,0 +1,18 @@
+
+{
+    "dialogueID": "porta",
+    "falas": [
+        "É uma porta. Você consegueria abrir ela, se tivesse uma chave.."
+    ],
+    "alteraVariavel": false,
+    "dialogoAlternativoAlteraVariavel": true,
+    "variavelAlteradaPorDialogoAlternativo": "portaAberta",
+    "temFrasesAlternativas": true,
+    "itemDaCondicao": "Chave",
+    "falasAlternativas": [
+        "X abriu a porta"
+    ],
+    "terminaEmEscolha": false,
+    "temTempoLimite": false
+    
+}

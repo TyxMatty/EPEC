@@ -1,0 +1,18 @@
+{
+    "dialogueID": "maria_prologo_01",
+    "falas": [
+        "X, você veio mesmo! Não acredito!!",
+        "Eu sei o quão difícil isso deve ser para você..."
+    ],
+    "alteraVariavel": false,
+    "variavelAlteradaPorDialogo": "",
+    "temFrasesAlternativas": false,
+    "terminaEmEscolha": true,
+    "variavelParaSalvar": "aceitaAjudarTobias",
+    "textosDasOpcoes": [
+        "Sim, posso tentar.",
+        "Não, estou ocupado."
+    ],
+    "valoresDasOpcoes": [true, false],
+    "temTempoLimite": false
+}

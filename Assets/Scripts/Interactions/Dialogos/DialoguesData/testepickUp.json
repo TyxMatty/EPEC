@@ -1,0 +1,8 @@
+{
+    "dialogueID": "itemPickUpTest",
+    "falas": [
+        "X pegou uma chave."
+    ],
+    "alteraVariavel": false,
+    "temTempoLimite": false
+}

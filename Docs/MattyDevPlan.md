@@ -18,15 +18,26 @@ O objetivo deste plano é garantir progresso constante, sem criar acoplamentos p
 
 ### Tarefa 1: O Coração Narrativo (GameState Baseado em Listas)
 O `ChoiceSystemGlobal` atual é um protótipo. Precisamos da infraestrutura definitiva para salvar as escolhas.
-- [ ] **Criar `GameStateData.cs`:** Um ScriptableObject que conterá uma `List<GameFlag>` (para bools como `acordouPrimeiroDia`) e uma `List<GameReputation>` (para pontuação como `+10 Tobias`).
-- [ ] **Atualizar `ChoiceSystemGlobal.cs`:** Refatorar o sistema de escolhas para que, ao clicar em uma opção, ele busque a flag correspondente na lista do `GameStateData` e mude seu valor.
+- [x] **Criar `GameStateData.cs`:** Um ScriptableObject que conterá uma `List<GameFlag>` (para bools como `acordouPrimeiroDia`) e uma `List<GameReputation>` (para pontuação como `+10 Tobias`).
+- [x] **Atualizar `ChoiceSystemGlobal.cs`:** Refatorar o sistema de escolhas para que, ao clicar em uma opção, ele busque a flag correspondente na lista do `GameStateData` e mude seu valor.
 
 ### Tarefa 2: Reflexos Visuais do Mundo (O Sistema de Flores e Rota R)
 As escolhas afetam o ambiente. Precisamos de sistemas que "escutem" as variáveis.
 - [ ] **Criar `FlowerStateListener.cs`:** Um script que é colocado nas flores da casa do X. No `Start()`, ele checa a lista do `GameStateData` e muda seu próprio sprite/cor (Refletindo `florNeutraPositivaDia1`, etc).
 - [ ] **Criar `RouteVisualManager.cs`:** Um gerenciador que altera o Post-Processing (blur, cores dessaturadas) e a trilha sonora quando a flag `RotaR` é verdadeira.
 
-### Tarefa 3: Sistemas de Gameplay Específicos do Cap 1
+### Tarefa 3: Montagem do Prólogo na Cena
+Com os sistemas prontos, começaremos a Level Design.
+- [ ] Configurar os GameObjects do Quarto do X (Cama, Celular, Espelho) com o `Interactable.cs`.
+- [ ] Preencher as falas e configurar o `ChoiceSystemGlobal` para a "Decisão 1: Acordar ou Dormir".
+- [ ] Configurar o Jardim com o script `FlowerStateListener`.
+
+### Tarefa 4: Sistema de Save / Persistencia com JSON
+Aproveitando nossa arquitetura anti-spaghetti de ScriptableObjects baseados em listas para criar um Save System nativo.
+- [ ] **Criar SaveManager.cs:** Salvar a List<GameFlag> e o Inventario em um arquivo .json no Application.persistentDataPath para persistir o estado do jogo entre sessoes.
+- [ ] **Otimizacao no GameStateData:** No OnEnable(), popular um Dicionario privado em memoria baseado na Lista do JSON. Assim temos a interface visual do Inspector e a performance de O(1) do Dicionario no codigo.
+
+### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1
 O Capítulo 1 introduz novas mecânicas além de andar e falar.
 - [ ] **Criar Mecânica de Ataque de Pânico (QTE):** 
   - Script `PanicAttackSystem.cs` que exibe UI de pressionar botões em tempo limite.
@@ -35,11 +46,6 @@ O Capítulo 1 introduz novas mecânicas além de andar e falar.
   - Script `InvestigationMiniGame.cs`.
   - UI que permite selecionar duas pistas do Inventário/Mente e combiná-las.
 
-### Tarefa 4: Montagem do Prólogo na Cena
-Com os sistemas prontos, começaremos a Level Design.
-- [ ] Configurar os GameObjects do Quarto do X (Cama, Celular, Espelho) com o `Interactable.cs`.
-- [ ] Preencher as falas e configurar o `ChoiceSystemGlobal` para a "Decisão 1: Acordar ou Dormir".
-- [ ] Configurar o Jardim com o script `FlowerStateListener`.
 
 ---
 
