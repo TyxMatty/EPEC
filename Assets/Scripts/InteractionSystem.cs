@@ -88,6 +88,12 @@ private void Interact()
 
         if (interactable.isPickableObject && interactable.itemToAdd != null) // 
         {
+            if (inventarioGlobal == null)
+            {
+                Debug.LogWarning("Inventário não referenciado no Inspector!");
+                return;
+            }
+
             inventarioGlobal.Additem(interactable.itemToAdd);
             Debug.Log($"Item adicionado ao inventário: {interactable.itemToAdd.itemName}");
 

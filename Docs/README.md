@@ -58,3 +58,9 @@ Para a equipe de Level Design e Integração, siga estes passos para criar um ob
 2. Altere a **Layer** do objeto para a layer interativa configurada no projeto (ex: `Interagivel`).
 3. Anexe o script `Interactable.cs` ao objeto.
 4. No componente `Interactable` pelo Inspector, adicione as frases desejadas no array `Falas`.
+
+### 5. Sistema de Inventário
+
+* **InventoryData.cs**: Um ScriptableObject que funciona como banco de dados persistente dos itens do jogador. Contém uma lista itens inicializada via OnEnable para garantir a segurança da serializazação do Unity.
+* **ItemData.cs**: Outro ScriptableObject que define o molde para itens coletáveis (Nome, Descrição e ícone).
+* **Integração**: O InteractionSystem.cs foi atualizado para verificar se o objeto � um isPickableObject. Se for, o item é adicionado ao InventoryData do jogador de forma segura, com verificações de nulidade para prevenir NullReferenceException antes de possivelmente desaparecer (Destroy).

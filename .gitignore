@@ -7,3 +7,5 @@
 [Uu]serSettings/
 .obsidian/workspace.json 
 .obsidian/workspace-mobile.json
+# Antigravity/Agent rules
+.agents/
