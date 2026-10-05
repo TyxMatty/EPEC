@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8bcf6a4cb014ac45b406699d1071e37, type: 3}
   m_Name: Mochila 1
   m_EditorClassIdentifier: Assembly-CSharp::InventoryData
-  itens: []
+  itens:
+  - {fileID: 11400000, guid: 7eacd9586d2cb9e46965aa3dbd84adc1, type: 2}

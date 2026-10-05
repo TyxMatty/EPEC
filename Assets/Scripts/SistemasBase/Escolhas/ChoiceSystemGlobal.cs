@@ -98,36 +98,16 @@ public class ChoiceSystemGlobal : MonoBehaviour
         DialogueSystemGlobal dialogueSystem = FindAnyObjectByType<DialogueSystemGlobal>();
         dialogueSystem.EncerrarPosEscolha(); // opcional caso tenha uma escolha, para o sistema de diálogo continuar a conversa com o objeto
     }
-    public void SalvarEscolha(string nomeVariavel, bool valor)
+    public void SalvarEscolha(string nomeVariavel, bool valor) // para salvar uma variavel, isso utiliza nosso StateManager.
     {
-    // Procura se a variável já existe na lista
-    VariavelNarrativa varExistente = stateManager.variaveisGlobais.Find(v => v.nome == nomeVariavel);
-
-    if (varExistente != null)
-        {
-            varExistente.valor = valor; // Atualiza se já existir
-            Debug.Log($"Variável '{nomeVariavel}' atualizada para: {valor}");
-        }
-        else
-        {
-        // Cria uma nova se não existir
-            stateManager.variaveisGlobais.Add(new VariavelNarrativa { nome = nomeVariavel, valor = valor });
-            Debug.Log($"Variável '{nomeVariavel}' adicionada com valor: {valor}");
-        }
+        if (string.IsNullOrEmpty(nomeVariavel)) return; // se n tem nome da variavel a ser salva, cancela e retorna
+        stateManager.SetVariavel(nomeVariavel, valor); // set variable(nossa função)
+        Debug.Log($"Variavel '{nomeVariavel}' atualizada no Dicionario para: {valor}");
     }
+
     public bool ChecarCondicao(string nomeVariavel)
     {
-    VariavelNarrativa varExistente = stateManager.variaveisGlobais.Find(v => v.nome == nomeVariavel);
-
-        if (varExistente != null)
-        {
-        return varExistente.valor;
-        }
-        else
-        {
-        Debug.LogWarning($"Variável '{nomeVariavel}' não encontrada. Assumindo false.");
-        return false;
-        }
+        return stateManager.GetVariavel(nomeVariavel); // pesquisa no dictionary.
     }
     public bool ChecarItem(string nomeItem) 
     {

@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86eb205ebe2141541bd31c46659c13f9, type: 3}
   m_Name: MemoriaDoJogo
   m_EditorClassIdentifier: Assembly-CSharp::GlobalStateManager
-  variaveisGlobais: []
+  variaveisGlobais:
+  - nome: portaAberta
+    valor: 1
+  - nome: aceitaAjudarTobias
+    valor: 1

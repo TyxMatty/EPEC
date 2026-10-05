@@ -1,66 +1,81 @@
-# Documentação de Scripts - Projeto EPEC
+# Documentacao de Sistemas e How-To - EPEC
 
-Este documento detalha a arquitetura e o funcionamento dos scripts principais do projeto até o momento. Os sistemas foram projetados para serem modulares, separando a lógica de movimentação, interação e interface de usuário.
+Bem-vindo ao manual oficial de montagem do EPEC! Se voce e novo no projeto, este documento e o seu guia passo-a-passo para entender onde tudo fica, como criar cenas e como fazer o jogo funcionar sem quebrar.
 
-## Visão Geral da Arquitetura
-
-O fluxo principal do jogo atualmente baseia-se na exploração top-down 2D. O jogador movimenta-se pelo cenário e utiliza um sistema de *Raycast* invisível para detectar objetos interativos. Ao interagir, o controle do jogador é bloqueado e as informações do objeto (como falas) são enviadas para um gerenciador global de UI, que processa a exibição do diálogo e devolve o controle ao jogador quando finalizado.
+Nossa arquitetura e focada em ser **Anti-Spaghetti**: usamos listas em ScriptableObjects e JSONs para que tudo seja modular e independente.
 
 ---
 
-## Sistemas Principais
+## 1. Onde Colocar Cada Script? (Mapa do Projeto)
 
-### 1. Movimentação e Animação
-
-* **`MovementScript.cs`**: Responsável pela física de movimentação do jogador utilizando `Rigidbody2D` e o novo Input System do Unity. Calcula a direção baseada nas teclas WASD/Setas e aplica multiplicadores de velocidade quando a tecla Shift é pressionada. Possui a variável pública `podeMover`, que permite a outros sistemas (como diálogos) paralisar o jogador definindo a velocidade como zero.
-
-
-* **`SpriteChange.cs` (`ScriptChange`)**: Gerencia as animações 2D sem depender do Animator nativo do Unity, trocando os sprites diretamente no `SpriteRenderer`. Ele lê a magnitude e direção da velocidade (`linearVelocity`) no `Rigidbody2D` para determinar se o jogador está parado, andando ou correndo, e atualiza os *frames* com base em um temporizador interno (`transitionSpeed`).
-
-
-
-### 2. Sistemas de Câmera
-
-O projeto possui duas abordagens de câmera disponíveis para uso:
-
-* **`CameraFollow.cs`**: Implementa uma câmera dinâmica que segue o alvo (jogador) de forma suave utilizando `Vector3.Lerp`. Executado em `LateUpdate` para evitar travamentos visuais durante a movimentação da física.
-
-
-* **`SceneFollow.cs`**: Implementa uma câmera de transição por "salas" (estilo clássico de jogos 2D). O script calcula as bordas da sala atual multiplicando o `orthographicSize` e o `aspect` da câmera e move a visão de forma fixa e suave para o centro da nova sala quando o jogador cruza a fronteira.
-
-
-
-### 3. Interação e Diálogos (Core Narrativo)
-
-Este é o fluxo integrado de comunicação entre o mundo e a interface:
-
-* **`Interactable.cs`**: Um componente de dados anexado aos objetos físicos do cenário ou NPCs. Contém um array de `strings` (`falas`) e variáveis booleanas categóricas (como `isNPC`, `isPickableObject`) para organizar regras futuras.
-
-
-* **`InteractionSystem.cs`**: Fica no jogador e lança constantemente um `Raycast2D` na direção do último movimento registrado. Se o raio detectar um objeto na camada `interactableLayer`, exibe um alerta visual na tela (`interactionPrompt`). Ao pressionar Enter ou 'E', o script lê o componente `Interactable` do alvo, altera o `podeMover` do jogador para falso, e injeta as falas no sistema de diálogo.
-
-
-* **`DialogueSystemGlobal.cs`**: Gerenciador de UI que recebe um array de textos e executa o efeito de digitação caractere por caractere (através da corrotina `DigitarLinha`). Permite ao jogador autocompletar a frase atual ou avançar para a próxima usando a tecla Enter. Ao finalizar todas as falas, executa um *fade out* visual via `CanvasGroup` e reativa o `podeMover` do `MovementScript`.
-
-
-### 4. Sistemas em Desenvolvimento
-
-* **`ChoiceSystemGlobal.cs`**: Estrutura base (protótipo) criada para gerenciar as futuras ramificações narrativas e escolhas múltiplas exibidas na tela.
-
+- **Jogador (Player):** 
+  - MovementScript: Cuida da movimentacao e inputs.
+  - SpriteChange: Troca os sprites dependendo de pra onde ele anda.
+  - InteractionSystem: Fica checando o que esta na frente do jogador e aciona os eventos.
+- **Gerenciadores Globais (Managers):** Devem ficar em um objeto vazio na cena (ex: GameManager).
+  - DialogueSystemGlobal: Cuida do painel de dialogo.
+  - ChoiceSystemGlobal: Cuida das escolhas (fala com o StateManager).
+  - SaveManager: Salva e carrega o jogo usando o GlobalStateManager e o InventoryData.
+- **Objetos Interagiveis (Cenario):** 
+  - DialogueTrigger (Implementa IInteractAction): Leve ele, arraste seu JSON de dialogo e coloque um BoxCollider2D.
+  - ItemPickup (Implementa IInteractAction): Leve ele, de o nome do item e o sprite some quando coletado.
+- **Assets Especiais:**
+  - GlobalStateManager (ScriptableObject): A memoria do jogo. Guarda variaveis (otaR, portaAberta).
+  - InventoryData (ScriptableObject): A mochila do jogador.
+  - *Itens do jogo:* SEMPRE salve em Assets/Resources/Itens senao o save system nao acha eles!
 
 ---
 
-##  Como Configurar um Novo Objeto Interativo
+## 2. Como Configurar Paineis de UI
 
-Para a equipe de Level Design e Integração, siga estes passos para criar um objeto que o jogador possa ler/falar:
+Se precisar criar uma nova tela (ex: Escolhas, Dialogo):
+1. Crie um Canvas e um Panel dentro dele.
+2. **Ancoras:** No Inspector do Rect Transform, clique no icone do quadrado. Segure Alt e clique na opcao do canto inferior direito (Stretch). Isso faz o painel esticar com a tela.
+3. Se for uma caixa de texto na base da tela, use a ancora Inferior-Centro (Bottom-Center) e ajuste o Pivot para Y = 0.
+4. Os textos devem usar o TextMeshProUGUI.
+5. Anexe os botoes ou paineis nas referencias publicas dos Managers (ex: choiceTexts no ChoiceSystemGlobal).
 
-1. Crie o objeto na cena (ex: Placa, NPC) e adicione um **Collider 2D** (obrigatório para o Raycast detectá-lo).
-2. Altere a **Layer** do objeto para a layer interativa configurada no projeto (ex: `Interagivel`).
-3. Anexe o script `Interactable.cs` ao objeto.
-4. No componente `Interactable` pelo Inspector, adicione as frases desejadas no array `Falas`.
+---
 
-### 5. Sistema de Inventário
+## 3. Como Fazer Dialogos e Condicoes (Passo a Passo)
 
-* **InventoryData.cs**: Um ScriptableObject que funciona como banco de dados persistente dos itens do jogador. Contém uma lista itens inicializada via OnEnable para garantir a segurança da serializazação do Unity.
-* **ItemData.cs**: Outro ScriptableObject que define o molde para itens coletáveis (Nome, Descrição e ícone).
-* **Integração**: O InteractionSystem.cs foi atualizado para verificar se o objeto é um isPickableObject. Se for, o item é adicionado ao InventoryData do jogador de forma segura, com verificações de nulidade para prevenir NullReferenceException antes de possivelmente desaparecer (Destroy).
+Nosso dialogo abandonou aquele lixo de arrays no Inspector. Tudo e via JSON!
+
+### Passo A: Criar o JSON
+Crie um arquivo .json (ex: DialogoQuarto.json) em Assets/Scripts/Interactions/Dialogos/DialoguesData/.
+Exemplo de formato:
+{
+    "dialogueID": "quarto_1",
+    "falas": [ "Hmm, mais um dia." ],
+    "alteraVariavel": false,
+    "temFrasesAlternativas": true,
+    "itemDaCondicao": "Chave",
+    "dialogoAlternativoAlteraVariavel": true,
+    "variavelAlteradaPorDialogoAlternativo": "portaAberta",
+    "falasAlternativas": [ "Vou destrancar isso!" ],
+    "terminaEmEscolha": false
+}
+
+### Passo B: Configurar o Objeto na Cena
+1. Coloque um objeto (ex: Guarda-Roupa).
+2. Adicione um **Collider2D** e certifique-se que o Player tem ele na interactableLayer do seu raycast.
+3. Adicione o script DialogueTrigger.cs.
+4. No campo do script, arraste o arquivo .json que voce criou.
+
+---
+
+## 4. O Sistema de Variaveis e Save (A Magica)
+
+Nos abandonamos os dicionarios espaguete em favor do GlobalStateManager.cs.
+
+**Como checar se o jogador fez algo:**
+No codigo: GameManager.ChecarCondicao("acordouPrimeiroDia")
+
+**Como salvar o jogo:**
+Nao precisa! O SaveManager.cs salva tudo no Windows (%AppData%/LocalLow/EPEC team/EPEC/savegame.json) quando o jogo fecha ou quando voce manda.
+*Regra de Ouro:* Seu ItemData chamado Chave (ou seja la qual item for) **PRECISA OBRIGATORIAMENTE** estar na pasta Assets/Resources/Itens. Se mudar o nome da pasta, o Save quebra, pois o Unity busca itens por la quando carrega o jogo.
+
+---
+
+## 5. Cutscenes (Sendo implementado)
+Em breve: Em vez do InteractionSystem dar gatilho num dialogo, um CutsceneManager global podera bloquear o movimento (podeMover = false), disparar animacoes via SpriteChange modificado, e iniciar falas automaticamente (via eventos) chamando o DialogueSystemGlobal. Fique atento para atualizacoes!

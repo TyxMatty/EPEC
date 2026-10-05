@@ -15587,17 +15587,6 @@
       "type": "external"
     },
     {
-      "id": "tmpro",
-      "label": "tmpro",
-      "_origin": "semantic",
-      "community": 43,
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "tmpro",
-      "source_file": "",
-      "type": "external"
-    },
-    {
       "id": "system_collections_generic",
       "label": "system_collections_generic",
       "_origin": "semantic",
@@ -15610,9 +15599,18 @@
       "type": "external"
     },
     {
+      "id": "tmpro",
+      "label": "tmpro",
+      "community": 43,
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "tmpro",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "system_io",
       "label": "system_io",
-      "_origin": "semantic",
       "community": 8,
       "external": true,
       "file_type": "concept",

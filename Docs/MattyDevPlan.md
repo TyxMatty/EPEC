@@ -1,54 +1,56 @@
-# EPEC: Plano de Desenvolvimento e Divisão de Tarefas
+# EPEC: Plano de Desenvolvimento e Divisao de Tarefas
 
-Matty aqui, eis o plano que montei baseado no que já temos pronto (`MovementScript`, `InteractionSystem`, `DialogueSystemGlobal`, `InventoryData`, etc) e no que precisamos para dar vida ao Roteiro do Prólogo e Capítulo 1.
+Matty aqui, eis o plano que montei baseado no que ja temos pronto (MovementScript, InteractionSystem, DialogueSystemGlobal, InventoryData, etc) e no que precisamos para dar vida ao Roteiro do Prologo e Capitulo 1.
 
-O objetivo deste plano é garantir progresso constante, sem criar acoplamentos perigosos (*spaghetti code*). Vamos focar em módulos independentes que se comunicam através dos nossos **ScriptableObjects** (Listas).
-
----
-
-## O que já temos (Nossa Base Sólida):
-✅ Movimentação e Animação (`MovementScript`, `SpriteChange`)
-✅ Sistema de Câmera (`CameraFollow`, `SceneFollow`)
-✅ Interação Básica e Inventário (`InteractionSystem`, `Interactable`, `InventoryData`)
-✅ Diálogo Linear e Protótipo de Escolhas (`DialogueSystemGlobal`, `ChoiceSystemGlobal`)
+O objetivo deste plano e garantir progresso constante, sem criar acoplamentos perigosos (*spaghetti code*). Vamos focar em modulos independentes que se comunicam atraves dos nossos **ScriptableObjects** (Listas).
 
 ---
 
-## Próximos Passos (Tarefas a Executar)
+## O que ja temos (Nossa Base Solida):
+- Movimentacao e Animacao (MovementScript, SpriteChange)
+- Sistema de Camera (CameraFollow, SceneFollow)
+- Interacao Basica e Inventario (InteractionSystem, Interactable, InventoryData)
+- Dialogo Linear, Prot�tipo de Escolhas e Condicoes via JSON (DialogueSystemGlobal, ChoiceSystemGlobal, DialogueData)
+- Save System (SaveManager, GlobalStateManager otimizado)
 
-### Tarefa 1: O Coração Narrativo (GameState Baseado em Listas)
-O `ChoiceSystemGlobal` atual é um protótipo. Precisamos da infraestrutura definitiva para salvar as escolhas.
-- [x] **Criar `GameStateData.cs`:** Um ScriptableObject que conterá uma `List<GameFlag>` (para bools como `acordouPrimeiroDia`) e uma `List<GameReputation>` (para pontuação como `+10 Tobias`).
-- [x] **Atualizar `ChoiceSystemGlobal.cs`:** Refatorar o sistema de escolhas para que, ao clicar em uma opção, ele busque a flag correspondente na lista do `GameStateData` e mude seu valor.
+---
+
+## Proximos Passos (Tarefas a Executar)
+
+### Tarefa 1: O Coracao Narrativo (GameState Baseado em Listas)
+- [x] **Criar GameStateData.cs / GlobalStateManager.cs**
+- [x] **Atualizar ChoiceSystemGlobal.cs**
 
 ### Tarefa 2: Reflexos Visuais do Mundo (O Sistema de Flores e Rota R)
-As escolhas afetam o ambiente. Precisamos de sistemas que "escutem" as variáveis.
-- [ ] **Criar `FlowerStateListener.cs`:** Um script que é colocado nas flores da casa do X. No `Start()`, ele checa a lista do `GameStateData` e muda seu próprio sprite/cor (Refletindo `florNeutraPositivaDia1`, etc).
-- [ ] **Criar `RouteVisualManager.cs`:** Um gerenciador que altera o Post-Processing (blur, cores dessaturadas) e a trilha sonora quando a flag `RotaR` é verdadeira.
+As escolhas afetam o ambiente. Precisamos de sistemas que "escutem" as variaveis.
+- [ ] **Criar FlowerStateListener.cs:** Um script que e colocado nas flores da casa do X. No Start(), ele checa a lista do GameStateData e muda seu proprio sprite/cor (Refletindo lorNeutraPositivaDia1, etc).
+- [ ] **Criar RouteVisualManager.cs:** Um gerenciador que altera o Post-Processing (blur, cores dessaturadas) e a trilha sonora quando a flag RotaR e verdadeira.
 
-### Tarefa 3: Montagem do Prólogo na Cena
-Com os sistemas prontos, começaremos a Level Design.
-- [ ] Configurar os GameObjects do Quarto do X (Cama, Celular, Espelho) com o `Interactable.cs`.
-- [ ] Preencher as falas e configurar o `ChoiceSystemGlobal` para a "Decisão 1: Acordar ou Dormir".
-- [ ] Configurar o Jardim com o script `FlowerStateListener`.
+### Tarefa 3: Montagem do Prologo na Cena
+Com os sistemas prontos, comecaremos a Level Design.
+- [ ] Configurar os GameObjects do Quarto do X (Cama, Celular, Espelho) com o Interactable.cs.
+- [ ] Preencher as falas e configurar o ChoiceSystemGlobal para a "Decisao 1: Acordar ou Dormir".
+- [ ] Configurar o Jardim com o script FlowerStateListener.
 
 ### Tarefa 4: Sistema de Save / Persistencia com JSON
-Aproveitando nossa arquitetura anti-spaghetti de ScriptableObjects baseados em listas para criar um Save System nativo.
-- [ ] **Criar SaveManager.cs:** Salvar a List<GameFlag> e o Inventario em um arquivo .json no Application.persistentDataPath para persistir o estado do jogo entre sessoes.
-- [ ] **Otimizacao no GameStateData:** No OnEnable(), popular um Dicionario privado em memoria baseado na Lista do JSON. Assim temos a interface visual do Inspector e a performance de O(1) do Dicionario no codigo.
+- [x] **Criar SaveManager.cs** 
+- [x] **Otimizacao no GameStateData**
 
 ### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1
-O Capítulo 1 introduz novas mecânicas além de andar e falar.
-- [ ] **Criar Mecânica de Ataque de Pânico (QTE):** 
-  - Script `PanicAttackSystem.cs` que exibe UI de pressionar botões em tempo limite.
-  - Se falhar 3 vezes, dispara um evento de "Desmaio" e avança o dia.
-- [ ] **Criar Mecânica de Investigação (Juntar as Pontas):**
-  - Script `InvestigationMiniGame.cs`.
-  - UI que permite selecionar duas pistas do Inventário/Mente e combiná-las.
+O Capitulo 1 introduz novas mecanicas alem de andar e falar.
+- [ ] **Criar Mecanica de Ataque de Panico (QTE):** 
+  - Script PanicAttackSystem.cs que exibe UI de pressionar botoes em tempo limite.
+  - Se falhar 3 vezes, dispara um evento de "Desmaio" e avanca o dia.
+- [ ] **Criar Mecanica de Investigacao (Juntar as Pontas):**
+  - Script InvestigationMiniGame.cs.
+  - UI que permite selecionar duas pistas do Inventario/Mente e combina-las.
 
+### Tarefa 6: Escalabilidade do DialogueSystem e Cutscenes
+- [ ] **Desacoplar o DialogueSystemGlobal:** Permitir que IniciarDialogo seja invocado via eventos (UnityEvents) ou por qualquer outro script no jogo, e nao apenas por um DialogueTrigger atrelado a um GameObject interagivel.
+- [ ] **Criar CutsceneManager.cs Global:** Um script para gerenciar cutscenes. Deve pausar o jogador, disparar animacoes representativas de cada acao, invocar dialogos especificos (ex: dialogo Y) que levam a escolhas X, Y, Z.
 
 ---
 
-## Ordem de Execução Sugerida
+## Ordem de Execucao Sugerida
 
-Sugiro começarmos pela **Tarefa 1**. Assim que tivermos as Listas de estado funcionando, o sistema de Escolhas vai ficar muito poderoso e seguro de se expandir. O que acham? Favor comentem aqui em baixo - Matty
+Sugiro comecarmos pela **Tarefa 6** agora que o core esta feito, estruturando o Cutscene Manager e desacoplando os dialogos. Em seguida, partimos para a **Tarefa 3** (Montagem do Prologo). -- matty
