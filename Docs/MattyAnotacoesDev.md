@@ -19,7 +19,7 @@ O seu script `Interactable.cs` está crescendo muito. Ele atualmente guarda:
 - Condições complexas (`temFrasesAlternativas`, `itemDaCondicao`).
 - Lógica de Escolhas e Timers (`terminaEmEscolha`, `textosDasOpcoes`).
 - Lógica de Inventário (`isPickableObject`, `itemToAdd`).
-
+  // estou me responsabilizando disso - Matty
 **O Risco (Spaghetti Code):** 
 Se continuarmos colocando tudo dentro do `Interactable.cs`, ele vai virar uma "God Class" (Classe Deus) que sabe demais. Toda vez que você for arrumar um bug de inventário, pode quebrar o sistema de diálogo sem querer.
 
