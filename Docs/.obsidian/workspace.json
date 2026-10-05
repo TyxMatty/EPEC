@@ -11,14 +11,12 @@
             "id": "a13ee1befdc5e0aa",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "README.md",
-                "mode": "source",
-                "source": false
+                "file": "temp_interacao.png"
               },
-              "icon": "lucide-file",
-              "title": "README"
+              "icon": "lucide-image",
+              "title": "temp_interacao"
             }
           }
         ]
@@ -192,10 +190,17 @@
   "lastOpenFiles": [
     "Sem título.canvas",
     "README.md",
+    "MattyDevPlan.md",
     "Fluxogramas EPEC-Interação.png",
     "Fluxogramas EPEC-Fluxograma Movimento.png",
-    "ArvoreDeDialogosPrologo.jpeg",
     "Fluxogramas EPEC-Escolhas.png",
+    "temp_interacao.png",
+    "MattyNotations.md",
+    "ArvoreDeDialogosPrologo.jpeg",
+    "MattyAnotacoesDev.md",
+    "Sem título.base",
+    "Sem título.md",
+    "Sem título",
     "Bem-vindo.md",
     "README.md.meta"
   ]
