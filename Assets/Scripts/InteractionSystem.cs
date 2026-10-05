@@ -10,7 +10,8 @@ public class InteractionSystem : MonoBehaviour
 
     [Header("Dialogue Script")]
     [SerializeField] private DialogueSystemGlobal dialogueSystem;
-
+    [Header("Inventário do Jogador")]
+    [SerializeField] private InventoryData inventarioGlobal;
     private Transform objectToInteractWith;
     private Vector2 interactionDirection = Vector2.down; // começa olhando para baixo, pode zer Vector2.zero, também
     
@@ -69,28 +70,56 @@ public class InteractionSystem : MonoBehaviour
             }
         }
     }
-    private void Interact()
+private void Interact()
     {
-       if(dialogueSystem != null && objectToInteractWith != null)
-       {
-            MovementScript movementScript = GetComponent<MovementScript>();
-            Interactable interactable = objectToInteractWith.GetComponent<Interactable>();
-            if(interactable != null && interactable.falas.Length > 0) // string que vai ser pega do Interactable e enviada pro DialogueSystemGlobal
+        if (dialogueSystem == null || objectToInteractWith == null) return;
+
+        MovementScript movementScript = GetComponent<MovementScript>();
+        Interactable interactable = objectToInteractWith.GetComponent<Interactable>();
+        
+        if (interactable == null) return;
+
+        if (interactionPrompt != null)
+        {
+            interactionPrompt.SetActive(false); 
+        }
+
+        // 1. SISTEMA DE INVENTÁRIO (Lida com a coleta primeiro)
+
+        if (interactable.isPickableObject && interactable.itemToAdd != null) // 
+        {
+            inventarioGlobal.Additem(interactable.itemToAdd);
+            Debug.Log($"Item adicionado ao inventário: {interactable.itemToAdd.itemName}");
+
+            if (interactable.falas == null || interactable.falas.Length == 0)
             {
-                if(interactionPrompt != null)
-                {
-                    interactionPrompt.SetActive(false); // desativa o prompt de interação quando o player interagir com o objeto
-                }
-                movementScript.podeMover = false; // desativa o movimento do player quando o sistema de diálogo estiver ativo
-                dialogueSystem.gameObject.SetActive(true); // ativa a caixa de diálogo
-                dialogueSystem.IniciarDialogo(interactable);
-                Debug.Log("funfou, no objeto: " +objectToInteractWith.name + " com as falas: " + string.Join(", ", interactable.falas));
+                Destroy(objectToInteractWith.gameObject);
+                return;
             }
             else
             {
-                Debug.LogWarning("O objeto " + objectToInteractWith.name + " não possui falas para interagir.");
+                SpriteRenderer sprite = objectToInteractWith.GetComponent<SpriteRenderer>();
+                Collider2D col = objectToInteractWith.GetComponent<Collider2D>();
+                
+                if (sprite != null) sprite.enabled = false;
+                if (col != null) col.enabled = false;
             }
-       }
+        }
+
+        // 2. SISTEMA DE DIÁLOGO
+        // futuramente fazer ficar mais escalável.
+        if (interactable.falas != null && interactable.falas.Length > 0)
+        {
+            if (movementScript != null) movementScript.podeMover = false; 
+            
+            dialogueSystem.gameObject.SetActive(true);
+            dialogueSystem.IniciarDialogo(interactable);
+            Debug.Log($"Iniciando diálogo com: {objectToInteractWith.name}");
+        }
+        else if (!interactable.isPickableObject)
+        {
+            Debug.LogWarning($"O objeto {objectToInteractWith.name} não possui falas nem é coletável.");
+        }
     }
     private void OnDrawGizmos() // isso é uma função de testing; players não vão ver isso, pode ser comentado depois, mas é bom deixar pra testar o range de interação do player
     {

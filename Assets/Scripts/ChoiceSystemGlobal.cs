@@ -4,12 +4,10 @@ using UnityEngine.InputSystem;
 public class ChoiceSystemGlobal : MonoBehaviour
 {
     [Header("Variáveis Globais de Narrativa")]
-    [Header("Variáveis Globais de Narrativa")]
-    [Header("Variáveis Globais de Narrativa")]
     [Header("Base de Dados")]
-    [SerializeField] private GlobalStateManager stateManager; // Liga o sistema ao cérebro do jogo
-    
-    // ATENÇÃO: Apague a linha antiga: public List variaveisGlobais = ...
+    [SerializeField] private GlobalStateManager stateManager; // Liga o sistema ao main database do jogo
+    [Header("Inventário")]
+    [SerializeField] private InventoryData inventarioGlobal;
     [Header("UI de Escolha")]
     [SerializeField] private GameObject choiceUI; // UI de escolha
     [SerializeField] private TMPro.TextMeshProUGUI[] choiceTexts; // Textos
@@ -100,7 +98,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         DialogueSystemGlobal dialogueSystem = FindAnyObjectByType<DialogueSystemGlobal>();
         dialogueSystem.EncerrarPosEscolha(); // opcional caso tenha uma escolha, para o sistema de diálogo continuar a conversa com o objeto
     }
-    private void SalvarEscolha(string nomeVariavel, bool valor)
+    public void SalvarEscolha(string nomeVariavel, bool valor)
     {
     // Procura se a variável já existe na lista
     VariavelNarrativa varExistente = stateManager.variaveisGlobais.Find(v => v.nome == nomeVariavel);
@@ -130,6 +128,19 @@ public class ChoiceSystemGlobal : MonoBehaviour
         Debug.LogWarning($"Variável '{nomeVariavel}' não encontrada. Assumindo false.");
         return false;
         }
+    }
+    public bool ChecarItem(string nomeItem)
+    {
+        if (inventarioGlobal == null)
+        {
+            Debug.LogWarning("Inventário não referenciado no Inspector! Assumindo false.");
+            return false;
+        }
+        if (string.IsNullOrEmpty(nomeItem)) 
+        {
+            return false;
+        }
+        return inventarioGlobal.itens.Exists(item => item.itemName == nomeItem);
     }
     
     

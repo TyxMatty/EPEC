@@ -6,6 +6,10 @@ public class Interactable : MonoBehaviour
     [TextArea(3, 5)]
     public string[] falas; 
     
+    [Header("Variáveis pós-interação (Opcional)")]
+    public bool alteraVariavel; // se o diálogo altera uma variável, só por interagir, ao cnotrário de uma escolha
+    public string variavelAlteradaPorDialogo; // a variável que ele vai alterar (Ex: "seAlimentou")
+
     [Header("Configurações de Escolha (Final do Diálogo)")]
     public bool terminaEmEscolha; // Marca se o diálogo abre uma escolha no fim
     public string variavelParaSalvar; // Ex: "acordouPrimeiroDia"
@@ -13,6 +17,7 @@ public class Interactable : MonoBehaviour
     [Header("Diálogo Condicional (Opcional)")]
     public bool temFrasesAlternativas;
     public string variavelDaCondicao; // a variável que ele vai checar (Ex: "seAlimentou")
+    public string itemDaCondicao; // o item que ele vai checar, pode ser o de cima e esse também;
     public bool valorEsperado = true; // só muda para o texto alternativo se a variável for igual a este valor
     [TextArea(3, 5)]
     public string[] falasAlternativas;
@@ -31,4 +36,6 @@ public class Interactable : MonoBehaviour
     public bool isNonPickableObject; 
     public bool isNPC; 
     public bool isPickableObject; 
+    [Header("Inventário")]
+    public ItemData itemToAdd; // item que será adicionado ao inventário, se for um objeto coletável
 }

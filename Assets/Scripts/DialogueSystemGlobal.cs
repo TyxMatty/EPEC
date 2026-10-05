@@ -132,6 +132,11 @@
             {
                 movementScript.podeMover = true; // ativa o movimento do player quando o sistema de diálogo terminar
             }
+            if (interacaoAtual != null && interacaoAtual.alteraVariavel && GameManager != null) // se o diálogo altera uma variável, só por interagir, ao contrário de uma escolha
+            {
+                GameManager.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogo, true); // altera a variável global para true
+                Debug.Log($"[DialogueSystem] Variável global {interacaoAtual.variavelAlteradaPorDialogo} alterada para true.");
+            }
         }
         public void IniciarDialogo(Interactable interactable) 
     {
@@ -140,7 +145,7 @@
         if (interacaoAtual.temFrasesAlternativas && GameManager != null)
         {
             // pergunta ao Dicionário se a variável tem o valor esperado (ex: isACapsule == true)
-            if (GameManager.ChecarCondicao(interacaoAtual.variavelDaCondicao) == interacaoAtual.valorEsperado)
+            if ((GameManager.ChecarCondicao(interacaoAtual.variavelDaCondicao) == interacaoAtual.valorEsperado) || (GameManager.ChecarItem(interacaoAtual.itemDaCondicao) == interacaoAtual.valorEsperado))
             {
                 dialogueLines = interacaoAtual.falasAlternativas; // Puxa a fala secreta
             }
