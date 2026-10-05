@@ -32,7 +32,7 @@ public class GameStateData : ScriptableObject
     public void SetFlag(string name, bool value) { ... }
     public bool GetFlag(string name) { ... }
 }
-
+```
 
 ## 2. Tradução do Roteiro para Sistemas (Prólogo & Cap 1)
 
@@ -58,6 +58,6 @@ O `GameStateData` (a nossa lista) precisará armazenar as seguintes variáveis l
 
 - **Feedback Visual (Filtros e Áudio):** Como a Rota R é agressiva e tem blur, podemos criar um `PostProcessingManager` que altera os perfis de Pós-Processamento (Blur, Color Grading) e o Pitch/Volume da música dependendo das flags `RotaR` e da Reputação.
 - **Isolamento de Cenas:** Em vez de fazer o jogo todo numa cena gigante, vamos separar os ambientes (Quarto de X, Jardim, Abrigo, Rua, RU, Praça) e carregar os cenários de forma aditiva.
-- **Data-Driven Dialogues:** Expandir o seu `ChoiceSystemGlobal` e `DialogueSystemGlobal` para lerem de arquivos ScriptableObjects ou JSON, assim não precisamos preencher falas em cada GameObject do cenário manualmente, facilitando correções ortográficas e tradução no futuro.
+- **Data-Driven Dialogues:** Expandir o nosso `ChoiceSystemGlobal` e `DialogueSystemGlobal` para lerem de arquivos ScriptableObjects ou JSON, assim não precisamos preencher falas em cada GameObject do cenário manualmente, facilitando correções ortográficas e tradução no futuro. -> to fazeno
 
 

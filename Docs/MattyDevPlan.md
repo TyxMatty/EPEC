@@ -17,9 +17,10 @@ O objetivo deste plano e garantir progresso constante, sem criar acoplamentos pe
 
 ## Proximos Passos (Tarefas a Executar)
 
-### Tarefa 1: O Coracao Narrativo (GameState Baseado em Listas)
-- [x] **Criar GameStateData.cs / GlobalStateManager.cs**
-- [x] **Atualizar ChoiceSystemGlobal.cs**
+### Tarefa 1: O Coração Narrativo (GameState Baseado em Listas)
+O `ChoiceSystemGlobal` atual é um protótipo. Precisamos da infraestrutura definitiva para salvar as escolhas.
+- [x] **Criar `GameStateData.cs`:** Um ScriptableObject que conterá uma `List<GameFlag>` (para bools como `acordouPrimeiroDia`) e uma `List<GameReputation>` (para pontuação como `+10 Tobias`). -> ja fiz - matty
+- [x] **Atualizar `ChoiceSystemGlobal.cs`:** Refatorar o sistema de escolhas para que, ao clicar em uma opção, ele busque a flag correspondente na lista do `GameStateData` e mude seu valor. -> ja fiz tbm
 
 ### Tarefa 2: Reflexos Visuais do Mundo (O Sistema de Flores e Rota R)
 As escolhas afetam o ambiente. Precisamos de sistemas que "escutem" as variaveis.
