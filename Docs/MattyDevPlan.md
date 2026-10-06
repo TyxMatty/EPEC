@@ -10,48 +10,58 @@ O objetivo deste plano e garantir progresso constante, sem criar acoplamentos pe
 - Movimentacao e Animacao (MovementScript, SpriteChange)
 - Sistema de Camera (CameraFollow, SceneFollow)
 - Interacao Basica e Inventario (InteractionSystem, Interactable, InventoryData)
-- Dialogo Linear, Prot�tipo de Escolhas e Condicoes via JSON (DialogueSystemGlobal, ChoiceSystemGlobal, DialogueData)
+- Dialogo Linear, Prototipo de Escolhas e Condicoes via JSON (DialogueSystemGlobal, ChoiceSystemGlobal, DialogueData)
 - Save System (SaveManager, GlobalStateManager otimizado)
+- Sistema de Cutscenes Base (CutsceneManager, Bloqueio de Movimento)
 
 ---
 
 ## Proximos Passos (Tarefas a Executar)
 
-### Tarefa 1: O Coração Narrativo (GameState Baseado em Listas)
-O `ChoiceSystemGlobal` atual é um protótipo. Precisamos da infraestrutura definitiva para salvar as escolhas.
-- [x] **Criar `GameStateData.cs`:** Um ScriptableObject que conterá uma `List<GameFlag>` (para bools como `acordouPrimeiroDia`) e uma `List<GameReputation>` (para pontuação como `+10 Tobias`). -> ja fiz - matty
-- [x] **Atualizar `ChoiceSystemGlobal.cs`:** Refatorar o sistema de escolhas para que, ao clicar em uma opção, ele busque a flag correspondente na lista do `GameStateData` e mude seu valor. -> ja fiz tbm
+### Tarefa 1: O Coracao Narrativo (GameState Baseado em Listas)
+- [x] **Criar GameStateData.cs:** Um ScriptableObject que contera uma ListGameFlag.
+- [x] **Atualizar ChoiceSystemGlobal.cs:** Refatorar o sistema de escolhas para buscar flags na lista.
 
 ### Tarefa 2: Reflexos Visuais do Mundo (O Sistema de Flores e Rota R)
-As escolhas afetam o ambiente. Precisamos de sistemas que "escutem" as variaveis.
-- [ ] **Criar FlowerStateListener.cs:** Um script que e colocado nas flores da casa do X. No Start(), ele checa a lista do GameStateData e muda seu proprio sprite/cor (Refletindo lorNeutraPositivaDia1, etc).
-- [ ] **Criar RouteVisualManager.cs:** Um gerenciador que altera o Post-Processing (blur, cores dessaturadas) e a trilha sonora quando a flag RotaR e verdadeira.
+- [x] **Criar FlowerStateListener.cs:** Um script que checa a lista do GameStateData e muda seu proprio sprite/cor.
+- [x] **Criar RouteVisualManager.cs:** Alterar o Post-Processing (blur, cores) e a trilha sonora na Rota R.
 
-### Tarefa 3: Montagem do Prologo na Cena
-Com os sistemas prontos, comecaremos a Level Design.
-- [ ] Configurar os GameObjects do Quarto do X (Cama, Celular, Espelho) com o Interactable.cs.
-- [ ] Preencher as falas e configurar o ChoiceSystemGlobal para a "Decisao 1: Acordar ou Dormir".
-- [ ] Configurar o Jardim com o script FlowerStateListener.
+### Tarefa 3: Montagem do Prologo na Cena (Greyboxing e Multi-Cenas)
+Dividindo mapas para facilitar o versionamento e colaboracao da equipe.
+- [ ] **Estrutura de Cenas:** Criar Prologo_Quarto, Prologo_Jardim e Prologo_Reuniao separadas.
+- [ ] **Greyboxing Inicial:** Usar blocos cinzas/brancos e Hitboxes.
+- [ ] **Transicao de Cenas:** Desenvolver um SceneTransitionManager.
+- [ ] Instanciar os JSONs e Cutscenes (Cutscene_Acordar, DoorToGarden).
 
 ### Tarefa 4: Sistema de Save / Persistencia com JSON
 - [x] **Criar SaveManager.cs** 
 - [x] **Otimizacao no GameStateData**
 
-### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1
-O Capitulo 1 introduz novas mecanicas alem de andar e falar.
+### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1 (QTE e Investigacao)
 - [ ] **Criar Mecanica de Ataque de Panico (QTE):** 
-  - Script PanicAttackSystem.cs que exibe UI de pressionar botoes em tempo limite.
-  - Se falhar 3 vezes, dispara um evento de "Desmaio" e avanca o dia.
+  - Script PanicAttackSystem.cs que exibe UI de pressionar botoes.
+  - Maximo de 3 falhas toleradas. Na quarta falha, X desmaia e encerra o dia.
 - [ ] **Criar Mecanica de Investigacao (Juntar as Pontas):**
-  - Script InvestigationMiniGame.cs.
-  - UI que permite selecionar duas pistas do Inventario/Mente e combina-las.
+  - UI que permite selecionar duas pistas e combina-las.
 
 ### Tarefa 6: Escalabilidade do DialogueSystem e Cutscenes
-- [ ] **Desacoplar o DialogueSystemGlobal:** Permitir que IniciarDialogo seja invocado via eventos (UnityEvents) ou por qualquer outro script no jogo, e nao apenas por um DialogueTrigger atrelado a um GameObject interagivel.
-- [ ] **Criar CutsceneManager.cs Global:** Um script para gerenciar cutscenes. Deve pausar o jogador, disparar animacoes representativas de cada acao, invocar dialogos especificos (ex: dialogo Y) que levam a escolhas X, Y, Z.
+- [x] **Desacoplar o DialogueSystemGlobal:** Refatoracao completa para chamadas genericas.
+- [x] **Criar CutsceneManager.cs Global:** Finalizado (com controle de trava de player).
+- [x] **Correcao de Bugs Criticos:** Corrigida leitura de condicoes de escolhas e item null-checks.
+
+### Tarefa 7: Sistema de Reputacao Global
+- [ ] **Sistema de Reputacao:** Adicionar suporte numerico ao GlobalStateManager para computar afinidade com animais e NPCs (ex: +10 Tobias).
+
+### Tarefa 8 (Escopo Futuro): Sistemas do Caminho do Acolhimento
+*Nota: A serem desenvolvidos apenas APOS a conclusao do Capitulo 1.*
+- [ ] **Sistema de Seguranca:** Avaliar risco de atropelamento, exposicao, locais perigosos, etc.
+- [ ] **Sistema de Bem-Estar:** Avaliar alimentacao, agua limpa, descanso.
 
 ---
 
-## Ordem de Execucao Sugerida
+## Ordem de Execucao Atualizada
 
-Sugiro comecarmos pela **Tarefa 6** agora que o core esta feito, estruturando o Cutscene Manager e desacoplando os dialogos. Em seguida, partimos para a **Tarefa 3** (Montagem do Prologo). -- matty
+A base narrativa (JSONs, Cutscenes, Saves) ja foi finalizada. Nosso proximo passo para amanha sera:
+1. Iniciar o **Greyboxing do Prologo (Tarefa 3)** com cenas separadas.
+2. Construir o **Sistema de Flores (Tarefa 2)**.
+3. Desenvolver o **QTE de Panico (Tarefa 5)**.
