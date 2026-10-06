@@ -16,7 +16,7 @@ public class DialogueSystemGlobal : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.5f; 
     
     [Header("Integracao de Escolhas")]
-    [SerializeField] private ChoiceSystemGlobal GameManager; 
+    [SerializeField] private ChoiceSystemGlobal choiceSystem; 
     
     private string[] dialogueLines;
     private int letraAtual = 0; 
@@ -33,7 +33,6 @@ public class DialogueSystemGlobal : MonoBehaviour
         {
             nextDialogueBox.gameObject.SetActive(false);
         }
-        gameObject.SetActive(false); 
     }
 
     void Update()
@@ -47,7 +46,7 @@ public class DialogueSystemGlobal : MonoBehaviour
             if (isTyping)
             {
                 StopAllCoroutines();
-                dialogueText.text = dialogueLines[letraAtual];
+                if (dialogueText != null) dialogueText.text = dialogueLines[letraAtual];
                 isTyping = false;
             }
             else
@@ -76,22 +75,28 @@ public class DialogueSystemGlobal : MonoBehaviour
     private void ProximoDialogo()
     {
         letraAtual++;
-        if (letraAtual < dialogueLines.Length)
+        if (dialogueLines != null && letraAtual < dialogueLines.Length)
         {
             StartCoroutine(DigitarLinha());
         } 
         else
         {
-            if (interacaoAtual != null && interacaoAtual.terminaEmEscolha && GameManager != null)
+            if (interacaoAtual != null && interacaoAtual.terminaEmEscolha && choiceSystem != null)
             {
-                Debug.Log("[DialogueSystem] Dialogo terminou em escolha. Iniciando...");
-                GameManager.IniciarTelaDeEscolhas( 
+                Debug.Log($"[DialogueSystem] Dialogo terminou em escolha. Iniciando escolhas...");
+                podeAvancar = false; // Trava o jogador na tela de escolha
+                choiceSystem.IniciarTelaDeEscolhas( 
                     interacaoAtual.variavelParaSalvar, 
-                    interacaoAtual.textosDasOpcoes.ToArray(),
-                    interacaoAtual.valoresDasOpcoes.ToArray(),
+                    interacaoAtual.textosDasOpcoes != null ? interacaoAtual.textosDasOpcoes.ToArray() : new string[0],
+                    interacaoAtual.valoresDasOpcoes != null ? interacaoAtual.valoresDasOpcoes.ToArray() : new bool[0],
                     interacaoAtual.temTempoLimite,
                     interacaoAtual.tempoLimite,
-                    interacaoAtual.escolhaNeutra
+                    interacaoAtual.escolhaNeutra,
+                    () => {
+                        // Callback de quando o jogador faz a escolha!
+                        podeAvancar = true;
+                        EncerrarPosEscolha();
+                    }
                 );
             }
             else
@@ -104,11 +109,15 @@ public class DialogueSystemGlobal : MonoBehaviour
     private IEnumerator DigitarLinha()
     {
         isTyping = true;
-        dialogueText.text = "";
-        foreach (char letter in dialogueLines[letraAtual].ToCharArray())
+        if (dialogueText != null) dialogueText.text = "";
+        
+        if (dialogueLines != null && letraAtual < dialogueLines.Length)
         {
-            dialogueText.text += letter;
-            yield return new WaitForSeconds(typingSpeed);
+            foreach (char letter in dialogueLines[letraAtual].ToCharArray())
+            {
+                if (dialogueText != null) dialogueText.text += letter;
+                yield return new WaitForSeconds(typingSpeed);
+            }
         }
         isTyping = false;
     }
@@ -140,17 +149,15 @@ public class DialogueSystemGlobal : MonoBehaviour
             movementScript.podeMover = true; 
         }
         
-        if (interacaoAtual != null && GameManager != null) 
+        if (interacaoAtual != null && choiceSystem != null) 
         {
             if (usouFalasAlternativas && interacaoAtual.dialogoAlternativoAlteraVariavel)
             {
-                GameManager.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogoAlternativo, true);
-                Debug.Log($"[DialogueSystem] Variavel global {interacaoAtual.variavelAlteradaPorDialogoAlternativo} alterada para true (Falas Alternativas).");
+                choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogoAlternativo, true);
             }
             else if (!usouFalasAlternativas && interacaoAtual.alteraVariavel)
             {
-                GameManager.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogo, true); 
-                Debug.Log($"[DialogueSystem] Variavel global {interacaoAtual.variavelAlteradaPorDialogo} alterada para true (Falas Normais).");
+                choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogo, true); 
             }
         }
     }
@@ -159,53 +166,37 @@ public class DialogueSystemGlobal : MonoBehaviour
     {
         interacaoAtual = data; 
         
-        Debug.Log($"[DialogueSystem] Iniciando dialogo: {interacaoAtual.dialogueID}. Tem alternativas? {interacaoAtual.temFrasesAlternativas}");
-        
-            if (interacaoAtual.temFrasesAlternativas && GameManager != null)
-            {
-                // Por padrao a condicao e TRUE, a menos que o JSON diga explicitamente que esperaCondicaoFalsa e true
-                bool expectedValue = !interacaoAtual.esperaCondicaoFalsa;
-                
-                Debug.Log($"[DialogueSystem] Condicao esperada avaliada como: {expectedValue}");
-
-                bool condicaoSatisfeita = false;
+        if (interacaoAtual.temFrasesAlternativas && choiceSystem != null)
+        {
+            bool expectedValue = !interacaoAtual.esperaCondicaoFalsa;
+            bool condicaoSatisfeita = false;
 
             if (!string.IsNullOrEmpty(interacaoAtual.variavelDaCondicao))
             {
-                bool result = GameManager.ChecarCondicao(interacaoAtual.variavelDaCondicao);
-                Debug.Log($"[DialogueSystem] Checando variavel '{interacaoAtual.variavelDaCondicao}'. Resultado: {result}");
-                if (result == expectedValue)
-                {
-                    condicaoSatisfeita = true;
-                }
+                bool result = choiceSystem.ChecarCondicao(interacaoAtual.variavelDaCondicao);
+                if (result == expectedValue) condicaoSatisfeita = true;
             }
             
             if (!string.IsNullOrEmpty(interacaoAtual.itemDaCondicao))
             {
-                bool result = GameManager.ChecarItem(interacaoAtual.itemDaCondicao);
-                Debug.Log($"[DialogueSystem] Checando item '{interacaoAtual.itemDaCondicao}'. Resultado: {result}");
-                if (result == expectedValue)
-                {
-                    condicaoSatisfeita = true;
-                }
+                bool result = choiceSystem.ChecarItem(interacaoAtual.itemDaCondicao);
+                if (result == expectedValue) condicaoSatisfeita = true;
             }
-
-            Debug.Log($"[DialogueSystem] Condicao final satisfeita? {condicaoSatisfeita}");
 
             if (condicaoSatisfeita)
             {
-                dialogueLines = interacaoAtual.falasAlternativas.ToArray(); 
+                dialogueLines = interacaoAtual.falasAlternativas != null ? interacaoAtual.falasAlternativas.ToArray() : new string[0]; 
                 usouFalasAlternativas = true;
             }
             else
             {
-                dialogueLines = interacaoAtual.falas.ToArray(); 
+                dialogueLines = interacaoAtual.falas != null ? interacaoAtual.falas.ToArray() : new string[0]; 
                 usouFalasAlternativas = false;
             }
         }
         else
         {
-            dialogueLines = interacaoAtual.falas.ToArray(); 
+            dialogueLines = interacaoAtual.falas != null ? interacaoAtual.falas.ToArray() : new string[0]; 
             usouFalasAlternativas = false;
         }
 

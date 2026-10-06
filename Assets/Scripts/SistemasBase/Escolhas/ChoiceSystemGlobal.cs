@@ -25,13 +25,12 @@ public class ChoiceSystemGlobal : MonoBehaviour
     private float tempoRestante = 0f;
     private bool escolhaNeutraAtivada = false;
 
-    // Cache para otimizar a performance
-    private DialogueSystemGlobal cachedDialogueSystem;
+    private bool[] valoresDasEscolhas;
+    private System.Action onChoiceMadeCallback;
 
     void Start()
     {
-        choiceUI.SetActive(false);
-        cachedDialogueSystem = FindAnyObjectByType<DialogueSystemGlobal>();
+        if (choiceUI != null) choiceUI.SetActive(false);
     }
 
     void Update()
@@ -43,7 +42,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         if (usarTempoLimite)
         {
             tempoRestante -= Time.deltaTime;
-            textoTempo.text = Mathf.CeilToInt(tempoRestante).ToString();
+            if (textoTempo != null) textoTempo.text = Mathf.CeilToInt(tempoRestante).ToString();
 
             if (tempoRestante <= 0)
             {
@@ -66,47 +65,49 @@ public class ChoiceSystemGlobal : MonoBehaviour
         }
     }
 
-    public void IniciarTelaDeEscolhas(string variavel, string[] opcoes, bool[] valores, bool comTempo, float tempo, bool neutraAtivada)
+    public void IniciarTelaDeEscolhas(string variavel, string[] opcoes, bool[] valores, bool comTempo, float tempo, bool neutraAtivada, System.Action onComplete)
     {
         variavelAtualParaSalvar = variavel;
         usarTempoLimite = comTempo;
         tempoRestante = tempo;
         escolhaNeutraAtivada = neutraAtivada;
+        valoresDasEscolhas = valores;
+        onChoiceMadeCallback = onComplete;
         
-        if (usarTempoLimite){
-        if(textoTempo != null){
-        textoTempo.gameObject.SetActive(true);}
-            else
-            {
-                Debug.Log("Ta faltando o tempo");
-            }
-        }
-        else if(textoTempo != null){
-        textoTempo.gameObject.SetActive(false);}
-
-        for (int i = 0; i < choiceTexts.Length; i++)
+        if (textoTempo != null) 
         {
-            if (i < opcoes.Length)
+            if (usarTempoLimite) textoTempo.gameObject.SetActive(true);
+            else textoTempo.gameObject.SetActive(false);
+        }
+
+        if (choiceTexts != null)
+        {
+            for (int i = 0; i < choiceTexts.Length; i++)
             {
-                choiceTexts[i].text = opcoes[i];
-                choiceTexts[i].gameObject.SetActive(true);
-                choiceTexts[i].color = corNormal; 
-            }
-            else
-            {
-                choiceTexts[i].gameObject.SetActive(false);
+                if (i < opcoes.Length)
+                {
+                    choiceTexts[i].text = opcoes[i];
+                    choiceTexts[i].gameObject.SetActive(true);
+                    choiceTexts[i].color = corNormal; 
+                }
+                else
+                {
+                    choiceTexts[i].gameObject.SetActive(false);
+                }
             }
         }
 
         escolhaAtual = 0; 
         AtualizarCores();
 
-        choiceUI.SetActive(true);
+        if (choiceUI != null) choiceUI.SetActive(true);
         isChoosing = true;
     }
 
     private void MudarEscolha(int direcao)
     {
+        if (choiceTexts == null) return;
+
         int quantidadeDeOpcoesVisiveis = 0;
         foreach (var texto in choiceTexts)
         {
@@ -122,6 +123,8 @@ public class ChoiceSystemGlobal : MonoBehaviour
 
     private void AtualizarCores()
     {
+        if (choiceTexts == null) return;
+
         for (int i = 0; i < choiceTexts.Length; i++)
         {
             if (choiceTexts[i].gameObject.activeSelf)
@@ -134,46 +137,43 @@ public class ChoiceSystemGlobal : MonoBehaviour
     private void ConfirmarEscolha()
     {
         isChoosing = false;
-        choiceUI.SetActive(false);
-        if(textoTempo != null) textoTempo.gameObject.SetActive(false);
+        if (choiceUI != null) choiceUI.SetActive(false);
+        if (textoTempo != null) textoTempo.gameObject.SetActive(false);
 
         bool valorDaEscolha = false; 
-
-        if (escolhaAtual == 0) valorDaEscolha = true;
-        else if (escolhaAtual == 1) valorDaEscolha = false;
+        if (valoresDasEscolhas != null && escolhaAtual < valoresDasEscolhas.Length && escolhaAtual >= 0)
+        {
+            valorDaEscolha = valoresDasEscolhas[escolhaAtual];
+        }
         
         SalvarEscolha(variavelAtualParaSalvar, valorDaEscolha);
 
-        if (cachedDialogueSystem != null) cachedDialogueSystem.podeAvancar = true;
-        
-        if (cachedDialogueSystem != null) cachedDialogueSystem.EncerrarPosEscolha();
+        onChoiceMadeCallback?.Invoke();
     }
 
     private void FinalizarEscolhaPorTempo()
     {
          isChoosing = false;
-         choiceUI.SetActive(false);
-         textoTempo.gameObject.SetActive(false);
+         if (choiceUI != null) choiceUI.SetActive(false);
+         if (textoTempo != null) textoTempo.gameObject.SetActive(false);
 
          bool valorDaEscolha = escolhaNeutraAtivada; 
          SalvarEscolha(variavelAtualParaSalvar, valorDaEscolha);
 
-         if (cachedDialogueSystem != null) cachedDialogueSystem.podeAvancar = true;
-
-         if (cachedDialogueSystem != null) cachedDialogueSystem.EncerrarPosEscolha();
+         onChoiceMadeCallback?.Invoke();
     }
 
     public void SalvarEscolha(string nomeVariavel, bool valor)
     {
         if (stateManager == null) 
         {
-            Debug.LogError("[ChoiceSystem] StateManager nao esta referenciado no Inspector!");
+            Debug.LogError("[ChoiceSystem] StateManager nao referenciado!");
             return;
         }
         if (string.IsNullOrEmpty(nomeVariavel)) return;
 
         stateManager.SetVariavel(nomeVariavel, valor);
-        Debug.Log($"Variavel '{nomeVariavel}' atualizada no Dicionario para: {valor}");
+        Debug.Log($"Variavel global '{nomeVariavel}' salva como: {valor}");
     }
 
     public bool ChecarCondicao(string nomeVariavel)
@@ -184,24 +184,9 @@ public class ChoiceSystemGlobal : MonoBehaviour
 
     public bool ChecarItem(string nomeItem)
     {
-        if (inventarioGlobal == null)
-        {
-            Debug.LogWarning("[ChoiceSystem] Inventario global nulo. Assumindo que nao tem o item.");
-            return false;
-        }
-        if (string.IsNullOrEmpty(nomeItem)) 
-        {
-            return false;
-        }
+        if (inventarioGlobal == null || inventarioGlobal.itens == null) return false;
+        if (string.IsNullOrEmpty(nomeItem)) return false;
 
-        bool itemExiste = inventarioGlobal.itens.Exists(item => item.itemName == nomeItem);
-
-        if (!itemExiste)
-        {
-            Debug.Log($"[ChoiceSystem] O jogador nao tem o item '{nomeItem}'.");
-            return false;
-        }
-
-        return true;
+        return inventarioGlobal.itens.Exists(item => item != null && (item.itemName == nomeItem || item.itemID == nomeItem));
     }
 }

@@ -88,8 +88,25 @@ Se precisar criar uma nova tela (ex: Escolhas, Dialogo):
 ---
 
 
-## 6. Cutscenes (Sendo implementado)
-Em breve: Em vez do InteractionSystem dar gatilho num dialogo, um CutsceneManager global podera bloquear o movimento (podeMover = false), disparar animacoes via SpriteChange modificado, e iniciar falas automaticamente (via eventos) chamando o DialogueSystemGlobal. Fique atento para atualizacoes!
+## 6. Cutscenes e Dialogos Desconectados (Standalone)
+
+O sistema de Cutscenes (atraves do script `CutsceneManager.cs`) permite criar eventos scriptados e bloquear o jogador de forma global. Ele utiliza dialogos desconectados (standalone) para interagir com a interface.
+
+### Dialogos Desconectados
+Um dialogo desconectado e um arquivo JSON feito apenas para tocar um texto, sem disparar escolhas ou mudar variaveis no meio da cutscene (deixando essa logica para o script da cutscene em si).
+Seu JSON DEVE ter as seguintes propriedades como falsas:
+- `terminaEmEscolha: false`
+- `alteraVariavel: false`
+
+### Como usar o CutsceneManager
+Para usar o CutsceneManager e tocar dialogos no meio da sua cutscene customizada (como no script `WakeUpPrototype.cs`), utilize **Coroutines** no Unity.
+
+1. Crie uma Coroutine no seu script de cutscene (ex: `IEnumerator MinhaCutscene()`).
+2. Desative o movimento do jogador.
+3. Chame a funcao de dialogo e use o comando `yield return StartCoroutine` para esperar o dialogo acabar antes de continuar o script.
+   Exemplo: `yield return StartCoroutine(CutsceneManager.Instance.TocarDialogoEEsperar(meuArquivoJson));`
+4. Quando o jogador fechar o dialogo, o script vai automaticamente continuar para a proxima linha abaixo.
+5. Termine a cutscene e devolva o controle ao jogador.
 
 
 ## 7. Como Criar um Diálogo em JSON (Guia Rápido)
@@ -109,4 +126,5 @@ Não escrevemos falas no Unity, escrevemos em JSON! Crie um arquivo `.json` em `
     
     "terminaEmEscolha": false
 } 
+```
 Tradução do código acima: "Ao interagir, se o jogador tiver a Chave no inventário, diga que abriu e mude a variável global portaAberta para true. Senão, diga apenas que está trancada."

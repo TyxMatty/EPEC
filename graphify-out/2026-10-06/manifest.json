@@ -18,10 +18,10 @@
     "semantic_hash": "fe3a8738a95a7b0ad8411c003d7a7936"
   },
   "Assembly-CSharp.csproj": {
-    "mtime": 1791258479.5379357,
-    "seen": 1791261210.7823973,
-    "ast_hash": "261f8a17ea8c00eb810668bbf9623958",
-    "semantic_hash": "261f8a17ea8c00eb810668bbf9623958"
+    "mtime": 1791233762.3453627,
+    "seen": 1791235044.5713294,
+    "ast_hash": "372779cc8f94f36b8d7d6af93934295c",
+    "semantic_hash": "372779cc8f94f36b8d7d6af93934295c"
   },
   "Assets/Scripts/GlobalStateManager.cs": {
     "mtime": 1791228609.2189987,
@@ -36,10 +36,10 @@
     "semantic_hash": "b2a0fcea28e2efdf294a8e5553b2c448"
   },
   "Assets/Scripts/ItemData.cs": {
-    "mtime": 1791257565.3404057,
-    "seen": 1791261210.7893937,
-    "ast_hash": "2e2331cd714f8d3cfd3983b482e92611",
-    "semantic_hash": "2e2331cd714f8d3cfd3983b482e92611"
+    "mtime": 1791211772.6993701,
+    "seen": 1791235044.5713553,
+    "ast_hash": "b9094c87b495a480f1e8877edbec8d35",
+    "semantic_hash": "b9094c87b495a480f1e8877edbec8d35"
   },
   "Assets/Scripts/MovementScript.cs": {
     "mtime": 1791211772.7019427,
@@ -348,16 +348,16 @@
     "semantic_hash": "4d52dfd8fee4a78025b738cdcde37416"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueData.cs": {
-    "mtime": 1791257193.867751,
-    "seen": 1791261210.7838364,
-    "ast_hash": "92575a0db50c4a939e28d3f1576b0fed",
-    "semantic_hash": "92575a0db50c4a939e28d3f1576b0fed"
+    "mtime": 1791224745.2190459,
+    "seen": 1791235044.571338,
+    "ast_hash": "e93dd790fb406716ebb9b34d4fe0fd2d",
+    "semantic_hash": "e93dd790fb406716ebb9b34d4fe0fd2d"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueSystemGlobal.cs": {
-    "mtime": 1791260371.534888,
-    "seen": 1791261210.783842,
-    "ast_hash": "28b9d2253e2cb28878f56b722117f322",
-    "semantic_hash": "28b9d2253e2cb28878f56b722117f322"
+    "mtime": 1791226450.9798102,
+    "seen": 1791235044.57134,
+    "ast_hash": "342defc925dc07100e91b2ac1cf0d295",
+    "semantic_hash": "342defc925dc07100e91b2ac1cf0d295"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueTrigger.cs": {
     "mtime": 1791224425.7058387,
@@ -420,45 +420,21 @@
     "semantic_hash": "629ce35189ef93bbfc0a3d32570a15e4"
   },
   "Assets/Scripts/SistemasBase/Escolhas/ChoiceSystemGlobal.cs": {
-    "mtime": 1791257190.8046815,
-    "seen": 1791261210.7901013,
-    "ast_hash": "dd66d33bf8558c1add0a99e2c9488e7e",
-    "semantic_hash": "dd66d33bf8558c1add0a99e2c9488e7e"
+    "mtime": 1791228609.1977167,
+    "seen": 1791235044.5713592,
+    "ast_hash": "ce280ec0ae3fe54dcb7109ae8cd94ad7",
+    "semantic_hash": "ce280ec0ae3fe54dcb7109ae8cd94ad7"
   },
   "Assets/Scripts/SistemasBase/Escolhas/SaveManager.cs": {
-    "mtime": 1791257187.65089,
-    "seen": 1791261210.790105,
-    "ast_hash": "ce232eaf240ff4963ccd3a0017819f1a",
-    "semantic_hash": "ce232eaf240ff4963ccd3a0017819f1a"
+    "mtime": 1791229434.3299816,
+    "seen": 1791235044.5713603,
+    "ast_hash": "0afcb4936a5768717ff7515bd401a75f",
+    "semantic_hash": "0afcb4936a5768717ff7515bd401a75f"
   },
   "Docs/EstruturaPlanejadaDeUmDi\u00e1logo.json": {
     "mtime": 1791217360.9567642,
     "seen": 1791235044.5788538,
     "ast_hash": "1631c32fceeccb1a4f419cf55f5ef62a",
     "semantic_hash": "1631c32fceeccb1a4f419cf55f5ef62a"
-  },
-  "Assets/Scripts/CutsceneManager.cs": {
-    "mtime": 1791259500.821145,
-    "seen": 1791261210.7830687,
-    "ast_hash": "7ff3f67e9662cc7f2e170ad07d0fdc70",
-    "semantic_hash": "7ff3f67e9662cc7f2e170ad07d0fdc70"
-  },
-  "Assets/Scripts/Interactions/Dialogos/DialoguesData/Pensamento_Despertador.json": {
-    "mtime": 1791259068.837459,
-    "seen": 1791261210.78419,
-    "ast_hash": "6a3c04d11928724c10b7bf918ee0b637",
-    "semantic_hash": "6a3c04d11928724c10b7bf918ee0b637"
-  },
-  "Assets/Scripts/Interactions/Dialogos/DialoguesData/dialogoCelularTocou.json": {
-    "mtime": 1791259067.1059575,
-    "seen": 1791261210.7841935,
-    "ast_hash": "289029579f9d4cfc1275dfd612d9882c",
-    "semantic_hash": "289029579f9d4cfc1275dfd612d9882c"
-  },
-  "Assets/Scripts/WakeUpPrototype.cs": {
-    "mtime": 1791260135.2084222,
-    "seen": 1791261210.7904189,
-    "ast_hash": "83b9137bdedab422393f204d8eccc12a",
-    "semantic_hash": "83b9137bdedab422393f204d8eccc12a"
   }
 }
