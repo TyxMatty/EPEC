@@ -1,0 +1,11 @@
+{
+    "dialogueID": "pensamento_01",
+    "falas": [ 
+        "Ugh...", 
+        "Que dor de cabeça...",
+        "Que barulho é esse?" 
+    ],
+    "alteraVariavel": false,
+    "temFrasesAlternativas": false,
+    "terminaEmEscolha": false
+}

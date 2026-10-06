@@ -1,0 +1,18 @@
+{
+"dialogueID": "celular_01",
+    "falas": [ 
+        "Ugh...", 
+        "Que dor de cabeça... caralho!",
+        "Que barulho, de merda é esse?",
+        "(É seu celular, está tocando, atender?)" 
+    ],
+    "alteraVariavel": false,
+    "temFrasesAlternativas": false,
+    "terminaEmEscolha": true,
+    "variavelParaSalvar": "atendeuCelular",
+    "textosDasOpcoes": [
+        "Sim",
+        "Não."
+    ],
+    "valoresDasOpcoes": [true, false]
+}

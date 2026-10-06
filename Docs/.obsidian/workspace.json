@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "README.md",
+                "file": "MattyDevPlan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README"
+              "title": "MattyDevPlan"
             }
           }
         ]
@@ -190,10 +190,10 @@
   },
   "active": "a13ee1befdc5e0aa",
   "lastOpenFiles": [
-    "MattyDevPlan.md",
-    "MattyAnotacoesDev.md",
     "MattyNotations.md",
     "README.md",
+    "MattyAnotacoesDev.md",
+    "MattyDevPlan.md",
     "temp_interacao.png",
     "Sem título.canvas",
     "Fluxogramas EPEC-Interação.png",

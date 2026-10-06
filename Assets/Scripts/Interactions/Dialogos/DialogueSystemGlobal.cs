@@ -27,7 +27,7 @@ public class DialogueSystemGlobal : MonoBehaviour
     private DialogueData interacaoAtual; 
     private bool usouFalasAlternativas = false;
 
-    void Start()
+    void Awake()
     {
         if (nextDialogueBox != null)
         {
