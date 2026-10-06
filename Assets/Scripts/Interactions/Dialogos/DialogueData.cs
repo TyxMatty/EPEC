@@ -13,7 +13,7 @@ public class DialogueData
     public bool temFrasesAlternativas;
     public string variavelDaCondicao;
     public string itemDaCondicao;
-    public string condicaoEsperada;
+    public bool esperaCondicaoFalsa;
     public List<string> falasAlternativas;
     
     public bool dialogoAlternativoAlteraVariavel;
@@ -27,4 +27,5 @@ public class DialogueData
     public bool temTempoLimite;
     public float tempoLimite;
     public bool escolhaNeutra;
+
 }

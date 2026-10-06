@@ -19,23 +19,38 @@ public class SaveManager : MonoBehaviour
 
     void Awake()
     {
-        // O local padrao seguro que a Unity escolhe para salvar arquivos em qualquer sistema operacional
-        savePath = Application.persistentDataPath + "/gamesave.json";
+        savePath = Application.persistentDataPath + "/savegame.json";
         
-        stateManager.Inicializar(); // cacha o dicionario 
+        if (stateManager != null)
+        {
+            stateManager.Inicializar(); 
+        }
+    }
+
+    void Start()
+    {
+        // Movido para o Start para evitar que outros Awakes leiam dados desatualizados
         CarregarJogo();
     }
 
-    public void SalvarJogo()
+        public void SalvarJogo()
     {
+        if (stateManager == null || inventory == null) 
+        {
+            Debug.LogError("[SaveManager] Falha ao salvar: StateManager ou InventoryData estao nulos no Inspector!");
+            return;
+        }
+
         GameSaveData data = new GameSaveData();
         data.variaveisSalvas = stateManager.variaveisGlobais;
         data.itensSalvos = new List<string>();
-        //futuramente, se tiver, adicionar status aqui.
-        // salvamos apenas os nomes dos itens (ScriptableObjects nao salvam no JSON direito)
+
         foreach(var item in inventory.itens)
         {
-            if (item != null) data.itensSalvos.Add(item.name); // Salva o nome do arquivo .asset
+            if (item != null && !string.IsNullOrEmpty(item.itemID)) 
+            {
+                data.itensSalvos.Add(item.itemID); 
+            }
         }
 
         string json = JsonUtility.ToJson(data, true);
@@ -45,24 +60,33 @@ public class SaveManager : MonoBehaviour
 
     public void CarregarJogo()
     {
+        if (stateManager == null || inventory == null) return;
+
         if (File.Exists(savePath))
         {
             string json = File.ReadAllText(savePath);
             GameSaveData data = JsonUtility.FromJson<GameSaveData>(json);
 
-            // Carrega variaveis
             stateManager.variaveisGlobais = data.variaveisSalvas;
-            stateManager.Inicializar(); // Atualiza o dicionario
+            stateManager.Inicializar(); 
 
-            // Carrega o inventario
             inventory.itens.Clear();
-            foreach (string itemName in data.itensSalvos)
+            
+            // Puxamos TODOS os itens possiveis do jogo da pasta Resources
+            ItemData[] todosItensDoJogo = Resources.LoadAll<ItemData>("Itens");
+
+            foreach (string savedID in data.itensSalvos)
             {
-                // ATENCAO: Isso exige que os seus arquivos de item (Chave.asset) estejam dentro de uma pasta chamada "Resources/Itens"!
-                ItemData loadedItem = Resources.Load<ItemData>("Itens/" + itemName);
+                // Procuramos na lista o item que tem o ID exato
+                ItemData loadedItem = System.Array.Find(todosItensDoJogo, i => i.itemID == savedID);
+                
                 if (loadedItem != null)
                 {
                     inventory.itens.Add(loadedItem);
+                }
+                else
+                {
+                    Debug.LogWarning($"[SaveManager] Atencao! Item salvo com ID '{savedID}' nao foi encontrado na pasta Resources/Itens.");
                 }
             }
             Debug.Log("Jogo Carregado com Sucesso!");
@@ -73,10 +97,8 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    // para voce testar rapidamente, ele salva ao fechar o jogo
     private void OnApplicationQuit()
     {
         SalvarJogo();
-        Debug.Log("Jogo salvo");
     }
 }
