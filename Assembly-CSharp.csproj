@@ -64,6 +64,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\MovementScript.cs" />
     <Compile Include="Assets\Scripts\Interactions\Dialogos\DialogueTrigger.cs" />
+    <Compile Include="Assets\Tests\GlobalStateManagerTests.cs" />
     <Compile Include="Assets\Scripts\Cameras\SceneFollow.cs" />
     <Compile Include="Assets\Scripts\Interactions\InteractionSystem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />

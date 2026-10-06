@@ -38,11 +38,14 @@ Dividindo mapas para facilitar o versionamento e colaboracao da equipe.
 - [x] **Otimizacao no GameStateData**
 
 ### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1 (QTE e Investigacao)
+  
 - [ ] **Criar Mecanica de Ataque de Panico (QTE):** 
   - Script PanicAttackSystem.cs que exibe UI de pressionar botoes.
   - Maximo de 3 falhas toleradas. Na quarta falha, X desmaia e encerra o dia.
 - [ ] **Criar Mecanica de Investigacao (Juntar as Pontas):**
   - UI que permite selecionar duas pistas e combina-las.
+  - [ ] Mecânicas de QTE
+-  mecânias de QTE que funcionem
 
 ### Tarefa 6: Escalabilidade do DialogueSystem e Cutscenes
 - [x] **Desacoplar o DialogueSystemGlobal:** Refatoracao completa para chamadas genericas.
@@ -50,10 +53,12 @@ Dividindo mapas para facilitar o versionamento e colaboracao da equipe.
 - [x] **Correcao de Bugs Criticos:** Corrigida leitura de condicoes de escolhas e item null-checks.
 
 ### Tarefa 7: Sistema de Reputacao Global
+
 - [ ] **Sistema de Reputacao:** Adicionar suporte numerico ao GlobalStateManager para computar afinidade com animais e NPCs (ex: +10 Tobias).
 
 ### Tarefa 8 (Escopo Futuro): Sistemas do Caminho do Acolhimento
 *Nota: A serem desenvolvidos apenas APOS a conclusao do Capitulo 1.*
+
 - [ ] **Sistema de Seguranca:** Avaliar risco de atropelamento, exposicao, locais perigosos, etc.
 - [ ] **Sistema de Bem-Estar:** Avaliar alimentacao, agua limpa, descanso.
 

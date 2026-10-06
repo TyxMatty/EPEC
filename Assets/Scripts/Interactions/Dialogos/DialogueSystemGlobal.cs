@@ -26,6 +26,7 @@ public class DialogueSystemGlobal : MonoBehaviour
     
     private DialogueData interacaoAtual; 
     private bool usouFalasAlternativas = false;
+    private System.Action onDialogueEndedCallback;
 
     void Awake()
     {
@@ -83,8 +84,8 @@ public class DialogueSystemGlobal : MonoBehaviour
         {
             if (interacaoAtual != null && interacaoAtual.terminaEmEscolha && choiceSystem != null)
             {
-                Debug.Log($"[DialogueSystem] Dialogo terminou em escolha. Iniciando escolhas...");
-                podeAvancar = false; // Trava o jogador na tela de escolha
+                Debug.Log("[DialogueSystem] Dialogo terminou em escolha. Iniciando escolhas...");
+                podeAvancar = false; // trava o jogador na tela de escolha
                 choiceSystem.IniciarTelaDeEscolhas( 
                     interacaoAtual.variavelParaSalvar, 
                     interacaoAtual.textosDasOpcoes != null ? interacaoAtual.textosDasOpcoes.ToArray() : new string[0],
@@ -93,7 +94,7 @@ public class DialogueSystemGlobal : MonoBehaviour
                     interacaoAtual.tempoLimite,
                     interacaoAtual.escolhaNeutra,
                     () => {
-                        // Callback de quando o jogador faz a escolha!
+                        // callback de quando o jogador faz a escolha!
                         podeAvancar = true;
                         EncerrarPosEscolha();
                     }
@@ -143,12 +144,6 @@ public class DialogueSystemGlobal : MonoBehaviour
         }
         gameObject.SetActive(false); 
         
-        MovementScript movementScript = FindAnyObjectByType<MovementScript>();
-        if (movementScript != null)
-        {
-            movementScript.podeMover = true; 
-        }
-        
         if (interacaoAtual != null && choiceSystem != null) 
         {
             if (usouFalasAlternativas && interacaoAtual.dialogoAlternativoAlteraVariavel)
@@ -160,11 +155,16 @@ public class DialogueSystemGlobal : MonoBehaviour
                 choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogo, true); 
             }
         }
+
+        // Chama o callback passando a bola pra quem iniciou o dialogo
+        onDialogueEndedCallback?.Invoke();
+        onDialogueEndedCallback = null;
     }
 
-    public void IniciarDialogo(DialogueData data) 
+    public void IniciarDialogo(DialogueData data, System.Action onComplete = null) 
     {
         interacaoAtual = data; 
+        onDialogueEndedCallback = onComplete;
         
         if (interacaoAtual.temFrasesAlternativas && choiceSystem != null)
         {

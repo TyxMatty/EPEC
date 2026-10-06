@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour, IInteractAction
 {
-    [Header("Arquivo JSON de Diálogo")] // vamos criar um JSON que tem todos os diálgos aqui
+    [Header("Arquivo JSON de Dialogo")]
     public TextAsset dialogueJson;
 
-    private DialogueData dataCache; // os atributos do JSON
+    private DialogueData dataCache;
 
     public void OnInteract(InteractionSystem interactor)
     {
@@ -22,12 +22,16 @@ public class DialogueTrigger : MonoBehaviour, IInteractAction
 
         if (interactor.dialogueSystem != null && dataCache != null)
         {
-            interactor.dialogueSystem.gameObject.SetActive(true); // se ele for interagivel, e tiver um sistema de diálogo(não pode interagir com algo que n tenha dialogo ne, feedback 101)
-            interactor.dialogueSystem.IniciarDialogo(dataCache); // ele inicia a função de iniciar diálogo com o cache do JSON.
-            
-            // Travar o jogador
+            // Trava o jogador
             MovementScript moveScript = interactor.GetComponent<MovementScript>();
             if (moveScript != null) moveScript.podeMover = false;
+
+            interactor.dialogueSystem.gameObject.SetActive(true); 
+            
+            // Inicia o dialogo passando um callback para destravar o jogador quando acabar
+            interactor.dialogueSystem.IniciarDialogo(dataCache, () => {
+                if (moveScript != null) moveScript.podeMover = true;
+            });
         }
     }
 }

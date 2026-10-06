@@ -14,21 +14,22 @@ public class WakeUpPrototype : MonoBehaviour
 
     private IEnumerator RotinaAcordar()
     {
-        // 1. Pausa o jogador e não deixa ele se mexer
+        // 1. Pausa o jogador e nao deixa ele se mexer
         CutsceneManager.Instance.TravarJogador();
 
         yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogopensamento);
-        CutsceneManager.Instance.TravarJogador();
-        // 2. Faz uma pausa dramática de 2 segundos de silêncio
+        
+        // 2. Faz uma pausa dramatica de 2 segundos de silencio
         yield return new WaitForSeconds(2f);
 
-        // (se nois quiser colocar uma animação no futuro, seria algo como: playerAnimator.Play("Acordar") e outro WaitForSeconds)
+        // (se quisermos colocar uma animacao no futuro: playerAnimator.Play("Acordar") e WaitForSeconds)
 
-        // 3. Toca o JSON do diálogo (que dentro dele tem a configuração pra chamar as Escolhas e atualizar o StateManager!)
+        // 3. Toca o JSON do dialogo
         yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogoCelularTocou);
 
-        // 4. Aqui o diálogo acabou e a variável global já foi salva pelo ChoiceSystem.
-        // A cutscene acabou. O DialogueSystemGlobal solta a trava de movimento automaticamente quando acaba.
+        // 4. A cutscene acabou. Libera o jogador explicitamente!
+        CutsceneManager.Instance.LiberarJogador();
+        
         Debug.Log("Cutscene de abertura finalizada!");
     }
 }
