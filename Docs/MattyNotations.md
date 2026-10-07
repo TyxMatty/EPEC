@@ -1,19 +1,16 @@
-# EPEC: Entre Patas e Caminhos - Especificação de Design e Sistema
+# EPEC: Entre Patas e Caminhos - Especificacao de Design e Sistema
 
-Aqui é o Mat. Li com muito carinho o roteiro do EPEC(que eu ajudei a escrever kkkk):
-
-Baseado no Prólogo e no Capítulo 1, preparei esta especificação técnica para guiar nosso desenvolvimento, respeitando nossas regra de ouro: **desenvolvimento claro, e comentado** para evitar *spaghetti code* e manter a serialização limpa no Unity.
+Documento de especificacao tecnica e direcao de design para o desenvolvimento do Prologo e Capitulo 1, focado em manutencao limpa, modularidade e estabilidade.
 
 ---
 
-## 1. Visão Geral do Sistema Narrativo e Estado
+## 1. Visao Geral do Sistema Narrativo e Estado
 
-O jogo possui um alto grau de ramificação baseado em decisões (Rotas B, N e R) e no estado emocional do protagonista. O mundo reflete essas escolhas visualmente (jardim de flores, cores, música).
+O jogo possui ramificacoes baseadas em decisoes (Rotas B, N e R) e no estado emocional do protagonista. O ambiente reflete essas escolhas visualmente e sonoramente (flores, paleta de cores, musica e filtros de tela).
 
 ### A Regra das Listas (Anti-Spaghetti)
-Em vez de usarmos um `Dictionary<string, bool>` (que é péssimo para visualizar no Inspector do Unity e difícil de debugar), usaremos **Listas de ScriptableObjects** ou **Classes Serializáveis** gerenciadas por um `GlobalStateManager`.
+Para evitar as limitacoes de serializacao dos dicionarios no Unity Inspector e garantir que os dados sejam visiveis e editaveis pela equipe de design, o jogo utiliza estritamente listas de classes serializaveis no `GlobalStateManager`:
 
-**Modelo Proposto:**
 ```csharp
 [System.Serializable]
 public class GameFlag
@@ -22,42 +19,52 @@ public class GameFlag
     public bool isTrue;
 }
 
-[CreateAssetMenu(fileName = "GameStateData", menuName = "Scriptable Objects/GameState")]
-public class GameStateData : ScriptableObject
+[System.Serializable]
+public class Reputacao
 {
-    [Header("Flags Globais")]
-    public List<GameFlag> flags = new List<GameFlag>();
-
-    // Métodos utilitários simples
-    public void SetFlag(string name, bool value) { ... }
-    public bool GetFlag(string name) { ... }
+    public string nome;     // Ex: "Tobias", "Maria", "Gi"
+    public int valor;       // Pontuacao de afinidade
 }
 ```
 
-## 2. Tradução do Roteiro para Sistemas (Prólogo & Cap 1)
+---
 
-### 2.1. Variáveis Globais (Bools do Roteiro)
-O `GameStateData` (a nossa lista) precisará armazenar as seguintes variáveis listadas no documento:
-- **Prólogo:** `acordouPrimeiroDia`, `respondeuChamada`, `respondeuMensagemMaria`, `seAlimentou`, `falouComGi`.
+## 2. Status dos Sistemas do Roteiro (Prologo & Cap 1)
+
+### 2.1. Variaveis Globais Mapeadas
+O `GlobalStateManager` ja suporta todas as flags necessarias para o fluxo narrativo:
+- **Prologo:** `acordouPrimeiroDia`, `respondeuChamada`, `respondeuMensagemMaria`, `seAlimentou`, `falouComGi`.
 - **Rotas e Flores:** `florSuperPositivaDia1`, `florPositivaDia1`, `florNeutraPositivaDia1`, `florNeutraNegativaDia1`, `florNegativaDia1`, `florSuperNegativaDia1`, `RotaB`, `RotaN`, `RotaR`, `abortedRotaR`.
 - **Tobias:** `aceitaAjudarTobias`, `fezCarinhoTobias`, `auxiliouTobias`, `agressorEscapa`, `protagonistaNumeroVeterinaria`, `tobiasInterage`, `tobiasInterageMaisOuMenos`, `tobiasOlhoMachucado`, `tobiasCego`.
 
-### 2.2. Mecânicas Principais a Desenvolver
-1. **Sistema de Flores (Reflexo do Mundo):** 
-   - Um script no cenário (`FlowerManager`) que lê o `GameStateData` no `Start()` e ajusta os sprites/cores das flores da casa do X.
-2. **Sistema de QTE (Ataque de Pânico):**
-   - Mini-game rítmico ou de reação rápida (pressionar botões). Máximo de 3 falhas antes do desmaio.
-3. **Mecânica de Investigação:**
-   - O mini-game "juntar as pontas" (dedução). Uma UI onde o jogador combina evidências (ex: "barulho de moto" + "latido do Tobias") para gerar uma conclusão.
-4. **Sistema de Reputação / Afinidade:**
-   - Além das flags, precisaremos de variáveis numéricas inteiras. Podemos ter uma lista de `ReputationData` para acompanhar a pontuação (ex: `+10 Reputação com Tobias`).
+### 2.2. Mecanicas e Modulos
+1. **Sistema de Flores (Concluido):**
+   - Implementado via `FlowerStateListener.cs`. Escuta flags no `GlobalStateManager` e troca o sprite para refletir a saude do jardim.
+2. **Sistema de Reputacao / Afinidade (Concluido):**
+   - Implementado via `ReputationSystem.cs` e integrado ao `GlobalStateManager` e `SaveManager.cs`. Permite acompanhar pontuacoes de relacionamento (+/- pontos com animais e NPCs).
+3. **Data-Driven Dialogues e Escolhas (Concluido):**
+   - Dialogos gerenciados por arquivos JSON em `DialogueData.cs` e processados por `DialogueSystemGlobal.cs` com typewriter suave.
+   - Suporte a condicoes por inventario, falas alternativas e alteracao automatica de flags.
+4. **Sistema de Cutscenes Standalone (Concluido):**
+   - `CutsceneManager.cs` permite orquestrar sequencias narrativas com bloqueio de player e corrotinas sincronizadas.
+5. **Modernizacao de Input e Rebinding (Concluido):**
+   - `MovementScript.cs` e `InteractionSystem.cs` migrados para `InputActionReference`.
+   - `InputRebindManager.cs` adicionado para remapeamento dinamico em tempo de execucao.
+6. **Sistema de Pos-Processamento (Concluido):**
+   - `PostProcessingManager.cs` criado para controlar os filtros da Rota R e distorcoes emocionais.
+7. **Sistema de QTE (Ataque de Panico) (Pendente para amanha):**
+   - Mini-game ritmico/reacao com janela de tempo. Maximo de 3 falhas antes do desmaio.
+8. **Mecanica de Investigacao (Pendente):**
+   - Interface de "juntar as pontas" para cruzar evidencias e gerar conclusoes.
 
 ---
 
-## 3. Minhas Ideias e Sugestões (Visão de Desenvolvimento)
+## 3. Direcao para as Proximas Sessoes
 
-- **Feedback Visual (Filtros e Áudio):** Como a Rota R é agressiva e tem blur, podemos criar um `PostProcessingManager` que altera os perfis de Pós-Processamento (Blur, Color Grading) e o Pitch/Volume da música dependendo das flags `RotaR` e da Reputação.
-- **Isolamento de Cenas:** Em vez de fazer o jogo todo numa cena gigante, vamos separar os ambientes (Quarto de X, Jardim, Abrigo, Rua, RU, Praça) e carregar os cenários de forma aditiva.
-- **Data-Driven Dialogues:** Expandir o nosso `ChoiceSystemGlobal` e `DialogueSystemGlobal` para lerem de arquivos ScriptableObjects ou JSON, assim não precisamos preencher falas em cada GameObject do cenário manualmente, facilitando correções ortográficas e tradução no futuro. -> to fazeno
-
-
+1. **Greyboxing e Multi-Cenas do Prologo:**
+   - Criar e dividir as cenas: `Prologo_Quarto`, `Prologo_Jardim`, `Prologo_Rua`.
+   - Utilizar colisores cinzas e hitboxes para validar a navegacao antes da arte final.
+2. **Implementacao do QTE de Ataque de Panico:**
+   - Montar o prototipo da UI de feedback cardiaco/respiratorio e leitura de input com tolerancia de falhas.
+3. **Transicao de Cenas Suave:**
+   - Desenvolver o gerenciador de carregamento assincrono de cenas aditivas (`SceneTransitionManager`).

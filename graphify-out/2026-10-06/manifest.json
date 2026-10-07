@@ -18,40 +18,16 @@
     "semantic_hash": "fe3a8738a95a7b0ad8411c003d7a7936"
   },
   "Assembly-CSharp.csproj": {
-    "mtime": 1791233762.3453627,
-    "seen": 1791235044.5713294,
-    "ast_hash": "372779cc8f94f36b8d7d6af93934295c",
-    "semantic_hash": "372779cc8f94f36b8d7d6af93934295c"
+    "mtime": 1791341389.135712,
+    "seen": 1791341703.0118463,
+    "ast_hash": "d62e411c675be552a229e4a135db6772",
+    "semantic_hash": "d62e411c675be552a229e4a135db6772"
   },
   "Assets/Scripts/GlobalStateManager.cs": {
-    "mtime": 1791228609.2189987,
-    "seen": 1791235044.5713365,
-    "ast_hash": "823d73133021e40bb3137ac452e443b1",
-    "semantic_hash": "823d73133021e40bb3137ac452e443b1"
-  },
-  "Assets/Scripts/InventoryData.cs": {
-    "mtime": 1791211772.6973193,
-    "seen": 1791235044.571354,
-    "ast_hash": "b2a0fcea28e2efdf294a8e5553b2c448",
-    "semantic_hash": "b2a0fcea28e2efdf294a8e5553b2c448"
-  },
-  "Assets/Scripts/ItemData.cs": {
-    "mtime": 1791211772.6993701,
-    "seen": 1791235044.5713553,
-    "ast_hash": "b9094c87b495a480f1e8877edbec8d35",
-    "semantic_hash": "b9094c87b495a480f1e8877edbec8d35"
-  },
-  "Assets/Scripts/MovementScript.cs": {
-    "mtime": 1791211772.7019427,
-    "seen": 1791235044.571357,
-    "ast_hash": "efc3cb4f4b4ceb3d2153002a98de1d27",
-    "semantic_hash": "efc3cb4f4b4ceb3d2153002a98de1d27"
-  },
-  "Assets/Scripts/SpriteChange.cs": {
-    "mtime": 1790306084.862939,
-    "seen": 1791178563.4399638,
-    "ast_hash": "a6106b2be90c517806002a6d7b126d52",
-    "semantic_hash": "a6106b2be90c517806002a6d7b126d52"
+    "mtime": 1791341423.5020256,
+    "seen": 1791341703.0124364,
+    "ast_hash": "72565acbaf131c9fa09d591de03fa2d5",
+    "semantic_hash": "72565acbaf131c9fa09d591de03fa2d5"
   },
   "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs": {
     "mtime": 1721760928.0,
@@ -342,28 +318,28 @@
     "semantic_hash": "cd6a6203bca95aa31b63c65f816fb4de"
   },
   "Assets/Scripts/FlowerStateListener.cs": {
-    "mtime": 1791211772.679311,
-    "seen": 1791235044.5713348,
+    "mtime": 1791263072.8412628,
+    "seen": 1791341703.0124333,
     "ast_hash": "4d52dfd8fee4a78025b738cdcde37416",
     "semantic_hash": "4d52dfd8fee4a78025b738cdcde37416"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueData.cs": {
-    "mtime": 1791224745.2190459,
-    "seen": 1791235044.571338,
-    "ast_hash": "e93dd790fb406716ebb9b34d4fe0fd2d",
-    "semantic_hash": "e93dd790fb406716ebb9b34d4fe0fd2d"
+    "mtime": 1791341404.1153715,
+    "seen": 1791341703.0124428,
+    "ast_hash": "89d8b1dba7df5fc7dc0f6fe269a4e4e7",
+    "semantic_hash": "89d8b1dba7df5fc7dc0f6fe269a4e4e7"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueSystemGlobal.cs": {
-    "mtime": 1791226450.9798102,
-    "seen": 1791235044.57134,
-    "ast_hash": "342defc925dc07100e91b2ac1cf0d295",
-    "semantic_hash": "342defc925dc07100e91b2ac1cf0d295"
+    "mtime": 1791341405.6815243,
+    "seen": 1791341703.0124454,
+    "ast_hash": "275d16afb12c046e8f8c2d5c915844e7",
+    "semantic_hash": "275d16afb12c046e8f8c2d5c915844e7"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueTrigger.cs": {
-    "mtime": 1791224425.7058387,
-    "seen": 1791235044.571341,
-    "ast_hash": "2fbf70dea98fe2a1207e51c17014938e",
-    "semantic_hash": "2fbf70dea98fe2a1207e51c17014938e"
+    "mtime": 1791297312.1429236,
+    "seen": 1791341703.0124488,
+    "ast_hash": "29725724b9862df723f0e3504c9f5d9c",
+    "semantic_hash": "29725724b9862df723f0e3504c9f5d9c"
   },
   "Assets/Scripts/Interactions/Dialogos/DialoguesData/teste.json": {
     "mtime": 1791221563.460141,
@@ -402,14 +378,14 @@
     "semantic_hash": "ea2839acd8868127c3ac5548757b2766"
   },
   "Assets/Scripts/Interactions/InteractionSystem.cs": {
-    "mtime": 1791218602.7815642,
-    "seen": 1791235044.571351,
-    "ast_hash": "79ec64abfd3d3614407800396e45e07a",
-    "semantic_hash": "79ec64abfd3d3614407800396e45e07a"
+    "mtime": 1791341397.313931,
+    "seen": 1791341703.014659,
+    "ast_hash": "87e1167e010a69b98de27cfb3b2de16d",
+    "semantic_hash": "87e1167e010a69b98de27cfb3b2de16d"
   },
   "Assets/Scripts/Interactions/ItemPickup.cs": {
-    "mtime": 1791221639.6279917,
-    "seen": 1791235044.5713522,
+    "mtime": 1791341392.4616141,
+    "seen": 1791341703.0146682,
     "ast_hash": "351420b29c243bf1d01f3f31c2fc840a",
     "semantic_hash": "351420b29c243bf1d01f3f31c2fc840a"
   },
@@ -419,22 +395,88 @@
     "ast_hash": "629ce35189ef93bbfc0a3d32570a15e4",
     "semantic_hash": "629ce35189ef93bbfc0a3d32570a15e4"
   },
-  "Assets/Scripts/SistemasBase/Escolhas/ChoiceSystemGlobal.cs": {
-    "mtime": 1791228609.1977167,
-    "seen": 1791235044.5713592,
-    "ast_hash": "ce280ec0ae3fe54dcb7109ae8cd94ad7",
-    "semantic_hash": "ce280ec0ae3fe54dcb7109ae8cd94ad7"
-  },
   "Assets/Scripts/SistemasBase/Escolhas/SaveManager.cs": {
-    "mtime": 1791229434.3299816,
-    "seen": 1791235044.5713603,
-    "ast_hash": "0afcb4936a5768717ff7515bd401a75f",
-    "semantic_hash": "0afcb4936a5768717ff7515bd401a75f"
+    "mtime": 1791341411.112241,
+    "seen": 1791341703.0150762,
+    "ast_hash": "ce232eaf240ff4963ccd3a0017819f1a",
+    "semantic_hash": "ce232eaf240ff4963ccd3a0017819f1a"
   },
   "Docs/EstruturaPlanejadaDeUmDi\u00e1logo.json": {
     "mtime": 1791217360.9567642,
     "seen": 1791235044.5788538,
     "ast_hash": "1631c32fceeccb1a4f419cf55f5ef62a",
     "semantic_hash": "1631c32fceeccb1a4f419cf55f5ef62a"
+  },
+  "Assets/Scripts/CutsceneManager.cs": {
+    "mtime": 1791297309.8171384,
+    "seen": 1791341703.0124297,
+    "ast_hash": "080cd11e0041434ed7b85eabd3f88729",
+    "semantic_hash": "080cd11e0041434ed7b85eabd3f88729"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/Pensamento_Despertador.json": {
+    "mtime": 1791259068.837459,
+    "seen": 1791261210.78419,
+    "ast_hash": "6a3c04d11928724c10b7bf918ee0b637",
+    "semantic_hash": "6a3c04d11928724c10b7bf918ee0b637"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/dialogoCelularTocou.json": {
+    "mtime": 1791259067.1059575,
+    "seen": 1791261210.7841935,
+    "ast_hash": "289029579f9d4cfc1275dfd612d9882c",
+    "semantic_hash": "289029579f9d4cfc1275dfd612d9882c"
+  },
+  "Assets/Scripts/WakeUpPrototype.cs": {
+    "mtime": 1791295847.7000623,
+    "seen": 1791341703.0150847,
+    "ast_hash": "4bcbf0545fd3e37e92a9eb395f261472",
+    "semantic_hash": "4bcbf0545fd3e37e92a9eb395f261472"
+  },
+  "Assets/Scripts/Interactions/ChoiceSystemGlobal.cs": {
+    "mtime": 1791341401.0886075,
+    "seen": 1791341703.0124395,
+    "ast_hash": "a85e8249b3a6d38671699066a43b403b",
+    "semantic_hash": "a85e8249b3a6d38671699066a43b403b"
+  },
+  "Assets/Scripts/Interactions/InventoryData.cs": {
+    "mtime": 1791341399.024602,
+    "seen": 1791341703.014662,
+    "ast_hash": "b2a0fcea28e2efdf294a8e5553b2c448",
+    "semantic_hash": "b2a0fcea28e2efdf294a8e5553b2c448"
+  },
+  "Assets/Scripts/Interactions/ItemData.cs": {
+    "mtime": 1791341395.6121569,
+    "seen": 1791341703.0146646,
+    "ast_hash": "2e2331cd714f8d3cfd3983b482e92611",
+    "semantic_hash": "2e2331cd714f8d3cfd3983b482e92611"
+  },
+  "Assets/Scripts/ReputationSystem.cs": {
+    "mtime": 1791341589.1166737,
+    "seen": 1791341703.0150728,
+    "ast_hash": "5e678e21cb14722efa62d2613ba1b84a",
+    "semantic_hash": "5e678e21cb14722efa62d2613ba1b84a"
+  },
+  "Assets/Scripts/SistemasBase/Input/InputRebindManager.cs": {
+    "mtime": 1791341412.5799217,
+    "seen": 1791341703.0150778,
+    "ast_hash": "fe79025a88e459d60a60abfc78bdeb43",
+    "semantic_hash": "fe79025a88e459d60a60abfc78bdeb43"
+  },
+  "Assets/Scripts/SistemasBase/MovementScript.cs": {
+    "mtime": 1791341416.7946687,
+    "seen": 1791341703.0150797,
+    "ast_hash": "9f65cec30c426c1bb917e4d05d55e28c",
+    "semantic_hash": "9f65cec30c426c1bb917e4d05d55e28c"
+  },
+  "Assets/Scripts/SistemasBase/SpriteChange.cs": {
+    "mtime": 1791341414.18416,
+    "seen": 1791341703.0150814,
+    "ast_hash": "a6106b2be90c517806002a6d7b126d52",
+    "semantic_hash": "a6106b2be90c517806002a6d7b126d52"
+  },
+  "Assets/Tests/GlobalStateManagerTests.cs": {
+    "mtime": 1791320763.1620023,
+    "seen": 1791341703.0150874,
+    "ast_hash": "f8025704ec7582a23573c7477f656718",
+    "semantic_hash": "f8025704ec7582a23573c7477f656718"
   }
 }

@@ -3,10 +3,13 @@ using System.Collections;
 
 public class CutsceneManager : MonoBehaviour
 {
-    public static CutsceneManager Instance; // singleton para facil acesso de qualquer lugar
+    // Instancia estatica global para acesso rapido das cutscenes sem busca por cena
+    public static CutsceneManager Instance;
 
     [Header("Referencias OBRIGATORIAS")]
+    // Referencia ao MovementScript do Player para controlar as travas de locomocao
     public MovementScript playerMovement;
+    // Referencia ao sistema global de exibicao de dialogos na tela
     public DialogueSystemGlobal dialogueSystem;
     
     // (Opcional) Podemos adicionar referencias para controlar Fade In/Fade Out da tela aqui no futuro
@@ -18,27 +21,50 @@ public class CutsceneManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
+    // Metodo publico para travar a movimentacao do jogador durante eventos narrativos
     public void TravarJogador()
     {
         if (playerMovement != null) playerMovement.podeMover = false;
     }
 
+    // Metodo publico para liberar a movimentacao do jogador apos o termino de eventos
     public void LiberarJogador()
     {
         if (playerMovement != null) playerMovement.podeMover = true;
     }
 
-    // Le um dialogo JSON de fora e "pausa" a cutscene ate ele acabar
+    // Le um dialogo JSON de fora e aguarda a finalizacao antes de prosseguir com a Coroutine
     public IEnumerator TocarDialogoEEsperar(TextAsset dialogueJson)
     {
         if (dialogueJson == null || dialogueSystem == null) 
         {
             Debug.LogError("[CutsceneManager] Falta o JSON ou o Sistema de Dialogo!");
+            LiberarJogador();
             yield break;
         }
 
-        DialogueData data = JsonUtility.FromJson<DialogueData>(dialogueJson.text);
-        
+        DialogueData data = null;
+        try
+        {
+            data = JsonUtility.FromJson<DialogueData>(dialogueJson.text);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError("[CutsceneManager] Erro ao processar JSON de dialogo: " + ex.Message);
+            yield break;
+        }
+
+        if (data == null)
+        {
+            Debug.LogError("[CutsceneManager] DialogueData resultou em nulo.");
+            yield break;
+        }
+
         bool dialogoTerminou = false;
 
         dialogueSystem.gameObject.SetActive(true);
@@ -46,9 +72,15 @@ public class CutsceneManager : MonoBehaviour
             dialogoTerminou = true;
         });
 
-        // Espera ate o callback avisar que terminou
+        // Aguarda com verificacao de seguranca caso o sistema de dialogo seja desativado externamente
+        yield return null;
         while (!dialogoTerminou)
         {
+            if (dialogueSystem == null || !dialogueSystem.gameObject.activeInHierarchy)
+            {
+                dialogoTerminou = true;
+                break;
+            }
             yield return null; 
         }
     }

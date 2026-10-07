@@ -1,72 +1,78 @@
 # EPEC: Plano de Desenvolvimento e Divisao de Tarefas
 
-Matty aqui, eis o plano que montei baseado no que ja temos pronto (MovementScript, InteractionSystem, DialogueSystemGlobal, InventoryData, etc) e no que precisamos para dar vida ao Roteiro do Prologo e Capitulo 1.
+Matty aqui! Este e o plano atualizado com base nos sistemas implementados e no roteiro do Prologo e Capitulo 1.
 
-O objetivo deste plano e garantir progresso constante, sem criar acoplamentos perigosos (*spaghetti code*). Vamos focar em modulos independentes que se comunicam atraves dos nossos **ScriptableObjects** (Listas).
+O objetivo deste plano e garantir progresso modular constante, sem acoplamentos perigosos (*spaghetti code*), com base em nossos **ScriptableObjects** (Listas) e eventos limpos.
 
 ---
 
 ## O que ja temos (Nossa Base Solida):
-- Movimentacao e Animacao (MovementScript, SpriteChange)
-- Sistema de Camera (CameraFollow, SceneFollow)
-- Interacao Basica e Inventario (InteractionSystem, Interactable, InventoryData)
-- Dialogo Linear, Prototipo de Escolhas e Condicoes via JSON (DialogueSystemGlobal, ChoiceSystemGlobal, DialogueData)
-- Save System (SaveManager, GlobalStateManager otimizado)
-- Sistema de Cutscenes Base (CutsceneManager, Bloqueio de Movimento)
+- [x] Movimentacao 2D e Animacao Manual (`MovementScript`, `SpriteChange`).
+- [x] Migracao para Unity Input System moderno e Rebind em tempo de execucao (`InputRebindManager`).
+- [x] Sistema de Cameras Dinamica e por Salas (`CameraFollow`, `SceneFollow`).
+- [x] Interacao Desacoplada e Coleta de Itens (`InteractionSystem`, `Interactable`, `DialogueTrigger`, `ItemPickup`).
+- [x] Inventario com Carregamento Dinamico via Resources (`InventoryData`, `ItemData`).
+- [x] Dialogos em JSON com Typewriter Suave e Condicoes de Inventario (`DialogueSystemGlobal`, `DialogueData`).
+- [x] Painel de Escolhas com Temporizador Regressivo (`ChoiceSystemGlobal`).
+- [x] Sistema de Cutscenes e Dialogos Standalone com Corrotinas (`CutsceneManager`, `WakeUpPrototype`).
+- [x] Sistema de Reputacao com Persistencia (`ReputationSystem`, `GlobalStateManager`).
+- [x] Sistema de Save/Load em JSON com integracao total (`SaveManager`).
+- [x] Reatividade Visual de Flores e Pos-Processamento (`FlowerStateListener`, `PostProcessingManager`).
 
 ---
 
 ## Proximos Passos (Tarefas a Executar)
 
 ### Tarefa 1: O Coracao Narrativo (GameState Baseado em Listas)
-- [x] **Criar GameStateData.cs:** Um ScriptableObject que contera uma ListGameFlag.
-- [x] **Atualizar ChoiceSystemGlobal.cs:** Refatorar o sistema de escolhas para buscar flags na lista.
+- [x] **Criar GameStateData / GlobalStateManager:** ScriptableObject com `List<GameFlag>` e `List<Reputacao>`.
+- [x] **Atualizar ChoiceSystemGlobal.cs:** Refatorar escolhas para ler e gravar nas listas.
 
 ### Tarefa 2: Reflexos Visuais do Mundo (O Sistema de Flores e Rota R)
-- [x] **Criar FlowerStateListener.cs:** Um script que checa a lista do GameStateData e muda seu proprio sprite/cor.
-- [x] **Criar RouteVisualManager.cs:** Alterar o Post-Processing (blur, cores) e a trilha sonora na Rota R.
+- [x] **Criar FlowerStateListener.cs:** Script que monitora flags e troca sprites de flores no cenario.
+- [x] **Criar PostProcessingManager.cs:** Ajustes de pos-processamento (blur, vinheta, cores) para rotas criticas.
 
 ### Tarefa 3: Montagem do Prologo na Cena (Greyboxing e Multi-Cenas)
-Dividindo mapas para facilitar o versionamento e colaboracao da equipe.
-- [ ] **Estrutura de Cenas:** Criar Prologo_Quarto, Prologo_Jardim e Prologo_Reuniao separadas.
-- [ ] **Greyboxing Inicial:** Usar blocos cinzas/brancos e Hitboxes.
-- [ ] **Transicao de Cenas:** Desenvolver um SceneTransitionManager.
-- [ ] Instanciar os JSONs e Cutscenes (Cutscene_Acordar, DoorToGarden).
+Dividir os mapas para facilitar versionamento, organizacao e desempenho:
+- [ ] **Estrutura de Cenas:** Separar `Prologo_Quarto`, `Prologo_Jardim` e `Prologo_Rua`.
+- [ ] **Greyboxing Inicial:** Blocos cinzas, colisores e posicionamento de triggers.
+- [ ] **Gerenciador de Transicao:** Desenvolver `SceneTransitionManager` com fade e carregamento assincrono aditivo.
+- [ ] Integrar cutscene inicial com `WakeUpPrototype` na nova cena do quarto.
 
 ### Tarefa 4: Sistema de Save / Persistencia com JSON
-- [x] **Criar SaveManager.cs** 
-- [x] **Otimizacao no GameStateData**
+- [x] **Criar SaveManager.cs:** Serializacao completa de flags, reputacao e inventario.
+- [x] **Otimizacao e Tratamento de Erros:** Guardas com try/catch e null checks rigorosos.
 
 ### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1 (QTE e Investigacao)
-  
-- [ ] **Criar Mecanica de Ataque de Panico (QTE):** 
-  - Script PanicAttackSystem.cs que exibe UI de pressionar botoes.
-  - Maximo de 3 falhas toleradas. Na quarta falha, X desmaia e encerra o dia.
+- [ ] **Criar Mecanica de Ataque de Panico (QTE):**
+  - Script `PanicAttackSystem.cs` com janela de tempo para reacao de botoes.
+  - Maximo de 3 falhas antes do desmaio do protagonista.
 - [ ] **Criar Mecanica de Investigacao (Juntar as Pontas):**
-  - UI que permite selecionar duas pistas e combina-las.
-  - [ ] Mecânicas de QTE
--  mecânias de QTE que funcionem
-
+  - Interface que permite selecionar pistas e combina-las logicamente para conclusao.
+- [ ] **Criar Mecanica de QTEs
+  - QTES.
 ### Tarefa 6: Escalabilidade do DialogueSystem e Cutscenes
-- [x] **Desacoplar o DialogueSystemGlobal:** Refatoracao completa para chamadas genericas.
-- [x] **Criar CutsceneManager.cs Global:** Finalizado (com controle de trava de player).
-- [x] **Correcao de Bugs Criticos:** Corrigida leitura de condicoes de escolhas e item null-checks.
+- [x] **Desacoplar o DialogueSystemGlobal:** Eliminacao do "God Object", uso de triggers independentes.
+- [x] **Criar CutsceneManager.cs Global:** Suporte a corrotinas de espera (`TocarDialogoEEsperar`).
+- [x] **Suavidade Retro do Typewriter:** Revertido para concatenacao caractere a caractere (`dialogueText.text += letter`).
 
 ### Tarefa 7: Sistema de Reputacao Global
+- [x] **ReputationSystem.cs:** Fachada estatica com busca segura e soma/subtracao de afinidade.
+- [x] **Integracao com SaveManager:** Salvo e carregado em arquivo JSON.
 
-- [ ] **Sistema de Reputacao:** Adicionar suporte numerico ao GlobalStateManager para computar afinidade com animais e NPCs (ex: +10 Tobias).
+### Tarefa 8: Modernizacao de Input e Rebinding
+- [x] **Migracao para InputActionReference:** `MovementScript` e `InteractionSystem`.
+- [x] **Criacao de InputRebindManager:** Modificacao e persistencia de bindings em tempo de execucao.
 
-### Tarefa 8 (Escopo Futuro): Sistemas do Caminho do Acolhimento
-*Nota: A serem desenvolvidos apenas APOS a conclusao do Capitulo 1.*
-
-- [ ] **Sistema de Seguranca:** Avaliar risco de atropelamento, exposicao, locais perigosos, etc.
-- [ ] **Sistema de Bem-Estar:** Avaliar alimentacao, agua limpa, descanso.
+### Tarefa 9 (Escopo Futuro): Sistemas do Caminho do Acolhimento
+*Nota: A serem desenvolvidos apenas apos a conclusao do Capitulo 1.*
+- [ ] **Sistema de Seguranca:** Risco de acidentes, locais perigosos, etc.
+- [ ] **Sistema de Bem-Estar:** Alimentacao, agua, abrigo e descanso dos animais.
 
 ---
 
-## Ordem de Execucao Atualizada
+## Ordem de Execucao para a Proxima Sessao (Amanha)
 
-A base narrativa (JSONs, Cutscenes, Saves) ja foi finalizada. Nosso proximo passo para amanha sera:
-1. Iniciar o **Greyboxing do Prologo (Tarefa 3)** com cenas separadas.
-2. Construir o **Sistema de Flores (Tarefa 2)**.
-3. Desenvolver o **QTE de Panico (Tarefa 5)**.
+Com os sistemas base e a arquitetura 100% estaveis e documentados, a prioridade sera:
+1. **Greyboxing do Prologo (Tarefa 3):** Criar as cenas separadas e testar o fluxo de navegacao fisica.
+2. **Sistema de Transicao de Cenas (`SceneTransitionManager`):** Fazer a troca suave entre o quarto e o jardim.
+3. **Mecanica de Ataque de Panico / QTE (Tarefa 5):** Implementar o mini-game de respiracao/panico.

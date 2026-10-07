@@ -1,12 +1,18 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Serialization;
 
+// Origem: Assets/Scripts/WakeUpPrototype.cs
+// Script de prototipo narrativo para orquestrar o despertar do protagonista no Prologo
 public class WakeUpPrototype : MonoBehaviour
 {
     [Header("Arquivos da Cutscene")]
-    public TextAsset dialogoCelularTocou; // JSON com "Hmmm, um bipe?" -> vai para escolhas (Levantar / Dormir mais)
-    public TextAsset dialogopensamento;
-    // Roda no Start() para iniciar assim que a cena abre
+    // Arquivo JSON do dialogo que toca o pensamento inicial antes de abrir os olhos
+    [FormerlySerializedAs("dialogopensamento")]
+    public TextAsset dialogoPensamento;
+    // Arquivo JSON do dialogo com o celular tocando que leva a escolha Levantar/Dormir
+    public TextAsset dialogoCelularTocou;
+
     void Start()
     {
         StartCoroutine(RotinaAcordar());
@@ -14,22 +20,32 @@ public class WakeUpPrototype : MonoBehaviour
 
     private IEnumerator RotinaAcordar()
     {
+        if (CutsceneManager.Instance == null)
+        {
+            Debug.LogError("[WakeUpPrototype] CutsceneManager nao encontrado na cena!");
+            yield break;
+        }
+
         // 1. Pausa o jogador e nao deixa ele se mexer
         CutsceneManager.Instance.TravarJogador();
 
-        yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogopensamento);
+        if (dialogoPensamento != null)
+        {
+            yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogoPensamento);
+        }
         
-        // 2. Faz uma pausa dramatica de 2 segundos de silencio
+        // 2. Pausa dramatica de 2 segundos de silencio
         yield return new WaitForSeconds(2f);
 
-        // (se quisermos colocar uma animacao no futuro: playerAnimator.Play("Acordar") e WaitForSeconds)
+        // 3. Toca o dialogo do celular
+        if (dialogoCelularTocou != null)
+        {
+            yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogoCelularTocou);
+        }
 
-        // 3. Toca o JSON do dialogo
-        yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogoCelularTocou);
-
-        // 4. A cutscene acabou. Libera o jogador explicitamente!
+        // 4. Libera o jogador explicitamente
         CutsceneManager.Instance.LiberarJogador();
         
-        Debug.Log("Cutscene de abertura finalizada!");
+        Debug.Log("[WakeUpPrototype] Cutscene de abertura finalizada com sucesso!");
     }
 }

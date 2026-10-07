@@ -1,5 +1,7 @@
 using UnityEngine;
 
+// Origem: Assets/Scripts/Cameras/CameraFollow.cs
+// Script de camera para seguir o alvo suavemente em espaco 2D
 public class CameraFollow : MonoBehaviour
 {
     [Header("Target")]
@@ -8,10 +10,10 @@ public class CameraFollow : MonoBehaviour
     [Header("Camera Settings")]
     [SerializeField] private float smoothSpeed = 5f;
     
-    // o valor Z deve ser negativo (-10) para a câmera ficar atrás do cenário 2D
+    // O valor Z deve ser negativo (-10) para a camera ficar atras do cenario 2D
     [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f);
 
-    // o lateUpdate é usado para câmeras porque corre DEPOIS do Update normal do jogador
+    // O LateUpdate e usado para cameras porque executa DEPOIS do Update normal do jogador
     void LateUpdate()
     {
         if (target == null) return;

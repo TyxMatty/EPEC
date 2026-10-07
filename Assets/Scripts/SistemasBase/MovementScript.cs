@@ -5,28 +5,43 @@ using UnityEngine.InputSystem;
 public class MovementScript : MonoBehaviour 
 {
     [Header("Speed Configurations")]
-    [SerializeField] public float baseSpeed = 5f;
+    // Velocidade base de caminhada do jogador
+    public float baseSpeed = 5f;
     [SerializeField] private float shiftMultiplier = 1.5f;
 
-    [Header("Input Actions (Arraste aqui do Inspector)")]
+    [Header("Input Actions")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference sprintAction;
 
     private Rigidbody2D rb;
     private Vector2 movementDirection;
     private float currentSpeed;
+
+    // Flag publica controlando se o jogador pode se movimentar (bloqueado em dialogos/cutscenes)
     public bool podeMover = true; 
 
     void OnEnable()
     {
-        moveAction?.action.Enable();
-        sprintAction?.action.Enable();
+        if (moveAction != null && moveAction.action != null)
+        {
+            moveAction.action.Enable();
+        }
+        if (sprintAction != null && sprintAction.action != null)
+        {
+            sprintAction.action.Enable();
+        }
     }
 
     void OnDisable()
     {
-        moveAction?.action.Disable();
-        sprintAction?.action.Disable();
+        if (moveAction != null && moveAction.action != null)
+        {
+            moveAction.action.Disable();
+        }
+        if (sprintAction != null && sprintAction.action != null)
+        {
+            sprintAction.action.Disable();
+        }
     }
 
     void Start()
@@ -47,7 +62,11 @@ public class MovementScript : MonoBehaviour
             return;
         }
 
-        Vector2 moveInput = moveAction != null ? moveAction.action.ReadValue<Vector2>() : Vector2.zero;
+        Vector2 moveInput = Vector2.zero;
+        if (moveAction != null && moveAction.action != null)
+        {
+            moveInput = moveAction.action.ReadValue<Vector2>();
+        }
         
         if (moveInput == Vector2.zero)
         {
@@ -57,12 +76,15 @@ public class MovementScript : MonoBehaviour
         }
 
         movementDirection = moveInput.normalized;
-        bool isSprinting = sprintAction != null && sprintAction.action.IsPressed();
+        bool isSprinting = (sprintAction != null && sprintAction.action != null && sprintAction.action.IsPressed());
         currentSpeed = baseSpeed * (isSprinting ? shiftMultiplier : 1f);
     }
 
     void FixedUpdate()
     {
-        rb.linearVelocity = movementDirection * currentSpeed;
+        if (rb != null)
+        {
+            rb.linearVelocity = movementDirection * currentSpeed;
+        }
     }
 }

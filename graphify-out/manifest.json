@@ -18,40 +18,16 @@
     "semantic_hash": "fe3a8738a95a7b0ad8411c003d7a7936"
   },
   "Assembly-CSharp.csproj": {
-    "mtime": 1791258479.5379357,
-    "seen": 1791261210.7823973,
-    "ast_hash": "261f8a17ea8c00eb810668bbf9623958",
-    "semantic_hash": "261f8a17ea8c00eb810668bbf9623958"
+    "mtime": 1791341389.135712,
+    "seen": 1791341703.0118463,
+    "ast_hash": "d62e411c675be552a229e4a135db6772",
+    "semantic_hash": "d62e411c675be552a229e4a135db6772"
   },
   "Assets/Scripts/GlobalStateManager.cs": {
-    "mtime": 1791228609.2189987,
-    "seen": 1791235044.5713365,
-    "ast_hash": "823d73133021e40bb3137ac452e443b1",
-    "semantic_hash": "823d73133021e40bb3137ac452e443b1"
-  },
-  "Assets/Scripts/InventoryData.cs": {
-    "mtime": 1791211772.6973193,
-    "seen": 1791235044.571354,
-    "ast_hash": "b2a0fcea28e2efdf294a8e5553b2c448",
-    "semantic_hash": "b2a0fcea28e2efdf294a8e5553b2c448"
-  },
-  "Assets/Scripts/ItemData.cs": {
-    "mtime": 1791257565.3404057,
-    "seen": 1791261210.7893937,
-    "ast_hash": "2e2331cd714f8d3cfd3983b482e92611",
-    "semantic_hash": "2e2331cd714f8d3cfd3983b482e92611"
-  },
-  "Assets/Scripts/MovementScript.cs": {
-    "mtime": 1791211772.7019427,
-    "seen": 1791235044.571357,
-    "ast_hash": "efc3cb4f4b4ceb3d2153002a98de1d27",
-    "semantic_hash": "efc3cb4f4b4ceb3d2153002a98de1d27"
-  },
-  "Assets/Scripts/SpriteChange.cs": {
-    "mtime": 1790306084.862939,
-    "seen": 1791178563.4399638,
-    "ast_hash": "a6106b2be90c517806002a6d7b126d52",
-    "semantic_hash": "a6106b2be90c517806002a6d7b126d52"
+    "mtime": 1791342284.7205956,
+    "seen": 1791342778.4332056,
+    "ast_hash": "feceff5d5ca90487d94f0f2fb8f98dc4",
+    "semantic_hash": "feceff5d5ca90487d94f0f2fb8f98dc4"
   },
   "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs": {
     "mtime": 1721760928.0,
@@ -330,40 +306,40 @@
     "semantic_hash": "70afe49d4246d38971a94bb65a059f86"
   },
   "Assets/Scripts/Cameras/CameraFollow.cs": {
-    "mtime": 1790307327.1486604,
-    "seen": 1791235044.5713313,
-    "ast_hash": "acecd296d92f1204cc3634bedd2db5da",
-    "semantic_hash": "acecd296d92f1204cc3634bedd2db5da"
+    "mtime": 1791342441.930732,
+    "seen": 1791342778.4331915,
+    "ast_hash": "4f39f16f0ac6213c6ec0c4ed54eccbfd",
+    "semantic_hash": "4f39f16f0ac6213c6ec0c4ed54eccbfd"
   },
   "Assets/Scripts/Cameras/SceneFollow.cs": {
-    "mtime": 1790358012.927408,
-    "seen": 1791235044.5713332,
-    "ast_hash": "cd6a6203bca95aa31b63c65f816fb4de",
-    "semantic_hash": "cd6a6203bca95aa31b63c65f816fb4de"
+    "mtime": 1791342423.725423,
+    "seen": 1791342778.4331968,
+    "ast_hash": "96b139d28d9d1d887990505c91a4e357",
+    "semantic_hash": "96b139d28d9d1d887990505c91a4e357"
   },
   "Assets/Scripts/FlowerStateListener.cs": {
-    "mtime": 1791211772.679311,
-    "seen": 1791235044.5713348,
-    "ast_hash": "4d52dfd8fee4a78025b738cdcde37416",
-    "semantic_hash": "4d52dfd8fee4a78025b738cdcde37416"
+    "mtime": 1791342214.9197564,
+    "seen": 1791342778.4332027,
+    "ast_hash": "c5b9d5cae7591b15c0c8dd5a83ae8944",
+    "semantic_hash": "c5b9d5cae7591b15c0c8dd5a83ae8944"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueData.cs": {
-    "mtime": 1791257193.867751,
-    "seen": 1791261210.7838364,
-    "ast_hash": "92575a0db50c4a939e28d3f1576b0fed",
-    "semantic_hash": "92575a0db50c4a939e28d3f1576b0fed"
+    "mtime": 1791341404.1153715,
+    "seen": 1791341703.0124428,
+    "ast_hash": "89d8b1dba7df5fc7dc0f6fe269a4e4e7",
+    "semantic_hash": "89d8b1dba7df5fc7dc0f6fe269a4e4e7"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueSystemGlobal.cs": {
-    "mtime": 1791260371.534888,
-    "seen": 1791261210.783842,
-    "ast_hash": "28b9d2253e2cb28878f56b722117f322",
-    "semantic_hash": "28b9d2253e2cb28878f56b722117f322"
+    "mtime": 1791342403.7968311,
+    "seen": 1791342778.4335418,
+    "ast_hash": "852b488e975ec3bd9997f0d00d278699",
+    "semantic_hash": "852b488e975ec3bd9997f0d00d278699"
   },
   "Assets/Scripts/Interactions/Dialogos/DialogueTrigger.cs": {
-    "mtime": 1791224425.7058387,
-    "seen": 1791235044.571341,
-    "ast_hash": "2fbf70dea98fe2a1207e51c17014938e",
-    "semantic_hash": "2fbf70dea98fe2a1207e51c17014938e"
+    "mtime": 1791342494.5186052,
+    "seen": 1791342778.4335485,
+    "ast_hash": "fedaa5d86471781934dd888193af230e",
+    "semantic_hash": "fedaa5d86471781934dd888193af230e"
   },
   "Assets/Scripts/Interactions/Dialogos/DialoguesData/teste.json": {
     "mtime": 1791221563.460141,
@@ -396,40 +372,34 @@
     "semantic_hash": "5d1747138e702a6cfb56a3fe0f8f6c11"
   },
   "Assets/Scripts/Interactions/Interactable.cs": {
-    "mtime": 1791224422.2154522,
-    "seen": 1791235044.5713499,
-    "ast_hash": "ea2839acd8868127c3ac5548757b2766",
-    "semantic_hash": "ea2839acd8868127c3ac5548757b2766"
+    "mtime": 1791342683.2423742,
+    "seen": 1791342778.43543,
+    "ast_hash": "35f558328bd18600961603af66432099",
+    "semantic_hash": "35f558328bd18600961603af66432099"
   },
   "Assets/Scripts/Interactions/InteractionSystem.cs": {
-    "mtime": 1791218602.7815642,
-    "seen": 1791235044.571351,
-    "ast_hash": "79ec64abfd3d3614407800396e45e07a",
-    "semantic_hash": "79ec64abfd3d3614407800396e45e07a"
+    "mtime": 1791342563.7589407,
+    "seen": 1791342778.4354334,
+    "ast_hash": "4b079172058e78e11e3ddfa320e2b015",
+    "semantic_hash": "4b079172058e78e11e3ddfa320e2b015"
   },
   "Assets/Scripts/Interactions/ItemPickup.cs": {
-    "mtime": 1791221639.6279917,
-    "seen": 1791235044.5713522,
-    "ast_hash": "351420b29c243bf1d01f3f31c2fc840a",
-    "semantic_hash": "351420b29c243bf1d01f3f31c2fc840a"
+    "mtime": 1791342474.9672053,
+    "seen": 1791342778.4354427,
+    "ast_hash": "6477878816b9ab3e2110a4d423640d3b",
+    "semantic_hash": "6477878816b9ab3e2110a4d423640d3b"
   },
   "Assets/Scripts/PostProcessingManager.cs": {
-    "mtime": 1791211772.703448,
-    "seen": 1791235044.5713582,
-    "ast_hash": "629ce35189ef93bbfc0a3d32570a15e4",
-    "semantic_hash": "629ce35189ef93bbfc0a3d32570a15e4"
-  },
-  "Assets/Scripts/SistemasBase/Escolhas/ChoiceSystemGlobal.cs": {
-    "mtime": 1791257190.8046815,
-    "seen": 1791261210.7901013,
-    "ast_hash": "dd66d33bf8558c1add0a99e2c9488e7e",
-    "semantic_hash": "dd66d33bf8558c1add0a99e2c9488e7e"
+    "mtime": 1791342708.7620282,
+    "seen": 1791342778.435446,
+    "ast_hash": "1a0bfdddbee6874b1c2d223dff074fbd",
+    "semantic_hash": "1a0bfdddbee6874b1c2d223dff074fbd"
   },
   "Assets/Scripts/SistemasBase/Escolhas/SaveManager.cs": {
-    "mtime": 1791257187.65089,
-    "seen": 1791261210.790105,
-    "ast_hash": "ce232eaf240ff4963ccd3a0017819f1a",
-    "semantic_hash": "ce232eaf240ff4963ccd3a0017819f1a"
+    "mtime": 1791342309.615152,
+    "seen": 1791342778.435452,
+    "ast_hash": "41ab373560c90dd0f197fa2d897b937c",
+    "semantic_hash": "41ab373560c90dd0f197fa2d897b937c"
   },
   "Docs/EstruturaPlanejadaDeUmDi\u00e1logo.json": {
     "mtime": 1791217360.9567642,
@@ -438,10 +408,10 @@
     "semantic_hash": "1631c32fceeccb1a4f419cf55f5ef62a"
   },
   "Assets/Scripts/CutsceneManager.cs": {
-    "mtime": 1791259500.821145,
-    "seen": 1791261210.7830687,
-    "ast_hash": "7ff3f67e9662cc7f2e170ad07d0fdc70",
-    "semantic_hash": "7ff3f67e9662cc7f2e170ad07d0fdc70"
+    "mtime": 1791342334.9294055,
+    "seen": 1791342778.4332001,
+    "ast_hash": "1f5efc338f72dd942d32c29cf23226cd",
+    "semantic_hash": "1f5efc338f72dd942d32c29cf23226cd"
   },
   "Assets/Scripts/Interactions/Dialogos/DialoguesData/Pensamento_Despertador.json": {
     "mtime": 1791259068.837459,
@@ -456,9 +426,57 @@
     "semantic_hash": "289029579f9d4cfc1275dfd612d9882c"
   },
   "Assets/Scripts/WakeUpPrototype.cs": {
-    "mtime": 1791260135.2084222,
-    "seen": 1791261210.7904189,
-    "ast_hash": "83b9137bdedab422393f204d8eccc12a",
-    "semantic_hash": "83b9137bdedab422393f204d8eccc12a"
+    "mtime": 1791342355.1614337,
+    "seen": 1791342778.435462,
+    "ast_hash": "93f05ce16d8a5802f39bdd1511a1b4ab",
+    "semantic_hash": "93f05ce16d8a5802f39bdd1511a1b4ab"
+  },
+  "Assets/Scripts/Interactions/ChoiceSystemGlobal.cs": {
+    "mtime": 1791342748.4059289,
+    "seen": 1791342778.4332085,
+    "ast_hash": "4de6b634f55afd1ea6a439ce01734783",
+    "semantic_hash": "4de6b634f55afd1ea6a439ce01734783"
+  },
+  "Assets/Scripts/Interactions/InventoryData.cs": {
+    "mtime": 1791342633.626513,
+    "seen": 1791342778.4354365,
+    "ast_hash": "a32587548b39e706449b02820254f08b",
+    "semantic_hash": "a32587548b39e706449b02820254f08b"
+  },
+  "Assets/Scripts/Interactions/ItemData.cs": {
+    "mtime": 1791342658.0686505,
+    "seen": 1791342778.4354393,
+    "ast_hash": "39c2e1f98385edb623a1dd0ef2b2080e",
+    "semantic_hash": "39c2e1f98385edb623a1dd0ef2b2080e"
+  },
+  "Assets/Scripts/ReputationSystem.cs": {
+    "mtime": 1791342602.6308932,
+    "seen": 1791342778.4354494,
+    "ast_hash": "2c2f127896883afe696997d5260ef835",
+    "semantic_hash": "2c2f127896883afe696997d5260ef835"
+  },
+  "Assets/Scripts/SistemasBase/Input/InputRebindManager.cs": {
+    "mtime": 1791342586.774913,
+    "seen": 1791342778.435455,
+    "ast_hash": "a01dde61a3cac78a2149b0d45d4857f9",
+    "semantic_hash": "a01dde61a3cac78a2149b0d45d4857f9"
+  },
+  "Assets/Scripts/SistemasBase/MovementScript.cs": {
+    "mtime": 1791342517.302833,
+    "seen": 1791342778.4354572,
+    "ast_hash": "8debaf314da7a8bd99e2cac27e04467f",
+    "semantic_hash": "8debaf314da7a8bd99e2cac27e04467f"
+  },
+  "Assets/Scripts/SistemasBase/SpriteChange.cs": {
+    "mtime": 1791342240.9133186,
+    "seen": 1791342778.4354596,
+    "ast_hash": "a0f6bd9f8a05d6e84f64bb63dc6d550b",
+    "semantic_hash": "a0f6bd9f8a05d6e84f64bb63dc6d550b"
+  },
+  "Assets/Tests/GlobalStateManagerTests.cs": {
+    "mtime": 1791320763.1620023,
+    "seen": 1791341703.0150874,
+    "ast_hash": "f8025704ec7582a23573c7477f656718",
+    "semantic_hash": "f8025704ec7582a23573c7477f656718"
   }
 }

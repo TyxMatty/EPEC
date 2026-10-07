@@ -1,0 +1,482 @@
+{
+  ".vscode/extensions.json": {
+    "mtime": 1790297921.4787946,
+    "seen": 1791178563.4399414,
+    "ast_hash": "2c2bc546cba220f6651a152c8c1819d0",
+    "semantic_hash": "2c2bc546cba220f6651a152c8c1819d0"
+  },
+  ".vscode/launch.json": {
+    "mtime": 1790297921.4878826,
+    "seen": 1791178563.439947,
+    "ast_hash": "cf87354d3be05efced104408f9982438",
+    "semantic_hash": "cf87354d3be05efced104408f9982438"
+  },
+  ".vscode/settings.json": {
+    "mtime": 1791209200.5491788,
+    "seen": 1791235044.5713267,
+    "ast_hash": "fe3a8738a95a7b0ad8411c003d7a7936",
+    "semantic_hash": "fe3a8738a95a7b0ad8411c003d7a7936"
+  },
+  "Assembly-CSharp.csproj": {
+    "mtime": 1791341389.135712,
+    "seen": 1791341703.0118463,
+    "ast_hash": "d62e411c675be552a229e4a135db6772",
+    "semantic_hash": "d62e411c675be552a229e4a135db6772"
+  },
+  "Assets/Scripts/GlobalStateManager.cs": {
+    "mtime": 1791342284.7205956,
+    "seen": 1791342778.4332056,
+    "ast_hash": "feceff5d5ca90487d94f0f2fb8f98dc4",
+    "semantic_hash": "feceff5d5ca90487d94f0f2fb8f98dc4"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439965,
+    "ast_hash": "e684e35594fad9cf5a547bdbebf15140",
+    "semantic_hash": "e684e35594fad9cf5a547bdbebf15140"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark01_UGUI.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399662,
+    "ast_hash": "7204101af11cf8adf2b2e0d89b9873f1",
+    "semantic_hash": "7204101af11cf8adf2b2e0d89b9873f1"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark02.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439967,
+    "ast_hash": "12182f6ca92606ed0672125ce725d066",
+    "semantic_hash": "12182f6ca92606ed0672125ce725d066"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark03.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399683,
+    "ast_hash": "abc32bf494a52e957127e7322260e955",
+    "semantic_hash": "abc32bf494a52e957127e7322260e955"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/Benchmark04.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399695,
+    "ast_hash": "41c2b5dc62b5fc2bd1e0c0323901f4e1",
+    "semantic_hash": "41c2b5dc62b5fc2bd1e0c0323901f4e1"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/CameraController.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399714,
+    "ast_hash": "f75a6e32c750a259e29e00a15e279ca4",
+    "semantic_hash": "f75a6e32c750a259e29e00a15e279ca4"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/ChatController.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439973,
+    "ast_hash": "8d813194e132cca1348ed8badc27680b",
+    "semantic_hash": "8d813194e132cca1348ed8badc27680b"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/DropdownSample.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439976,
+    "ast_hash": "9920ec8e71190b583a3dceb67888cb84",
+    "semantic_hash": "9920ec8e71190b583a3dceb67888cb84"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/EnvMapAnimator.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399781,
+    "ast_hash": "0e5ccff504d29b340d10c690938e2ae1",
+    "semantic_hash": "0e5ccff504d29b340d10c690938e2ae1"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/ObjectSpin.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399803,
+    "ast_hash": "b59e3b8ba56457646e97227a579d97ef",
+    "semantic_hash": "b59e3b8ba56457646e97227a579d97ef"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/ShaderPropAnimator.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439982,
+    "ast_hash": "4d1e11f7a0618119ff0af11d61b8dd39",
+    "semantic_hash": "4d1e11f7a0618119ff0af11d61b8dd39"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/SimpleScript.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439983,
+    "ast_hash": "9457b5a63a198def40dfd310e2b176ad",
+    "semantic_hash": "9457b5a63a198def40dfd310e2b176ad"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/SkewTextExample.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399838,
+    "ast_hash": "41a8bb099456e8f65cf157d372c51367",
+    "semantic_hash": "41a8bb099456e8f65cf157d372c51367"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_DigitValidator.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399848,
+    "ast_hash": "5a2b86de882f72d057d2cfe2b3229d56",
+    "semantic_hash": "5a2b86de882f72d057d2cfe2b3229d56"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_ExampleScript_01.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439986,
+    "ast_hash": "008f5326fd7590437feb1a9d485edd97",
+    "semantic_hash": "008f5326fd7590437feb1a9d485edd97"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_FrameRateCounter.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439987,
+    "ast_hash": "7af01fe89556925e1cbd615fd87fb43e",
+    "semantic_hash": "7af01fe89556925e1cbd615fd87fb43e"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_PhoneNumberValidator.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399881,
+    "ast_hash": "c9c3048db6974fca282f3d07b73062b3",
+    "semantic_hash": "c9c3048db6974fca282f3d07b73062b3"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventCheck.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.439989,
+    "ast_hash": "86a7ab221205918c2d04b114c9b893ac",
+    "semantic_hash": "86a7ab221205918c2d04b114c9b893ac"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextEventHandler.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.43999,
+    "ast_hash": "eac200ecd5909eac57a64f4c163cc4c1",
+    "semantic_hash": "eac200ecd5909eac57a64f4c163cc4c1"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextInfoDebugTool.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399917,
+    "ast_hash": "0afeb06cf860bad5e5d0ec56d74ae4be",
+    "semantic_hash": "0afeb06cf860bad5e5d0ec56d74ae4be"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_A.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399936,
+    "ast_hash": "8a0520e7a3bba1c46bcca856f8b0c959",
+    "semantic_hash": "8a0520e7a3bba1c46bcca856f8b0c959"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_TextSelector_B.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399958,
+    "ast_hash": "1b5ee0c2cdd8f295efb1f35c0d7f8239",
+    "semantic_hash": "1b5ee0c2cdd8f295efb1f35c0d7f8239"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMP_UiFrameRateCounter.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399974,
+    "ast_hash": "968d6a3c31bfdf7e839ad89dae9d7dd9",
+    "semantic_hash": "968d6a3c31bfdf7e839ad89dae9d7dd9"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TMPro_InstructionOverlay.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4399996,
+    "ast_hash": "abb2f9ef5b897ef8409d6c0f49fee98b",
+    "semantic_hash": "abb2f9ef5b897ef8409d6c0f49fee98b"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TeleType.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400015,
+    "ast_hash": "df80aa1ed341bc62cc103ec8aab3fd01",
+    "semantic_hash": "df80aa1ed341bc62cc103ec8aab3fd01"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TextConsoleSimulator.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400034,
+    "ast_hash": "43c70d35c96dec4945418facc6e2bf6b",
+    "semantic_hash": "43c70d35c96dec4945418facc6e2bf6b"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshProFloatingText.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400046,
+    "ast_hash": "e965435a8850f7044c0363d05a5c7fab",
+    "semantic_hash": "e965435a8850f7044c0363d05a5c7fab"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/TextMeshSpawner.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400055,
+    "ast_hash": "4dfc5f357d8bc78820f6e7adabf5717d",
+    "semantic_hash": "4dfc5f357d8bc78820f6e7adabf5717d"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexColorCycler.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400077,
+    "ast_hash": "9e46ccee35f6b84d3e22f5de24342bb5",
+    "semantic_hash": "9e46ccee35f6b84d3e22f5de24342bb5"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexJitter.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400086,
+    "ast_hash": "b955ec108ccb5ad67db91b5628912398",
+    "semantic_hash": "b955ec108ccb5ad67db91b5628912398"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeA.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400098,
+    "ast_hash": "49d28055f5bf1d114171fa261df58df5",
+    "semantic_hash": "49d28055f5bf1d114171fa261df58df5"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexShakeB.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.440011,
+    "ast_hash": "4aa7a6fbcc1655ec907fd4be812a9ce7",
+    "semantic_hash": "4aa7a6fbcc1655ec907fd4be812a9ce7"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/VertexZoom.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400127,
+    "ast_hash": "2cfce87d6cbf7654c3e670bb6798a0a2",
+    "semantic_hash": "2cfce87d6cbf7654c3e670bb6798a0a2"
+  },
+  "Assets/TextMesh Pro/Examples & Extras/Scripts/WarpTextExample.cs": {
+    "mtime": 1721760928.0,
+    "seen": 1791178563.4400148,
+    "ast_hash": "e4e83bc8456713a3c2849fbefb019d08",
+    "semantic_hash": "e4e83bc8456713a3c2849fbefb019d08"
+  },
+  "EPEC.slnx": {
+    "mtime": 1791229309.7242591,
+    "seen": 1791235044.578858,
+    "ast_hash": "503dcdaf58d81abe5d27a8d26adcb664",
+    "semantic_hash": "503dcdaf58d81abe5d27a8d26adcb664"
+  },
+  "My project.slnx": {
+    "mtime": 1790297922.8454237,
+    "seen": 1791178563.4400203,
+    "ast_hash": "596c9a904ad54eb957bfae34e7d4e776",
+    "semantic_hash": "596c9a904ad54eb957bfae34e7d4e776"
+  },
+  "Packages/manifest.json": {
+    "mtime": 1790297922.854363,
+    "seen": 1791178563.440022,
+    "ast_hash": "56770291b7d112ce313b17563bcd3606",
+    "semantic_hash": "56770291b7d112ce313b17563bcd3606"
+  },
+  "Packages/packages-lock.json": {
+    "mtime": 1790297922.8652952,
+    "seen": 1791178563.4400241,
+    "ast_hash": "b0e044c512ca3ed54d2d78796626192a",
+    "semantic_hash": "b0e044c512ca3ed54d2d78796626192a"
+  },
+  "ProjectSettings/Packages/com.unity.learn.iet-framework/Settings.json": {
+    "mtime": 1790300037.2321107,
+    "seen": 1791178563.440026,
+    "ast_hash": "f4988debef69723381b17eb7606d9421",
+    "semantic_hash": "f4988debef69723381b17eb7606d9421"
+  },
+  "ProjectSettings/SceneTemplateSettings.json": {
+    "mtime": 1790300374.952425,
+    "seen": 1791178563.4400277,
+    "ast_hash": "eeb26e313b89cd9334b828428a4847ef",
+    "semantic_hash": "eeb26e313b89cd9334b828428a4847ef"
+  },
+  "Unity.2D.Welcome.csproj": {
+    "mtime": 1791211773.2630174,
+    "seen": 1791235044.580067,
+    "ast_hash": "a81c8e217f4e964d1694f4d811bebe33",
+    "semantic_hash": "a81c8e217f4e964d1694f4d811bebe33"
+  },
+  "Assets/Scripts/README.md": {
+    "mtime": 1791002412.6009927,
+    "seen": 1791178563.4400296,
+    "ast_hash": "a07efcd42db5c4916da1644740f981b1",
+    "semantic_hash": "a07efcd42db5c4916da1644740f981b1"
+  },
+  "Docs/README.md": {
+    "mtime": 1791177317.4102356,
+    "seen": 1791178563.440031,
+    "ast_hash": "80a4ca6116db1256ae2bf1dadfe25706",
+    "semantic_hash": "80a4ca6116db1256ae2bf1dadfe25706"
+  },
+  "Docs/ArvoreDeDialogosPrologo.jpeg": {
+    "mtime": 1790739340.2718222,
+    "seen": 1791178563.440032,
+    "ast_hash": "e6323c422e32e624f21e9a12cc4a531e",
+    "semantic_hash": "e6323c422e32e624f21e9a12cc4a531e"
+  },
+  "Docs/Fluxogramas EPEC-Escolhas.png": {
+    "mtime": 1790739473.6377392,
+    "seen": 1791178563.4400332,
+    "ast_hash": "77f239b240cdac32d267eb26fa7df94a",
+    "semantic_hash": "77f239b240cdac32d267eb26fa7df94a"
+  },
+  "Docs/Fluxogramas EPEC-Fluxograma Movimento.png": {
+    "mtime": 1790739446.6311815,
+    "seen": 1791178563.4400344,
+    "ast_hash": "70afe49d4246d38971a94bb65a059f86",
+    "semantic_hash": "70afe49d4246d38971a94bb65a059f86"
+  },
+  "Assets/Scripts/Cameras/CameraFollow.cs": {
+    "mtime": 1791342441.930732,
+    "seen": 1791342778.4331915,
+    "ast_hash": "4f39f16f0ac6213c6ec0c4ed54eccbfd",
+    "semantic_hash": "4f39f16f0ac6213c6ec0c4ed54eccbfd"
+  },
+  "Assets/Scripts/Cameras/SceneFollow.cs": {
+    "mtime": 1791342423.725423,
+    "seen": 1791342778.4331968,
+    "ast_hash": "96b139d28d9d1d887990505c91a4e357",
+    "semantic_hash": "96b139d28d9d1d887990505c91a4e357"
+  },
+  "Assets/Scripts/FlowerStateListener.cs": {
+    "mtime": 1791342214.9197564,
+    "seen": 1791342778.4332027,
+    "ast_hash": "c5b9d5cae7591b15c0c8dd5a83ae8944",
+    "semantic_hash": "c5b9d5cae7591b15c0c8dd5a83ae8944"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialogueData.cs": {
+    "mtime": 1791341404.1153715,
+    "seen": 1791341703.0124428,
+    "ast_hash": "89d8b1dba7df5fc7dc0f6fe269a4e4e7",
+    "semantic_hash": "89d8b1dba7df5fc7dc0f6fe269a4e4e7"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialogueSystemGlobal.cs": {
+    "mtime": 1791342403.7968311,
+    "seen": 1791342778.4335418,
+    "ast_hash": "852b488e975ec3bd9997f0d00d278699",
+    "semantic_hash": "852b488e975ec3bd9997f0d00d278699"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialogueTrigger.cs": {
+    "mtime": 1791342494.5186052,
+    "seen": 1791342778.4335485,
+    "ast_hash": "fedaa5d86471781934dd888193af230e",
+    "semantic_hash": "fedaa5d86471781934dd888193af230e"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/teste.json": {
+    "mtime": 1791221563.460141,
+    "seen": 1791235044.5713427,
+    "ast_hash": "1631c32fceeccb1a4f419cf55f5ef62a",
+    "semantic_hash": "1631c32fceeccb1a4f419cf55f5ef62a"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/testeCondicao.json": {
+    "mtime": 1791219403.5511374,
+    "seen": 1791235044.571344,
+    "ast_hash": "767f20b2668e14c7a29ca1009f1817f2",
+    "semantic_hash": "767f20b2668e14c7a29ca1009f1817f2"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/testeCondicaoItem.json": {
+    "mtime": 1791225386.6201181,
+    "seen": 1791235044.5713453,
+    "ast_hash": "edfeb14a9e0cfccb5faed22ecd9b4026",
+    "semantic_hash": "edfeb14a9e0cfccb5faed22ecd9b4026"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/testepickUp.json": {
+    "mtime": 1791223323.375565,
+    "seen": 1791235044.5713468,
+    "ast_hash": "0695f6073ad43889e28aad1cdb56b344",
+    "semantic_hash": "0695f6073ad43889e28aad1cdb56b344"
+  },
+  "Assets/Scripts/Interactions/IInteractAction.cs": {
+    "mtime": 1791218605.7297041,
+    "seen": 1791235044.571348,
+    "ast_hash": "5d1747138e702a6cfb56a3fe0f8f6c11",
+    "semantic_hash": "5d1747138e702a6cfb56a3fe0f8f6c11"
+  },
+  "Assets/Scripts/Interactions/Interactable.cs": {
+    "mtime": 1791342683.2423742,
+    "seen": 1791342778.43543,
+    "ast_hash": "35f558328bd18600961603af66432099",
+    "semantic_hash": "35f558328bd18600961603af66432099"
+  },
+  "Assets/Scripts/Interactions/InteractionSystem.cs": {
+    "mtime": 1791342563.7589407,
+    "seen": 1791342778.4354334,
+    "ast_hash": "4b079172058e78e11e3ddfa320e2b015",
+    "semantic_hash": "4b079172058e78e11e3ddfa320e2b015"
+  },
+  "Assets/Scripts/Interactions/ItemPickup.cs": {
+    "mtime": 1791342474.9672053,
+    "seen": 1791342778.4354427,
+    "ast_hash": "6477878816b9ab3e2110a4d423640d3b",
+    "semantic_hash": "6477878816b9ab3e2110a4d423640d3b"
+  },
+  "Assets/Scripts/PostProcessingManager.cs": {
+    "mtime": 1791342708.7620282,
+    "seen": 1791342778.435446,
+    "ast_hash": "1a0bfdddbee6874b1c2d223dff074fbd",
+    "semantic_hash": "1a0bfdddbee6874b1c2d223dff074fbd"
+  },
+  "Assets/Scripts/SistemasBase/Escolhas/SaveManager.cs": {
+    "mtime": 1791342309.615152,
+    "seen": 1791342778.435452,
+    "ast_hash": "41ab373560c90dd0f197fa2d897b937c",
+    "semantic_hash": "41ab373560c90dd0f197fa2d897b937c"
+  },
+  "Docs/EstruturaPlanejadaDeUmDi\u00e1logo.json": {
+    "mtime": 1791217360.9567642,
+    "seen": 1791235044.5788538,
+    "ast_hash": "1631c32fceeccb1a4f419cf55f5ef62a",
+    "semantic_hash": "1631c32fceeccb1a4f419cf55f5ef62a"
+  },
+  "Assets/Scripts/CutsceneManager.cs": {
+    "mtime": 1791342334.9294055,
+    "seen": 1791342778.4332001,
+    "ast_hash": "1f5efc338f72dd942d32c29cf23226cd",
+    "semantic_hash": "1f5efc338f72dd942d32c29cf23226cd"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/Pensamento_Despertador.json": {
+    "mtime": 1791259068.837459,
+    "seen": 1791261210.78419,
+    "ast_hash": "6a3c04d11928724c10b7bf918ee0b637",
+    "semantic_hash": "6a3c04d11928724c10b7bf918ee0b637"
+  },
+  "Assets/Scripts/Interactions/Dialogos/DialoguesData/dialogoCelularTocou.json": {
+    "mtime": 1791259067.1059575,
+    "seen": 1791261210.7841935,
+    "ast_hash": "289029579f9d4cfc1275dfd612d9882c",
+    "semantic_hash": "289029579f9d4cfc1275dfd612d9882c"
+  },
+  "Assets/Scripts/WakeUpPrototype.cs": {
+    "mtime": 1791342355.1614337,
+    "seen": 1791342778.435462,
+    "ast_hash": "93f05ce16d8a5802f39bdd1511a1b4ab",
+    "semantic_hash": "93f05ce16d8a5802f39bdd1511a1b4ab"
+  },
+  "Assets/Scripts/Interactions/ChoiceSystemGlobal.cs": {
+    "mtime": 1791342748.4059289,
+    "seen": 1791342778.4332085,
+    "ast_hash": "4de6b634f55afd1ea6a439ce01734783",
+    "semantic_hash": "4de6b634f55afd1ea6a439ce01734783"
+  },
+  "Assets/Scripts/Interactions/InventoryData.cs": {
+    "mtime": 1791342633.626513,
+    "seen": 1791342778.4354365,
+    "ast_hash": "a32587548b39e706449b02820254f08b",
+    "semantic_hash": "a32587548b39e706449b02820254f08b"
+  },
+  "Assets/Scripts/Interactions/ItemData.cs": {
+    "mtime": 1791342658.0686505,
+    "seen": 1791342778.4354393,
+    "ast_hash": "39c2e1f98385edb623a1dd0ef2b2080e",
+    "semantic_hash": "39c2e1f98385edb623a1dd0ef2b2080e"
+  },
+  "Assets/Scripts/ReputationSystem.cs": {
+    "mtime": 1791342602.6308932,
+    "seen": 1791342778.4354494,
+    "ast_hash": "2c2f127896883afe696997d5260ef835",
+    "semantic_hash": "2c2f127896883afe696997d5260ef835"
+  },
+  "Assets/Scripts/SistemasBase/Input/InputRebindManager.cs": {
+    "mtime": 1791342586.774913,
+    "seen": 1791342778.435455,
+    "ast_hash": "a01dde61a3cac78a2149b0d45d4857f9",
+    "semantic_hash": "a01dde61a3cac78a2149b0d45d4857f9"
+  },
+  "Assets/Scripts/SistemasBase/MovementScript.cs": {
+    "mtime": 1791342517.302833,
+    "seen": 1791342778.4354572,
+    "ast_hash": "8debaf314da7a8bd99e2cac27e04467f",
+    "semantic_hash": "8debaf314da7a8bd99e2cac27e04467f"
+  },
+  "Assets/Scripts/SistemasBase/SpriteChange.cs": {
+    "mtime": 1791342240.9133186,
+    "seen": 1791342778.4354596,
+    "ast_hash": "a0f6bd9f8a05d6e84f64bb63dc6d550b",
+    "semantic_hash": "a0f6bd9f8a05d6e84f64bb63dc6d550b"
+  },
+  "Assets/Tests/GlobalStateManagerTests.cs": {
+    "mtime": 1791320763.1620023,
+    "seen": 1791341703.0150874,
+    "ast_hash": "f8025704ec7582a23573c7477f656718",
+    "semantic_hash": "f8025704ec7582a23573c7477f656718"
+  }
+}

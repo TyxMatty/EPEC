@@ -503,8 +503,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200910146d4c6cf4481b082c5f7268f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cutscene_AcordarPrologo
+  dialogoPensamento: {fileID: 4900000, guid: f679a697a3848314a83baeef4e657938, type: 3}
   dialogoCelularTocou: {fileID: 4900000, guid: 60912da47c32c2148a6eace8c891867e, type: 3}
-  dialogopensamento: {fileID: 4900000, guid: f679a697a3848314a83baeef4e657938, type: 3}
 --- !u!212 &322313900
 SpriteRenderer:
   serializedVersion: 3
@@ -622,6 +622,8 @@ MonoBehaviour:
   corNormal: {r: 1, g: 1, b: 1, a: 1}
   corSelecionada: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   textoTempo: {fileID: 0}
+  navigateAction: {fileID: -2871959606346411830, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
+  submitAction: {fileID: 5352722150999219159, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
 --- !u!4 &339147616
 Transform:
   m_ObjectHideFlags: 0
@@ -883,6 +885,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MovementScript
   baseSpeed: 5
   shiftMultiplier: 1.5
+  moveAction: {fileID: 7481497569049178729, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
+  sprintAction: {fileID: -9166256384603888007, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
   podeMover: 1
 --- !u!212 &532437062
 SpriteRenderer:
@@ -1034,6 +1038,8 @@ MonoBehaviour:
   interactionPrompt: {fileID: 1772221476}
   dialogueSystem: {fileID: 1104082166}
   inventarioGlobal: {fileID: 11400000, guid: 9035eff94e367d44bb480ba061b353b3, type: 2}
+  moveAction: {fileID: 7481497569049178729, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
+  interactAction: {fileID: -2857866608955566632, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
 --- !u!1 &580751933
 GameObject:
   m_ObjectHideFlags: 0
@@ -1725,6 +1731,7 @@ MonoBehaviour:
   canvasGroup: {fileID: 1104082167}
   fadeDuration: 0.5
   choiceSystem: {fileID: 339147615}
+  submitAction: {fileID: 5352722150999219159, guid: aa4607cbcd7e54f46840eafdd94a68c6, type: 3}
   podeAvancar: 0
 --- !u!225 &1104082167
 CanvasGroup:
@@ -1827,7 +1834,7 @@ Transform:
   m_GameObject: {fileID: 1471899964}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 0.04, y: -0.03, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Linq;
 
+// Sistema central de exibicao de dialogos, animacao typewriter de texto e gatilho de escolhas
 public class DialogueSystemGlobal : MonoBehaviour
 {
     [Header("Configuracoes do Sistema de Dialogo")]
@@ -16,29 +17,47 @@ public class DialogueSystemGlobal : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.5f; 
     
     [Header("Integracao de Escolhas")]
+    // Referencia ao sistema global de escolhas para iniciar telas de selecao
     [SerializeField] private ChoiceSystemGlobal choiceSystem; 
 
     [Header("Input Actions")]
-    [SerializeField] private InputActionReference submitAction; // enter, click, botao A
+    // Acao de input configurada para avancar ou acelerar falas (Enter, Botao A, Click)
+    [SerializeField] private InputActionReference submitAction; 
     
     private string[] dialogueLines;
     private int letraAtual = 0; 
     private bool isTyping = false; 
     private bool isTransitioning = false; 
+
+    // Variavel publica que sinaliza se o jogador ja pode pressionar o botao para avancar a fala
     public bool podeAvancar = false; 
     
     private DialogueData interacaoAtual; 
     private bool usouFalasAlternativas = false;
     private System.Action onDialogueEndedCallback;
+    private Coroutine typingCoroutine;
 
     void OnEnable()
     {
-        submitAction?.action.Enable();
+        if (submitAction != null && submitAction.action != null)
+        {
+            submitAction.action.Enable();
+        }
     }
 
     void OnDisable()
     {
-        submitAction?.action.Disable();
+        if (submitAction != null && submitAction.action != null)
+        {
+            submitAction.action.Disable();
+        }
+
+        // Garante que se o objeto for desativado inesperadamente, quem estiver aguardando seja liberado
+        if (onDialogueEndedCallback != null)
+        {
+            onDialogueEndedCallback.Invoke();
+            onDialogueEndedCallback = null;
+        }
     }
 
     void Awake()
@@ -47,18 +66,25 @@ public class DialogueSystemGlobal : MonoBehaviour
         {
             nextDialogueBox.gameObject.SetActive(false);
         }
+        if (dialogueText != null)
+        {
+            dialogueText.text = "";
+        }
     }
 
     void Update()
     {
-        if(isTransitioning || !podeAvancar) return;
+        if (isTransitioning || !podeAvancar) return;
         
-        if (submitAction != null && submitAction.action.WasPressedThisFrame())
+        if (submitAction != null && submitAction.action != null && submitAction.action.WasPressedThisFrame())
         {
             if (isTyping)
             {
-                StopAllCoroutines();
-                if (dialogueText != null) dialogueText.text = dialogueLines[letraAtual];
+                if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+                if (dialogueText != null && dialogueLines != null && letraAtual < dialogueLines.Length)
+                {
+                    dialogueText.text = dialogueLines[letraAtual];
+                }
                 isTyping = false;
             }
             else
@@ -73,12 +99,12 @@ public class DialogueSystemGlobal : MonoBehaviour
         letraAtual = 0;
         if (dialogueLines != null && dialogueLines.Length > 0)
         {
-            StartCoroutine(DigitarLinha());
+            typingCoroutine = StartCoroutine(DigitarLinha());
         }
-        StartCoroutine(EsperaEHabitilitaAvanco()); 
+        StartCoroutine(EsperaEHabilitaAvanco()); 
     }
 
-    private IEnumerator EsperaEHabitilitaAvanco()
+    private IEnumerator EsperaEHabilitaAvanco()
     {
         yield return new WaitForSeconds(0.2f);
         podeAvancar = true;
@@ -89,7 +115,7 @@ public class DialogueSystemGlobal : MonoBehaviour
         letraAtual++;
         if (dialogueLines != null && letraAtual < dialogueLines.Length)
         {
-            StartCoroutine(DigitarLinha());
+            typingCoroutine = StartCoroutine(DigitarLinha());
         } 
         else
         {
@@ -155,13 +181,21 @@ public class DialogueSystemGlobal : MonoBehaviour
         
         if (interacaoAtual != null && choiceSystem != null) 
         {
-            if (usouFalasAlternativas && interacaoAtual.dialogoAlternativoAlteraVariavel)
+            if (usouFalasAlternativas)
             {
-                choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogoAlternativo, true);
+                if (interacaoAtual.dialogoAlternativoAlteraVariavel)
+                    choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogoAlternativo, true);
+                
+                if (interacaoAtual.dialogoAlternativoAlteraReputacao && ReputationSystem.Instance != null)
+                    ReputationSystem.Instance.AdicionarReputacao(interacaoAtual.alvoReputacaoAlternativo, interacaoAtual.pontosReputacaoAlternativo);
             }
-            else if (!usouFalasAlternativas && interacaoAtual.alteraVariavel)
+            else
             {
-                choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogo, true); 
+                if (interacaoAtual.alteraVariavel)
+                    choiceSystem.SalvarEscolha(interacaoAtual.variavelAlteradaPorDialogo, true); 
+                
+                if (interacaoAtual.alteraReputacao && ReputationSystem.Instance != null)
+                    ReputationSystem.Instance.AdicionarReputacao(interacaoAtual.alvoReputacao, interacaoAtual.pontosReputacao);
             }
         }
 
@@ -173,25 +207,36 @@ public class DialogueSystemGlobal : MonoBehaviour
 
     public void IniciarDialogo(DialogueData data, System.Action onComplete = null) 
     {
+        if (data == null)
+        {
+            Debug.LogError("[DialogueSystem] DialogueData recebido e nulo!");
+            onComplete?.Invoke();
+            return;
+        }
+
         interacaoAtual = data; 
         onDialogueEndedCallback = onComplete;
+        if (dialogueText != null) dialogueText.text = "";
         
         if (interacaoAtual.temFrasesAlternativas && choiceSystem != null)
         {
             bool expectedValue = !interacaoAtual.esperaCondicaoFalsa;
-            bool condicaoSatisfeita = false;
+            bool condicaoVariavelValida = true;
+            bool condicaoItemValida = true;
 
             if (!string.IsNullOrEmpty(interacaoAtual.variavelDaCondicao))
             {
                 bool result = choiceSystem.ChecarCondicao(interacaoAtual.variavelDaCondicao);
-                if (result == expectedValue) condicaoSatisfeita = true;
+                condicaoVariavelValida = (result == expectedValue);
             }
             
             if (!string.IsNullOrEmpty(interacaoAtual.itemDaCondicao))
             {
                 bool result = choiceSystem.ChecarItem(interacaoAtual.itemDaCondicao);
-                if (result == expectedValue) condicaoSatisfeita = true;
+                condicaoItemValida = (result == expectedValue);
             }
+
+            bool condicaoSatisfeita = condicaoVariavelValida && condicaoItemValida;
 
             if (condicaoSatisfeita)
             {
@@ -218,9 +263,12 @@ public class DialogueSystemGlobal : MonoBehaviour
         StartDialogue();
     }
 
+    // Metodo publico chamado pelo sistema de escolhas ao finalizar uma opcao
     public void EncerrarPosEscolha() 
     {
        StartCoroutine(Transicao());
     }
 }
+
+
 

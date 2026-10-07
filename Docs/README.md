@@ -1,130 +1,199 @@
 # Manual do Desenvolvedor - Projeto EPEC
-Bem-vindo ao manual do projeto EPEC! Se você é um novato na equipe, este documento é a sua Bíblia. Ele explica como a arquitetura Anti-Spaghetti do jogo funciona, onde cada script deve ser colocado no Unity e como "ligar os fios" no Inspector para que nada quebre.
+
+Bem-vindo ao manual do projeto EPEC! Este documento e o guia definitivo da arquitetura do jogo. Ele explica como cada sistema funciona, onde cada script deve ser anexado no Unity e como conectar as referencias no Inspector para garantir estabilidade e extensibilidade sem spaghetti code.
 
 ---
 
-## 1. O Jogador (Player)
-O objeto do jogador na cena é o centro da ação. Ele exige a configuração correta de fìsica e inputs.
+## 1. Estrutura de Pastas de Scripts (`Assets/Scripts/`)
+
+Para manter o projeto limpo e desacoplado, os scripts estao organizados nos seguintes modulos:
+
+- `Assets/Scripts/`: Gerenciadores globais de alto nivel (`GlobalStateManager.cs`, `ReputationSystem.cs`, `CutsceneManager.cs`, `PostProcessingManager.cs`, `FlowerStateListener.cs`, `WakeUpPrototype.cs`).
+- `Assets/Scripts/SistemasBase/`: Movimentacao basica e animacao manual (`MovementScript.cs`, `SpriteChange.cs`).
+- `Assets/Scripts/SistemasBase/Input/`: Rebind e gerenciamento de entradas (`InputRebindManager.cs`).
+- `Assets/Scripts/SistemasBase/Escolhas/`: Persistencia de dados em disco (`SaveManager.cs`).
+- `Assets/Scripts/Interactions/`: Interacao fisica, inventario e escolhas (`InteractionSystem.cs`, `Interactable.cs`, `ItemPickup.cs`, `ChoiceSystemGlobal.cs`, `InventoryData.cs`, `ItemData.cs`, `IInteractAction.cs`).
+- `Assets/Scripts/Interactions/Dialogos/`: Dialogos data-driven e maquina de escrever (`DialogueSystemGlobal.cs`, `DialogueTrigger.cs`, `DialogueData.cs`).
+- `Assets/Scripts/Cameras/`: Modos de camera dinamica e por salas (`CameraFollow.cs`, `SceneFollow.cs`).
+
+---
+
+## 2. O Jogador (Player)
+
+O GameObject do jogador na cena e o centro das acoes fisicas e de input.
+
 ### Scripts para Anexar no Player:
-1. **`MovementScript`**
-   - **O que faz:** Controla a física e o Input (WASD) do jogador.
-   - **O que exige:** O jogador **precisa** ter um componente `Rigidbody2D` (com Gravidade em 0) e um `BoxCollider2D`.
-   - **Atributos:** Você pode ajustar a `speed` base no Inspector.
-2. **`SpriteChange`**
-   - **O que faz:** Troca os frames da animação sem usar o Animator do Unity.
-   - **O que exige:** O jogador precisa ter um componente `SpriteRenderer`.
-   - **Atributos:** Arraste os sprites das caminhadas (frente, costas, lados) nas listas do Inspector.
-3. **`InteractionSystem`**
-   - **O que faz:** Dispara um raio invisível (Raycast) na frente do jogador para detectar objetos interagíveis.
-   - **Atributos:** Defina a `InteractableLayer` no Inspector. Apenas objetos que estiverem nessa Layer (camada) específica serão detectados pelo jogador.
+
+1. **`MovementScript`** (em `SistemasBase`)
+   - **O que faz:** Controla a fisica de movimentacao 2D utilizando `Rigidbody2D` e o Unity Input System moderno (`InputActionReference`).
+   - **O que exige:** Componentes `Rigidbody2D` (com Gravity Scale = 0 e Collision Detection = Continuous) e `BoxCollider2D`.
+   - **Campos no Inspector:**
+     - `speed`: Velocidade base de caminhada.
+     - `runMultiplier`: Multiplicador de velocidade ao correr.
+     - `moveAction`: Referencia para o `InputActionReference` de movimento (Vector2 / WASD / D-Pad).
+     - `sprintAction`: Referencia para o `InputActionReference` de corrida (Shift / Botao de Sprint).
+   - **Controle Externo:** A variavel publica `podeMover` (bool) e alterada por dialogos e cutscenes para travar o jogador instantaneamente quando necessario.
+
+2. **`SpriteChange`** (em `SistemasBase`)
+   - **O que faz:** Troca os frames de animacao diretamente no `SpriteRenderer` com base na velocidade vetorial, sem a sobrecarga do Animator do Unity.
+   - **O que exige:** Componente `SpriteRenderer`.
+   - **Campos no Inspector:**
+     - Listas de Sprites para cada direcao (frente, costas, lados) nas velocidades parado, andando e correndo.
+     - `transitionSpeed`: Intervalo de tempo entre a troca de frames.
+
+3. **`InteractionSystem`** (em `Interactions`)
+   - **O que faz:** Dispara um `Raycast2D` invisivel na direcao em que o jogador esta virado para detectar objetos interagiveis.
+   - **Campos no Inspector:**
+     - `interactableLayer`: LayerMask configurada para detectar objetos interativos (ex: Layer `Interagivel`).
+     - `rayDistance`: Distancia maxima de alcance da interacao.
+     - `interactionPrompt`: GameObject ou icone de UI (ex: botao "E") exibido na tela quando o jogador esta na frente de um objeto interativo.
+     - `interactAction`: Referencia para o `InputActionReference` de interacao (tecla E / Enter / Gamepad South).
 
 ---
 
-## 2. O Cérebro do Jogo (Game Managers)
-Os Managers não têm forma física. Crie um **GameObject Vazio** (Empty Object) na cena e chame-o de `GameManager`. Anexe os scripts abaixo nele:
+## 3. Os Gerenciadores Globais (Game Managers)
 
-### Scripts para Anexar no GameManager:
+Os managers coordenam o estado do jogo e nao possuem corpo fisico no mundo. Recomenda-se criar um GameObject vazio chamado `GameManager` na cena inicial e anexar os gerenciadores necessarios:
 
-1. **`SaveManager`**
+1. **`GlobalStateManager`** (ScriptableObject)
+   - **O que faz:** A memoria central do jogo. Armazena a lista de flags booleanas (`List<GameFlag>`) e a lista de reputacoes numericas (`List<Reputacao>`).
+   - **Caracteristicas:**
+     - Nao usa Dicionarios: Mantem listas serializaveis compativeis com o Inspector do Unity e com salvamento em JSON.
+     - Auto-inicializacao: Garante inicializacao segura em `OnEnable()` e getters/setters/adders com busca segura e null checks.
 
-   - **O que faz:** Salva as variáveis e o inventário em um JSON no disco do jogador.
-   - **Lidando no Inspector:**
-     - `stateManager`: Arraste o seu arquivo Asset `GlobalStateManager` que está na pasta do projeto.
-     - `inventory`: Arraste o seu arquivo Asset `InventoryData` (Mochila).
+2. **`ReputationSystem`** (MonoBehaviour Singleton)
+   - **O que faz:** Interface dinamica para consulta e alteracao de reputacao de personagens e faccoes (ex: Tobias, Maria, Gi).
+   - **Campos no Inspector:**
+     - `globalState`: Referencia ao asset `GlobalStateManager`.
+   - **Metodos Principais:**
+     - `ReputationSystem.Instance.AdicionarReputacao(nome, valor)`
+     - `ReputationSystem.Instance.ObterReputacao(nome)`
 
-2. **`ChoiceSystemGlobal`**
+3. **`SaveManager`** (em `SistemasBase/Escolhas`)
+   - **O que faz:** Serializa o estado completo do jogo (`GameSaveData`) em um arquivo JSON em `Application.persistentDataPath/savegame.json`.
+   - **O que e salvo:**
+     - Lista de Flags booleanas do `GlobalStateManager`.
+     - Lista de Reputacoes numericas do `GlobalStateManager`.
+     - Lista de IDs dos itens contidos na mochila (`InventoryData`).
+   - **Campos no Inspector:**
+     - `stateManager`: Referencia ao asset `GlobalStateManager`.
+     - `inventory`: Referencia ao asset `InventoryData`.
 
-   - **O que faz:** Exibe a UI de escolhas e altera as variáveis quando o jogador toma uma decisão.
-   - **Lidando no Inspector:**
-     - `stateManager` / `inventarioGlobal`: Arraste os mesmos assets citados acima.
-     - `choiceUI`: Arraste o painel (Panel) da Canvas que guarda os botões de escolha.
-     - `choiceTexts`: Arraste os componentes TextMeshPro dos botões de escolha.
+4. **`ChoiceSystemGlobal`** (em `Interactions`)
+   - **O que faz:** Exibe a UI de escolhas ramificadas com temporizadores opcionais e atualiza as variaveis no `GlobalStateManager` ou no `InventoryData`.
+   - **Campos no Inspector:**
+     - `choiceUI`: GameObject do painel da Canvas de escolhas.
+     - `choiceTexts`: Array de `TextMeshProUGUI` dos botoes de escolha.
+     - `stateManager`: Referencia ao asset `GlobalStateManager`.
+     - `inventarioGlobal`: Referencia ao asset `InventoryData`.
 
-3. **`DialogueSystemGlobal`**
+5. **`DialogueSystemGlobal`** (em `Interactions/Dialogos`)
+   - **O que faz:** Controla a exibicao de falas na tela com efeito retro suave de maquina de escrever (`dialogueText.text += letter`).
+   - **Campos no Inspector:**
+     - `dialogueText`: Componente `TextMeshProUGUI` onde as frases sao renderizadas.
+     - `canvasGroup`: Componente `CanvasGroup` do painel de dialogo para transicoes suaves de alfa.
+     - `stateManager`: Referencia ao `GlobalStateManager` para verificacao e alteracao de variaveis.
+     - `inventarioGlobal`: Referencia ao `InventoryData` para checagem de itens requeridos em condicoes de dialogo.
+     - `choiceSystem`: Referencia direta ao componente `ChoiceSystemGlobal`.
 
-   - **O que faz:** Escreve as falas na tela como uma máquina de escrever.
-   - **Lidando no Inspector:**
-     - `dialogueText`: Arraste o componente de Texto (TextMeshPro) onde a fala vai aparecer.
-     - `canvasGroup`: Arraste o componente CanvasGroup do painel principal de diálogo (usado para fazer o fade in/out).
-     - `GameManager`: Arraste **este próprio GameObject** do GameManager (porque ele precisa falar com o `ChoiceSystemGlobal` que está anexado ao lado dele).
-
----
-
-## 3. Os Dados Base (Scriptable Objects)
-Estes não ficam na Cena. Eles são **Arquivos** que ficam salvos na sua pasta `Assets`.
-- **`GlobalStateManager`**: A memória do jogo. Lá você cria uma lista inicial de variáveis (ex: `portaAberta = false`, `rotaR = false`). Os Managers consultam esse arquivo.
-- **`InventoryData`**: A mochila. Contém a lista de `ItemData` que o jogador pegou.
-- **`ItemData`**: O "Molde" de um item (ex: a `Chave.asset`).
-  - **⚠ REGRA DE OURO DO SAVE:** Todo `ItemData` **TEM** que estar salvo dentro da pasta exata `Assets/Resources/Itens`. Se o arquivo não estiver nessa pasta, o `SaveManager` não consegue achar a imagem do item quando o jogador carregar o jogo!
-
----
-
-## 4. O Mundo Físico (Objetos Interagíveis)
-Como criar um guarda-roupa, porta ou NPC que fala?
-1. Crie o Sprite na cena.
-2. Adicione um componente `BoxCollider2D`.
-3. Mude a **Layer** no canto superior direito do Inspector para a mesma Layer que você configurou no `InteractionSystem` do jogador (ex: `Interagivel`).
-4. Anexe um dos dois scripts abaixo:
-
-### A - Para Falas / Eventos (Usar `DialogueTrigger`)
-
-- **Como configurar:** Crie um arquivo JSON com as falas e condições (na pasta `DialoguesData`). Arraste esse JSON para o slot vazio que vai aparecer no script `DialogueTrigger` no Inspector.
-
-### B - Para Coletar Itens (Usar `ItemPickup`)
-
-- **Como configurar:** Arraste o `ItemData` (ex: a Chave) da sua pasta `Resources/Itens` para o slot do script `ItemPickup`. Quando o jogador interagir, o item some da cena e vai para a Mochila.
-
----
---- 
-## 5. Como Configurar Paineis de UI
-
-Se precisar criar uma nova tela (ex: Escolhas, Dialogo):
-1. Crie um Canvas e um Panel dentro dele.
-2. **Ancoras:** No Inspector do Rect Transform, clique no icone do quadrado. Segure Alt e clique na opcao do canto inferior direito (Stretch). Isso faz o painel esticar com a tela.
-3. Se for uma caixa de texto na base da tela, use a ancora Inferior-Centro (Bottom-Center) e ajuste o Pivot para Y = 0.
-4. Os textos devem usar o TextMeshProUGUI.
-5. Anexe os botoes ou paineis nas referencias publicas dos Managers (ex: choiceTexts no ChoiceSystemGlobal).
+6. **`CutsceneManager`**
+   - **O que faz:** Singleton responsavel por orquestrar sequencias narrativas, travar o jogador e fornecer corrotinas de espera (`TocarDialogoEEsperar`).
+   - **Seguranca:** Inclui guardas contra deadlock caso um dialogo seja interrompido abruptamente, devolvendo o controle da corrotina.
 
 ---
 
+## 4. Dados em Scriptable Objects (`Assets`)
 
-## 6. Cutscenes e Dialogos Desconectados (Standalone)
+Estes assets sao salvos diretamente nos arquivos do projeto Unity:
 
-O sistema de Cutscenes (atraves do script `CutsceneManager.cs`) permite criar eventos scriptados e bloquear o jogador de forma global. Ele utiliza dialogos desconectados (standalone) para interagir com a interface.
+- **`GlobalStateManager`**: Asset criado via `Create -> Scriptable Objects -> GlobalStateManager`.
+- **`InventoryData`**: Asset criado via `Create -> Scriptable Objects -> InventoryData`. Contem a lista `itens` (`List<ItemData>`) e metodos utilitarios como `AdicionarItem`, `RemoverItem`, `ContemItem` e `Limpar`.
+- **`ItemData`**: Asset que define um item colecionavel (ID, Nome, Descricao, Icone).
+  - **REGRA OBRIGATORIA:** Todos os assets de `ItemData` **DEVEM** ser salvos dentro da pasta `Assets/Resources/Itens/`. O `SaveManager` utiliza `Resources.Load<ItemData>("Itens/" + id)` para restaurar os itens apos recarregar o jogo.
 
-### Dialogos Desconectados
-Um dialogo desconectado e um arquivo JSON feito apenas para tocar um texto, sem disparar escolhas ou mudar variaveis no meio da cutscene (deixando essa logica para o script da cutscene em si).
-Seu JSON DEVE ter as seguintes propriedades como falsas:
-- `terminaEmEscolha: false`
-- `alteraVariavel: false`
+---
 
-### Como usar o CutsceneManager
-Para usar o CutsceneManager e tocar dialogos no meio da sua cutscene customizada (como no script `WakeUpPrototype.cs`), utilize **Coroutines** no Unity.
+## 5. Objetos Interagiveis no Cenario
 
-1. Crie uma Coroutine no seu script de cutscene (ex: `IEnumerator MinhaCutscene()`).
-2. Desative o movimento do jogador.
-3. Chame a funcao de dialogo e use o comando `yield return StartCoroutine` para esperar o dialogo acabar antes de continuar o script.
-   Exemplo: `yield return StartCoroutine(CutsceneManager.Instance.TocarDialogoEEsperar(meuArquivoJson));`
-4. Quando o jogador fechar o dialogo, o script vai automaticamente continuar para a proxima linha abaixo.
-5. Termine a cutscene e devolva o controle ao jogador.
+Para criar um objeto que o jogador pode inspecionar, falar ou coletar:
 
+1. Crie o GameObject com `SpriteRenderer` e `BoxCollider2D`.
+2. Defina a **Layer** do GameObject para a mesma configurada no `InteractionSystem` do jogador (ex: `Interagivel`).
+3. Anexe os componentes conforme o proposito do objeto:
 
-## 7. Como Criar um Diálogo em JSON (Guia Rápido)
-Não escrevemos falas no Unity, escrevemos em JSON! Crie um arquivo `.json` em `Assets/Scripts/Interactions/Dialogos/DialoguesData/` com este formato:
+### A - Para Dialogos e Eventos: `DialogueTrigger`
+- Anexe o script `DialogueTrigger` ao objeto.
+- Arraste o arquivo `TextAsset` (o `.json` criado na pasta `DialoguesData`) para o campo `dialogueJSON`.
+- Opcionalmente, configure `onlyOnce` se o dialogo so puder ser disparado uma vez.
+
+### B - Para Coleta de Itens: `ItemPickup`
+- Anexe o script `ItemPickup` ao objeto.
+- Arraste o asset `ItemData` correspondente (salvo em `Resources/Itens/`) para o campo `item`.
+- Ao interagir, o item e adicionado ao `InventoryData` e o GameObject e destruido ou desativado.
+
+### C - Para Cenarios Reativos: `FlowerStateListener`
+- Anexe o script `FlowerStateListener` em flores ou elementos do cenario que reagem ao estado narrativo.
+- Configure `targetFlag` (nome da flag no `GlobalStateManager`), `activeSprite` e `defaultSprite`.
+- O script atualiza o sprite automaticamente no `Start()` e pode ser chamado a qualquer momento via `AtualizarEstadoVisual()`.
+
+---
+
+## 6. Sistema de Cutscenes e Dialogos Standalone
+
+Para criar cutscenes scriptadas (como a do despertar em `WakeUpPrototype.cs`):
+
+1. Crie uma Coroutine no seu script da cutscene (`IEnumerator ExecutarCutscene()`).
+2. Trave o jogador: `MovementScript.podeMover = false;`
+3. Dispare o dialogo e pause a execucao ate o fim da leitura:
+   ```csharp
+   yield return StartCoroutine(CutsceneManager.Instance.TocarDialogoEEsperar(meuTextAssetJson));
+   ```
+4. Execute animacoes, mudancas de camera ou fades.
+5. Devolva o movimento ao jogador ao concluir: `MovementScript.podeMover = true;`
+
+### Dialogos Desconectados (Standalone)
+Um dialogo standalone e um arquivo `.json` utilizado em cutscenes sem ramificacao automatica:
+- Defina `"terminaEmEscolha": false`
+- Defina `"alteraVariavel": false`
+Isso permite que a logica de escolhas e mudanca de estado seja controlada exclusivamente pelo script da cutscene.
+
+---
+
+## 7. Formato Padrao de Dialogos em JSON
+
+Os arquivos de dialogo devem ser salvos em `Assets/Scripts/Interactions/Dialogos/DialoguesData/` com extensao `.json`:
+
 ```json
 {
-    "dialogueID": "porta_exemplo",
-    "falas": [ "Hmm, trancada." ],
+    "dialogueID": "porta_quarto",
+    "falas": [
+        "A porta esta trancada por fora."
+    ],
     "alteraVariavel": false,
-    
+    "variavelParaAlterar": "",
+
     "temFrasesAlternativas": true,
-    "itemDaCondicao": "Chave",
-    
+    "itemDaCondicao": "ChaveAntiga",
+    "falasAlternativas": [
+        "Usei a Chave Antiga na fechadura.",
+        "A porta se abriu com um estalo rangente."
+    ],
     "dialogoAlternativoAlteraVariavel": true,
-    "variavelAlteradaPorDialogoAlternativo": "portaAberta",
-    "falasAlternativas": [ "Usei a chave, abriu!" ],
-    
-    "terminaEmEscolha": false
-} 
+    "variavelAlteradaPorDialogoAlternativo": "portaQuartoAberta",
+
+    "terminaEmEscolha": false,
+    "textoPergunta": "",
+    "textosDasOpcoes": [],
+    "variavelDaEscolha": "",
+    "temTimer": false,
+    "tempoLimite": 0.0
+}
 ```
-Tradução do código acima: "Ao interagir, se o jogador tiver a Chave no inventário, diga que abriu e mude a variável global portaAberta para true. Senão, diga apenas que está trancada."
+
+---
+
+## 8. Boas Praticas e Convencoes de Codigo
+
+1. **Null Checks em Campos Serializados:** Sempre valide campos `[SerializeField]` com verificacao nula antes de acessar membros para prevenir `NullReferenceException` quando referencias forem esquecidas no Inspector.
+2. **Preservacao de Nomes no Inspector:** Ao renomear variaveis serializadas em scripts C#, utilize o atributo `[FormerlySerializedAs("nomeAntigo")]` para evitar que as ligacoes nas cenas (`.unity`) e prefabs sejam perdidas.
+3. **Comentarios e Codificacao:** Mantenha todos os comentarios de codigo e mensagens em caracteres ASCII puros para evitar problemas de compatibilidade e corrupcao de codificacao UTF-8 no Windows.

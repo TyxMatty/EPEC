@@ -1,16 +1,7 @@
 using UnityEngine;
 
+// Gerenciador de efeitos de pos-processamento (Volume/Efeitos de vinheta para Ataques de Panico e QTEs)
 public class PostProcessingManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    // Reservado para ligacao com o sistema de Ataque de Panico e mudancas de estado emocional
 }
