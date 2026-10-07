@@ -17,6 +17,9 @@ public class DialogueSystemGlobal : MonoBehaviour
     
     [Header("Integracao de Escolhas")]
     [SerializeField] private ChoiceSystemGlobal choiceSystem; 
+
+    [Header("Input Actions")]
+    [SerializeField] private InputActionReference submitAction; // enter, click, botao A
     
     private string[] dialogueLines;
     private int letraAtual = 0; 
@@ -27,6 +30,16 @@ public class DialogueSystemGlobal : MonoBehaviour
     private DialogueData interacaoAtual; 
     private bool usouFalasAlternativas = false;
     private System.Action onDialogueEndedCallback;
+
+    void OnEnable()
+    {
+        submitAction?.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        submitAction?.action.Disable();
+    }
 
     void Awake()
     {
@@ -39,10 +52,8 @@ public class DialogueSystemGlobal : MonoBehaviour
     void Update()
     {
         if(isTransitioning || !podeAvancar) return;
-        var keyboard = Keyboard.current;
-        if(keyboard == null) return;
         
-        if (keyboard.enterKey.wasPressedThisFrame)
+        if (submitAction != null && submitAction.action.WasPressedThisFrame())
         {
             if (isTyping)
             {
@@ -85,7 +96,7 @@ public class DialogueSystemGlobal : MonoBehaviour
             if (interacaoAtual != null && interacaoAtual.terminaEmEscolha && choiceSystem != null)
             {
                 Debug.Log("[DialogueSystem] Dialogo terminou em escolha. Iniciando escolhas...");
-                podeAvancar = false; // trava o jogador na tela de escolha
+                podeAvancar = false; // Trava o jogador na tela de escolha
                 choiceSystem.IniciarTelaDeEscolhas( 
                     interacaoAtual.variavelParaSalvar, 
                     interacaoAtual.textosDasOpcoes != null ? interacaoAtual.textosDasOpcoes.ToArray() : new string[0],
@@ -94,7 +105,6 @@ public class DialogueSystemGlobal : MonoBehaviour
                     interacaoAtual.tempoLimite,
                     interacaoAtual.escolhaNeutra,
                     () => {
-                        // callback de quando o jogador faz a escolha!
                         podeAvancar = true;
                         EncerrarPosEscolha();
                     }
@@ -142,7 +152,6 @@ public class DialogueSystemGlobal : MonoBehaviour
         {
             nextDialogueBox.gameObject.SetActive(true);
         }
-        gameObject.SetActive(false); 
         
         if (interacaoAtual != null && choiceSystem != null) 
         {
@@ -156,9 +165,10 @@ public class DialogueSystemGlobal : MonoBehaviour
             }
         }
 
-        // Chama o callback passando a bola pra quem iniciou o dialogo
         onDialogueEndedCallback?.Invoke();
         onDialogueEndedCallback = null;
+
+        gameObject.SetActive(false); 
     }
 
     public void IniciarDialogo(DialogueData data, System.Action onComplete = null) 
@@ -213,3 +223,4 @@ public class DialogueSystemGlobal : MonoBehaviour
        StartCoroutine(Transicao());
     }
 }
+

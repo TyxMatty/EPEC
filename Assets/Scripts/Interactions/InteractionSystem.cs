@@ -12,9 +12,25 @@ public class InteractionSystem : MonoBehaviour
     public DialogueSystemGlobal dialogueSystem;
     public InventoryData inventarioGlobal;
 
+    [Header("Input Actions")]
+    [SerializeField] private InputActionReference moveAction; // para direcao de olhar
+    [SerializeField] private InputActionReference interactAction; // para apertar E/A
+
     private Transform objectToInteractWith;
     private Vector2 interactionDirection = Vector2.down;
     
+    void OnEnable()
+    {
+        moveAction?.action.Enable();
+        interactAction?.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        moveAction?.action.Disable();
+        interactAction?.action.Disable();
+    }
+
     void Start()
     {
         if (interactionPrompt != null)
@@ -30,10 +46,7 @@ public class InteractionSystem : MonoBehaviour
         VerificarInteracao();
         AtualizarDirecaoInteracao(); 
         
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
-        
-        if ((keyboard.eKey.wasPressedThisFrame || keyboard.enterKey.wasPressedThisFrame) && objectToInteractWith != null)
+        if (interactAction != null && interactAction.action.WasPressedThisFrame() && objectToInteractWith != null)
         {
             Interact();
         }
@@ -41,15 +54,12 @@ public class InteractionSystem : MonoBehaviour
 
     private void AtualizarDirecaoInteracao()
     {
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        if (moveAction == null) return;
+        Vector2 input = moveAction.action.ReadValue<Vector2>();
 
-        float moveX = (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed ? 1f : 0f) - (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed ? 1f : 0f);
-        float moveY = (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed ? 1f : 0f) - (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed ? 1f : 0f);
-
-        if (moveX != 0f || moveY != 0f)
+        if (input != Vector2.zero)
         {
-            interactionDirection = new Vector2(moveX, moveY).normalized;
+            interactionDirection = input.normalized;
         }
     }
 
@@ -84,12 +94,11 @@ public class InteractionSystem : MonoBehaviour
             interactionPrompt.SetActive(false); 
         }
 
-        // Executa todas as ações que o objeto possui
         IInteractAction[] actions = objectToInteractWith.GetComponents<IInteractAction>();
         
         if (actions.Length == 0)
         {
-            Debug.LogWarning($"O objeto {objectToInteractWith.name} não possui ações de interação configuradas (IInteractAction).");
+            Debug.LogWarning($"O objeto {objectToInteractWith.name} nuo possui aes de interauo configuradas.");
             return;
         }
 

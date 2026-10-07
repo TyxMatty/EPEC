@@ -18,6 +18,10 @@ public class ChoiceSystemGlobal : MonoBehaviour
     [SerializeField] private Color corSelecionada = Color.yellow; 
     [SerializeField] private TMPro.TextMeshProUGUI textoTempo; 
     
+    [Header("Input Actions")]
+    [SerializeField] private InputActionReference navigateAction; // pra cima e pra baixo (Vector2)
+    [SerializeField] private InputActionReference submitAction; // enter, botao A
+    
     private bool isChoosing = false;
     private int escolhaAtual = -1; 
     private string variavelAtualParaSalvar = "";
@@ -28,6 +32,18 @@ public class ChoiceSystemGlobal : MonoBehaviour
     private bool[] valoresDasEscolhas;
     private System.Action onChoiceMadeCallback;
 
+    void OnEnable()
+    {
+        navigateAction?.action.Enable();
+        submitAction?.action.Enable();
+    }
+
+    void OnDisable()
+    {
+        navigateAction?.action.Disable();
+        submitAction?.action.Disable();
+    }
+
     void Start()
     {
         if (choiceUI != null) choiceUI.SetActive(false);
@@ -36,8 +52,6 @@ public class ChoiceSystemGlobal : MonoBehaviour
     void Update()
     {
         if (!isChoosing) return;
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
 
         if (usarTempoLimite)
         {
@@ -50,86 +64,72 @@ public class ChoiceSystemGlobal : MonoBehaviour
             }
         }
 
-        if (keyboard.upArrowKey.wasPressedThisFrame || keyboard.wKey.wasPressedThisFrame)
+        if (navigateAction != null && navigateAction.action.WasPressedThisFrame())
         {
-            MudarEscolha(-1);
-        }
-        else if (keyboard.downArrowKey.wasPressedThisFrame || keyboard.sKey.wasPressedThisFrame)
-        {
-            MudarEscolha(1);
+            Vector2 nav = navigateAction.action.ReadValue<Vector2>();
+            if (nav.y > 0.5f) MudarEscolha(-1);
+            else if (nav.y < -0.5f) MudarEscolha(1);
         }
 
-        if (keyboard.enterKey.wasPressedThisFrame && escolhaAtual != -1)
+        if (submitAction != null && submitAction.action.WasPressedThisFrame() && escolhaAtual != -1)
         {
             ConfirmarEscolha();
         }
     }
 
-    public void IniciarTelaDeEscolhas(string variavel, string[] opcoes, bool[] valores, bool comTempo, float tempo, bool neutraAtivada, System.Action onComplete)
+    public void IniciarTelaDeEscolhas(string variavelAlvo, string[] opcoesTextos, bool[] opcoesValores, bool temTempo, float limiteDeTempo, bool escolhaNeutra, System.Action callbackDeSucesso)
     {
-        variavelAtualParaSalvar = variavel;
-        usarTempoLimite = comTempo;
-        tempoRestante = tempo;
-        escolhaNeutraAtivada = neutraAtivada;
-        valoresDasEscolhas = valores;
-        onChoiceMadeCallback = onComplete;
-        
-        if (textoTempo != null) 
-        {
-            if (usarTempoLimite) textoTempo.gameObject.SetActive(true);
-            else textoTempo.gameObject.SetActive(false);
-        }
+        variavelAtualParaSalvar = variavelAlvo;
+        isChoosing = true;
+        escolhaAtual = 0; 
+        usarTempoLimite = temTempo;
+        tempoRestante = limiteDeTempo;
+        escolhaNeutraAtivada = escolhaNeutra;
+        onChoiceMadeCallback = callbackDeSucesso;
+        valoresDasEscolhas = opcoesValores;
 
-        if (choiceTexts != null)
+        if (choiceUI != null) choiceUI.SetActive(true);
+        if (textoTempo != null) textoTempo.gameObject.SetActive(temTempo);
+
+        for (int i = 0; i < choiceTexts.Length; i++)
         {
-            for (int i = 0; i < choiceTexts.Length; i++)
+            if (i < opcoesTextos.Length)
             {
-                if (i < opcoes.Length)
-                {
-                    choiceTexts[i].text = opcoes[i];
-                    choiceTexts[i].gameObject.SetActive(true);
-                    choiceTexts[i].color = corNormal; 
-                }
-                else
-                {
-                    choiceTexts[i].gameObject.SetActive(false);
-                }
+                choiceTexts[i].gameObject.SetActive(true);
+                choiceTexts[i].text = opcoesTextos[i];
+            }
+            else
+            {
+                choiceTexts[i].gameObject.SetActive(false);
             }
         }
 
-        escolhaAtual = 0; 
-        AtualizarCores();
-
-        if (choiceUI != null) choiceUI.SetActive(true);
-        isChoosing = true;
+        AtualizarUI();
     }
 
     private void MudarEscolha(int direcao)
     {
-        if (choiceTexts == null) return;
-
-        int quantidadeDeOpcoesVisiveis = 0;
-        foreach (var texto in choiceTexts)
+        int totalAtivas = 0;
+        for (int i = 0; i < choiceTexts.Length; i++)
         {
-            if (texto.gameObject.activeSelf) quantidadeDeOpcoesVisiveis++;
+            if (choiceTexts[i].gameObject.activeSelf) totalAtivas++;
         }
 
         escolhaAtual += direcao;
-        if (escolhaAtual < 0) escolhaAtual = quantidadeDeOpcoesVisiveis - 1;
-        if (escolhaAtual >= quantidadeDeOpcoesVisiveis) escolhaAtual = 0;
 
-        AtualizarCores();
+        if (escolhaAtual < 0) escolhaAtual = totalAtivas - 1;
+        else if (escolhaAtual >= totalAtivas) escolhaAtual = 0;
+
+        AtualizarUI();
     }
 
-    private void AtualizarCores()
+    private void AtualizarUI()
     {
-        if (choiceTexts == null) return;
-
         for (int i = 0; i < choiceTexts.Length; i++)
         {
             if (choiceTexts[i].gameObject.activeSelf)
             {
-                 choiceTexts[i].color = (i == escolhaAtual) ? corSelecionada : corNormal;
+                choiceTexts[i].color = (i == escolhaAtual) ? corSelecionada : corNormal;
             }
         }
     }
@@ -138,55 +138,65 @@ public class ChoiceSystemGlobal : MonoBehaviour
     {
         isChoosing = false;
         if (choiceUI != null) choiceUI.SetActive(false);
-        if (textoTempo != null) textoTempo.gameObject.SetActive(false);
 
-        bool valorDaEscolha = false; 
-        if (valoresDasEscolhas != null && escolhaAtual < valoresDasEscolhas.Length && escolhaAtual >= 0)
+        if (!string.IsNullOrEmpty(variavelAtualParaSalvar))
         {
-            valorDaEscolha = valoresDasEscolhas[escolhaAtual];
+            bool valorEscolhido = true; 
+            if (valoresDasEscolhas != null && escolhaAtual >= 0 && escolhaAtual < valoresDasEscolhas.Length)
+            {
+                valorEscolhido = valoresDasEscolhas[escolhaAtual];
+            }
+            SalvarEscolha(variavelAtualParaSalvar, valorEscolhido);
         }
         
-        SalvarEscolha(variavelAtualParaSalvar, valorDaEscolha);
-
         onChoiceMadeCallback?.Invoke();
+        onChoiceMadeCallback = null;
     }
 
     private void FinalizarEscolhaPorTempo()
     {
-         isChoosing = false;
-         if (choiceUI != null) choiceUI.SetActive(false);
-         if (textoTempo != null) textoTempo.gameObject.SetActive(false);
+        isChoosing = false;
+        if (choiceUI != null) choiceUI.SetActive(false);
 
-         bool valorDaEscolha = escolhaNeutraAtivada; 
-         SalvarEscolha(variavelAtualParaSalvar, valorDaEscolha);
-
-         onChoiceMadeCallback?.Invoke();
-    }
-
-    public void SalvarEscolha(string nomeVariavel, bool valor)
-    {
-        if (stateManager == null) 
+        if (!string.IsNullOrEmpty(variavelAtualParaSalvar))
         {
-            Debug.LogError("[ChoiceSystem] StateManager nao referenciado!");
-            return;
+            SalvarEscolha(variavelAtualParaSalvar, escolhaNeutraAtivada);
         }
-        if (string.IsNullOrEmpty(nomeVariavel)) return;
-
-        stateManager.SetVariavel(nomeVariavel, valor);
-        Debug.Log($"Variavel global '{nomeVariavel}' salva como: {valor}");
+        
+        onChoiceMadeCallback?.Invoke();
+        onChoiceMadeCallback = null;
     }
 
-    public bool ChecarCondicao(string nomeVariavel)
+    public void SalvarEscolha(string variavel, bool valor) 
     {
-        if (stateManager == null) return false;
-        return stateManager.GetVariavel(nomeVariavel);
+        if (stateManager != null)
+        {
+            stateManager.SetVariavel(variavel, valor);
+            Debug.Log($"[ChoiceSystem] Salvo na Variavel Global '{variavel}' o valor: {valor}");
+        }
     }
-
-    public bool ChecarItem(string nomeItem)
+    
+    public bool ChecarCondicao(string variavel)
     {
-        if (inventarioGlobal == null || inventarioGlobal.itens == null) return false;
-        if (string.IsNullOrEmpty(nomeItem)) return false;
-
-        return inventarioGlobal.itens.Exists(item => item != null && (item.itemName == nomeItem || item.itemID == nomeItem));
+        if (stateManager != null)
+        {
+            return stateManager.GetVariavel(variavel);
+        }
+        return false;
+    }
+    
+    public bool ChecarItem(string itemNameOrID)
+    {
+        if (inventarioGlobal != null)
+        {
+            foreach(var item in inventarioGlobal.itens)
+            {
+                if (item != null && (item.itemName == itemNameOrID || item.itemID == itemNameOrID))
+                {
+                    return true; 
+                }
+            }
+        }
+        return false; 
     }
 }
