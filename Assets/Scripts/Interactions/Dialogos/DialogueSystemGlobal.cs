@@ -39,9 +39,8 @@ public class DialogueSystemGlobal : MonoBehaviour
     private bool isTransitioning = false; 
 
     // Variavel publica que sinaliza se o jogador ja pode pressionar o botao para avancar a fala
-    // REVIEW: so volta a false no caminho da escolha; do 2o dialogo em diante a espera de 0.2s nao vale e o Enter que abriu
-    // o dialogo pode pular a 1a linha. Zerar em IniciarDialogo (e deixar private: hoje fica serializado na cena).
-    public bool podeAvancar = false; 
+    // Zerada em IniciarDialogo e liberada 0.2s depois por EsperaEHabilitaAvanco
+    public bool podeAvancar = false;
     
     // Dados do dialogo em andamento
     private DialogueData interacaoAtual; 
@@ -231,9 +230,8 @@ public class DialogueSystemGlobal : MonoBehaviour
     }
 
     // Ponto de entrada: escolhe falas normais ou alternativas e comeca a digitar
-    // REVIEW: nao para a typingCoroutine anterior nem avisa o callback antigo; se chamado com outro dialogo aberto
-    // (cutscene + jogador), duas digitacoes escrevem no mesmo texto e quem abriu o primeiro nunca e avisado.
-    public void IniciarDialogo(DialogueData data, System.Action onComplete = null) 
+    // Com outro dialogo aberto, substitui o anterior: para as corrotinas dele e o callback antigo nao e chamado
+    public void IniciarDialogo(DialogueData data, System.Action onComplete = null)
     {
         if (data == null)
         {
@@ -242,7 +240,11 @@ public class DialogueSystemGlobal : MonoBehaviour
             return;
         }
 
-        interacaoAtual = data; 
+        // Sem isso o Enter que abriu o dialogo (Interact e Submit sao a mesma tecla) pode pular a 1a fala
+        StopAllCoroutines();
+        podeAvancar = false;
+
+        interacaoAtual = data;
         onDialogueEndedCallback = onComplete;
         if (dialogueText != null) dialogueText.text = "";
         
