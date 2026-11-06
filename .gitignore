@@ -9,3 +9,7 @@
 .obsidian/workspace-mobile.json
 # Antigravity/Agent rules
 .agents/
+# Claude Code
+.claude/
+CLAUDE.md
+CLAUDE.local.md
