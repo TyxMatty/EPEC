@@ -8,8 +8,10 @@ Bem-vindo ao manual do projeto EPEC! Este documento e o guia definitivo da arqui
 
 Para manter o projeto limpo e desacoplado, os scripts estao organizados nos seguintes modulos:
 
-- `Assets/Scripts/`: Gerenciadores globais e regras narrativas (`GlobalStateManager.cs`, `Condicao.cs`, `Efeito.cs`, `ReputationSystem.cs`, `CutsceneManager.cs`, `PostProcessingManager.cs`, `FlowerStateListener.cs`, `WakeUpPrototype.cs`).
-- `Assets/Scripts/SistemasBase/`: Movimentacao, animacao manual e tela de nome (`MovementScript.cs`, `SpriteChange.cs`, `NomeDoJogadorUI.cs`).
+- `Assets/Scripts/`: Gerenciadores globais e regras narrativas (`GlobalStateManager.cs`, `Condicao.cs`, `Efeito.cs`, `Regra.cs`, `ReputationSystem.cs`, `CutsceneManager.cs`, `PostProcessingManager.cs`, `FlowerStateListener.cs`, `WakeUpPrototype.cs`).
+- `Assets/Scripts/SistemasBase/`: Movimentacao, animacao e tela de nome (`MovementScript.cs`, `MovimentoNPC.cs`, `AnimacaoPorMovimento.cs`, `SpriteChange.cs`, `NomeDoJogadorUI.cs`).
+- `Assets/Scripts/SistemasBase/Cenas/`: Troca de cena e fim do dia (`SceneTransitionManager.cs`, `PontoDeSpawn.cs`, `PortaDeCena.cs`, `FimDoDia.cs`).
+- `Assets/Scripts/Editor/`: Ferramentas do Editor (`GeradorAnimatorBase.cs`, menu `EPEC > Criar Animator Base`).
 - `Assets/Scripts/SistemasBase/Input/`: Rebind e gerenciamento de entradas (`InputRebindManager.cs`).
 - `Assets/Scripts/SistemasBase/Escolhas/`: Persistencia de dados em disco (`SaveManager.cs`).
 - `Assets/Scripts/Interactions/`: Interacao fisica, inventario e escolhas (`InteractionSystem.cs`, `Interactable.cs`, `ItemPickup.cs`, `ChoiceSystemGlobal.cs`, `InventoryData.cs`, `ItemData.cs`, `IInteractAction.cs`).
@@ -20,6 +22,8 @@ Dados carregados por nome ficam em `Assets/Resources/`:
 - `Resources/Itens/`: todos os `ItemData` (o `SaveManager` restaura a mochila por aqui).
 - `Resources/Dialogos/`: todos os JSONs de dialogo (o `proximoDialogo` acha os arquivos por aqui).
 - `Resources/Personagens/`: um `CharacterData` por personagem (nome e retratos da caixa de dialogo).
+
+Regras ligadas por campo no Inspector ficam em `Assets/Dados/Regras/` (ex: `flor_dia1.json`, usado pelo `FimDoDia`).
 
 ---
 
@@ -40,7 +44,7 @@ O GameObject do jogador na cena e o centro das acoes fisicas e de input.
    - **Controle Externo:** A variavel publica `podeMover` (bool) e alterada por dialogos e cutscenes para travar o jogador instantaneamente. Com ela em `false` o `InteractionSystem` tambem nao interage.
 
 2. **`SpriteChange`** (em `SistemasBase`)
-   - **O que faz:** Troca o sprite diretamente no `SpriteRenderer` com base na velocidade do `Rigidbody2D`, sem Animator.
+   - **O que faz:** Troca o sprite diretamente no `SpriteRenderer` com base na velocidade do `Rigidbody2D`, sem Animator. Vale ate os sprites finais chegarem; depois sai para o `AnimacaoPorMovimento` (secao 9).
    - **O que exige:** Componente `SpriteRenderer`.
    - **Campos no Inspector:**
      - Um sprite por direcao para andar, correr e a transicao do inicio do movimento; 4 frames de idle ciclados em ordem.
@@ -247,7 +251,76 @@ Quando `linhas` esta preenchido, `falas`/`falasAlternativas` sao ignorados.
 
 ---
 
-## 8. Boas Praticas e Convencoes de Codigo
+## 8. Cenas, Nucleo e Fim do Dia
+
+### 8.1. Prefab `Nucleo`
+Tudo que vive o jogo inteiro fica dentro de um prefab `Nucleo`, com o `SceneTransitionManager` no objeto RAIZ: Player, Main Camera, Canvas de UI (dialogo, escolhas, tela de nome, tela preta), EventSystem, `CutsceneManager`, `ReputationSystem` e `SaveManager`. Ele passa de cena em cena (DontDestroyOnLoad).
+
+Toda cena leva uma copia do `Nucleo`, entao qualquer cena roda sozinha no Play. Quando se chega por porta, a copia da cena nova se desliga e se apaga antes de acordar.
+
+Montagem (uma vez, na cena atual):
+1. Crie um GameObject vazio `Nucleo` na raiz e arraste para dentro Player, Main Camera, Canvas, EventSystem e os managers.
+2. No Canvas, crie `TelaPreta`: Image preta esticada na tela inteira + `CanvasGroup` (Alpha 0). Deixe-a por cima do dialogo (ultimo filho do Canvas).
+3. Adicione `SceneTransitionManager` no `Nucleo` e ligue `jogador` (Player) e `telaPreta`.
+4. Arraste o `Nucleo` para `Assets/Prefabs/` e coloque uma instancia em cada cena.
+5. Adicione as cenas em `File > Build Profiles > Scene List`.
+
+**Regra:** objetos da cena nao apontam no Inspector para objetos do `Nucleo` (a copia da cena some quando se chega por porta). Use `CutsceneManager.Instance`, `SceneTransitionManager.Instance` ou `FindAnyObjectByType`. Assets (`GlobalStateManager`, `InventoryData`, JSONs) podem ser ligados normalmente.
+
+### 8.2. Portas e pontos de spawn
+- **`PontoDeSpawn`** (`id`): onde o player aparece ao entrar na cena (gizmo azul).
+- **`PortaDeCena`** (`cena`, `spawn`): com collider normal na layer de interacao, troca ao apertar Enter; com collider **Is Trigger**, troca ao encostar. Deixe o spawn de volta fora do trigger da porta.
+- Por codigo ou UnityEvent: `SceneTransitionManager.Instance.IrPara("Prologo_Jardim", "PortaDaCasa");`
+- A troca trava o player durante o fade-out, solta antes de carregar e posiciona player e camera no spawn.
+
+### 8.3. NPCs em cutscene: `MovimentoNPC`
+- No NPC: `Rigidbody2D` (Kinematic serve) + `MovimentoNPC` (`velocidade`).
+- `yield return maria.MoverPara(marcador.position);` termina ao chegar; se ficar presa por 10 s, teleporta (a cutscene nunca trava).
+- `tobias.SeguirAlvo(player, estado.GetVariavel("fezCarinhoTobias") ? 1f : 2.5f);` e `PararDeSeguir()`.
+
+### 8.4. Fim do dia: `FimDoDia`
+- **Campos:** `estado`, `mochila` (opcional), `regras` (JSON), `proximaCena`, `spawn`.
+- **`EncerrarDia()`** (UnityEvent, cutscene ou QTE): aplica a primeira regra que bate, salva (acha o `SaveManager` do Nucleo sozinho) e troca de cena com fade.
+- Fim normal, desmaio do ataque de panico e Rota R profunda: um `FimDoDia` para cada, com `proximaCena` diferente.
+- Regras do dia 1: `Assets/Dados/Regras/flor_dia1.json`, as 6 flores do roteiro na mesma ordem. Formato (mesmas Condicoes e Efeitos da secao 7.2):
+
+```json
+{
+  "limpar": ["florSuperPositivaDia1", "florNegativaDia1"],
+  "regras": [
+    { "nome": "1 - Colorida, brilhante",
+      "condicoes": [ {"flag": "auxiliouTobias"}, {"flag": "abortedRotaR", "negar": true} ],
+      "efeitos": [ {"flag": "florSuperPositivaDia1"} ] }
+  ]
+}
+```
+- As condicoes leem o estado de antes; as flags de `limpar` sao desligadas so depois que uma regra bate. Nenhuma regra batendo = nada muda e aparece um aviso no Console.
+
+---
+
+## 9. Sprites com Animator
+
+1. Rode uma vez **`EPEC > Criar Animator Base`**. Ele gera `Assets/Animacoes/Base/Humano4Dir.controller` e `Quadrupede4Dir.controller`:
+   - estados Parado, Andando e Correndo, cada um uma Blend Tree 2D por `DirX`/`DirY` com 4 clips vazios (Cima, Baixo, Esquerda, Direita);
+   - parametro `Velocidade`: anda acima de 0.1 e corre acima de 5.5 (entre o `baseSpeed` 5 e o Sprint 7.5).
+2. Importe a sprite sheet com:
+   - Sprite Mode Multiple, o mesmo Pixels Per Unit para todos e Filter Mode Point;
+   - Compression None e pivot nos pes (Bottom) no Sprite Editor.
+3. Crie os clips do personagem na janela Animation (ex: `Maria_Andando_Baixo`) com Loop Time ligado.
+4. `Create > Animation > Animator Override Controller`, com Controller = `Humano4Dir` (ou `Quadrupede4Dir`), e troque cada clip base pelo do personagem.
+5. No personagem:
+   - `Animator` (Controller = o override), `AnimacaoPorMovimento` e `Rigidbody2D`;
+   - tire o `SpriteChange`.
+6. Acoes avulsas do roteiro (Abracar, Girar, Chutar, Latir):
+   - estado novo no controller base com um Trigger do mesmo nome;
+   - na cutscene, `GetComponent<Animator>().SetTrigger("Girar");`.
+7. Ordem de desenho:
+   - no Renderer 2D (`Assets/Settings`), Transparency Sort Mode = Custom Axis e Axis = (0, 1, 0);
+   - nos `SpriteRenderer`, Sprite Sort Point = Pivot. Quem esta mais abaixo na tela fica na frente.
+
+---
+
+## 10. Boas Praticas e Convencoes de Codigo
 
 1. **Null Checks em Campos Serializados:** Sempre valide campos `[SerializeField]` com verificacao nula antes de acessar membros para prevenir `NullReferenceException` quando referencias forem esquecidas no Inspector.
 2. **Preservacao de Nomes no Inspector:** Ao renomear variaveis serializadas em scripts C#, utilize o atributo `[FormerlySerializedAs("nomeAntigo")]` para evitar que as ligacoes nas cenas (`.unity`) e prefabs sejam perdidas.

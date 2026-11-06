@@ -15,6 +15,8 @@ public class WakeUpPrototype : MonoBehaviour
 
     [Header("Jogo Novo (opcional)")]
     // Tela de nome mostrada antes do despertar quando o jogador ainda nao escolheu um nome
+    // REVIEW: a tela mora no Canvas do Nucleo. Se um dia esta cena for aberta por PortaDeCena (ex: depois de um menu),
+    // este campo aponta para a copia apagada do Nucleo e o PedirNome espera para sempre; ai trocar por FindAnyObjectByType.
     public NomeDoJogadorUI telaDeNome;
 
     void Start()

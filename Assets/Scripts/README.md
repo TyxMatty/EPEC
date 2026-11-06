@@ -24,17 +24,27 @@ Assets/Scripts/
 |   |-- InventoryData.cs          # ScriptableObject de inventario (mochila)
 |   |-- ItemData.cs               # ScriptableObject de definicao de item
 |   +-- ItemPickup.cs             # Gatilho de coleta de itens do cenario
+|-- Editor/
+|   +-- GeradorAnimatorBase.cs    # Menu EPEC > Criar Animator Base (Humano4Dir / Quadrupede4Dir)
 |-- SistemasBase/
+|   |-- Cenas/
+|   |   |-- FimDoDia.cs           # Resumo do dia por regras, save e proxima cena
+|   |   |-- PontoDeSpawn.cs       # Onde o player aparece ao entrar na cena
+|   |   |-- PortaDeCena.cs        # Troca de cena por interacao ou trigger
+|   |   +-- SceneTransitionManager.cs # Raiz do prefab Nucleo: persiste entre cenas e troca com fade
 |   |-- Escolhas/
 |   |   +-- SaveManager.cs        # Persistencia de flags, reputacao, rota, nome e inventario
 |   |-- Input/
 |   |   +-- InputRebindManager.cs # Gerenciador de remapeamento dinamico de inputs
+|   |-- AnimacaoPorMovimento.cs   # Alimenta o Animator (DirX, DirY, Velocidade) pelo Rigidbody2D
 |   |-- MovementScript.cs         # Fisica de movimento 2D com Input System
+|   |-- MovimentoNPC.cs           # MoverPara / SeguirAlvo para NPCs em cutscene
 |   |-- NomeDoJogadorUI.cs        # Tela onde o jogador escolhe o nome ({X})
-|   +-- SpriteChange.cs           # Animacao orientada por velocidade e direcao
+|   +-- SpriteChange.cs           # Animacao manual por sprite (ate os sprites finais chegarem)
 |-- Condicao.cs                   # Checagem de flag/reputacao/item/rota usada por dados
 |-- CutsceneManager.cs            # Orquestrador de cutscenes e sequencias lineares
 |-- Efeito.cs                     # Mudanca de flag/reputacao/rota/instabilidade usada por dados
+|-- Regra.cs                      # Condicoes -> efeitos; ListaDeRegras aplica a primeira que bate
 |-- FlowerStateListener.cs        # Reatividade visual de sprites baseada em flags
 |-- GlobalStateManager.cs         # ScriptableObject central de flags, reputacoes, rota e nome
 |-- PostProcessingManager.cs      # Reservado (ainda vazio) para efeitos de pos-processamento
@@ -67,6 +77,15 @@ Assets/Scripts/
   - Painel com `TMP_InputField`; `Confirmar()` grava `GlobalStateManager.nomeJogador` (sem `<` `>` e sem nome vazio).
   - `PedirNome()` e uma corrotina para cutscenes; `FaltaNome` indica jogo novo.
 
+- **`MovimentoNPC.cs`**:
+  - Move pelo `Rigidbody2D.linearVelocity` (o `AnimacaoPorMovimento` anima igual ao player).
+  - `MoverPara(ponto, tempoMaximo = 10)` e corrotina e teleporta se nao chegar a tempo; `SeguirAlvo(alvo, distancia)` / `PararDeSeguir()`.
+
+- **`AnimacaoPorMovimento.cs`**:
+  - Le a velocidade do `Rigidbody2D` e escreve `DirX`/`DirY` (ultima direcao, parado continua virado) e `Velocidade` no Animator.
+  - Os controllers base saem do `Editor/GeradorAnimatorBase.cs`; cada personagem usa um `AnimatorOverrideController`.
+
+
 ---
 
 ### 2.2. Gerenciamento de Estado e Persistencia
@@ -80,6 +99,9 @@ Assets/Scripts/
 - **`Condicao.cs`** e **`Efeito.cs`**:
   - Classes serializaveis lidas dos JSONs. `Condicao.Valem(todas, qualquer, estado, mochila)` avalia listas E/OU; `Efeito.AplicarTodos(lista, estado)` aplica flags, reputacao, rota e instabilidade.
   - Pensadas para serem reaproveitadas por flores, gatilhos e mecanicas das proximas fases.
+
+- **`Regra.cs`**:
+  - `Regra` = condicoes + efeitos. `ListaDeRegras.Aplicar` acha a primeira que bate (lendo o estado de antes), desliga as flags de `limpar` e aplica os efeitos.
 
 - **`ReputationSystem.cs`** (Singleton MonoBehaviour):
   - Mostra o popup de afinidade e soma no `GlobalStateManager` (`ReputationSystem.Instance`).
@@ -154,6 +176,16 @@ Assets/Scripts/
 
 - **`PostProcessingManager.cs`**:
   - Classe reservada, ainda vazia; os efeitos por rota entram na Fase 4 do `Docs/MattyDevPlan.md`.
+---
+
+### 2.6. Cenas (`SistemasBase/Cenas/`)
+
+- **`SceneTransitionManager.cs`**:
+  - Fica na raiz do prefab `Nucleo` e o mantem com `DontDestroyOnLoad`. A copia que chega com a cena nova se desliga no `Awake` (`DefaultExecutionOrder(-1000)`) antes de os filhos acordarem e se apaga.
+  - `IrPara(cena, spawn)`: fade-out na `telaPreta`, carrega, poe player e camera no `PontoDeSpawn` e faz fade-in.
+- **`PortaDeCena.cs`**: `IInteractAction` (Enter) ou `OnTriggerEnter2D` (encostar), chama `IrPara`.
+- **`PontoDeSpawn.cs`**: so um `id` e um gizmo.
+- **`FimDoDia.cs`**: aplica um `ListaDeRegras` em JSON (ex: `Assets/Dados/Regras/flor_dia1.json`), salva pelo `SaveManager` do Nucleo e chama `IrPara`.
 
 ---
 

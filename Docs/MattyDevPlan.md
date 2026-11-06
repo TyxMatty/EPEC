@@ -34,13 +34,16 @@ Levantado a partir do roteiro revisado (`Entre Patas e Caminhos (revisado).docx`
 - [x] **Rota + instabilidade:** uma rota so (`rota`), `MudarRota` B -> N -> R, medidor `instabilidade`, tudo no save.
 - [x] **Nome do jogador:** `NomeDoJogadorUI`, chamado pelo `WakeUpPrototype` em jogo novo.
 - [x] Exemplo real: abrigo do Cap 1 (Decisoes 1.1 e 1.2) em `cap1_abrigo_apresentacao.json`.
-- [ ] Na cena: criar `nomeText`/`retratoImage` no Panel de dialogo, o painel da `NomeDoJogadorUI` e os `CharacterData` de X, Maria, Gi, Tobias e enfermeira.
+- [x] `CharacterData` de X (`{X}`), Maria, Gi, Tobias e Enfermeira em `Resources/Personagens` (sem retratos e com nome branco ate a arte chegar).
+- [ ] Na cena: criar `nomeText`/`retratoImage` no Panel de dialogo e o painel da `NomeDoJogadorUI`.
 
-### Fase 2 - Montar as cenas
-- [ ] **Troca de cenas:** `SceneTransitionManager` com fade e ponto de spawn + prefab "Nucleo" (player, camera, UI, managers) com DontDestroyOnLoad.
-- [ ] **NPCs em cutscene:** `MoverPara(posicao)` e `SeguirAlvo(distancia)` (Tobias mais perto se `fezCarinhoTobias`).
-- [ ] **Fim do dia:** `EncerrarDia()` com fade, calculo da flor, save e proxima cena (desmaio e Rota R profunda).
-- [ ] **Sprites com Animator:** controller base `Humano4Dir` e `Quadrupede4Dir` (Blend Trees Idle/Walk/Run por DirX/DirY + estados avulsos como Abracar, Girar, Chutar, Latir), um `AnimatorOverrideController` por personagem, override extra para a Rota R e um `AnimacaoPorMovimento` substituindo o `SpriteChange`. Importacao: mesmo Pixels Per Unit, Filter Point, Compression None, pivot nos pes, Sprite Atlas por personagem e Transparency Sort Axis (0,1,0) no Renderer2D.
+### Fase 2 - Montar as cenas (CODIGO PRONTO, falta montar no Editor)
+- [x] **Troca de cenas:** `SceneTransitionManager` (raiz do prefab "Nucleo", DontDestroyOnLoad, copia da cena nova se apaga), `PontoDeSpawn`, `PortaDeCena` e fade numa `TelaPreta`.
+- [x] **NPCs em cutscene:** `MovimentoNPC.MoverPara(posicao)` (teleporta apos 10 s) e `SeguirAlvo(alvo, distancia)` (Tobias mais perto se `fezCarinhoTobias`).
+- [x] **Fim do dia:** `FimDoDia.EncerrarDia()` aplica `Assets/Dados/Regras/flor_dia1.json` (6 flores do roteiro), salva e troca de cena com fade; um componente por saida (normal, desmaio, Rota R profunda).
+- [x] **Sprites com Animator:** menu `EPEC > Criar Animator Base` (`Humano4Dir` e `Quadrupede4Dir`, Parado/Andando/Correndo por DirX/DirY) + `AnimacaoPorMovimento`. Passo a passo em `Docs/README.md` secao 9.
+- [ ] No Editor: montar o prefab `Nucleo` (README 8.1), rodar `EPEC > Criar Animator Base` e greyboxing do Prologo (`Prologo_Quarto`, `Prologo_Jardim`, `Prologo_Rua`).
+- [ ] Depois, quando houver arte: estados avulsos (Abracar, Girar, Chutar, Latir) e override da Rota R (so se o mundo tambem mudar de sprite; os retratos ja mudam pelo `CharacterData`).
 
 ### Fase 3 - Mecanicas do Cap 1
 - [ ] **QTE generico:** sequencia de teclas com janela de tempo; agressor (sucesso/falha -> `agressorEscapa`) e ataque de panico (mais de 3 falhas -> desmaio).
@@ -105,7 +108,7 @@ Dividir os mapas para facilitar versionamento, organizacao e desempenho:
 
 ## Ordem de Execucao para a Proxima Sessao
 
-Com a Fase 1 pronta, a prioridade sera:
-1. **Ligar a Fase 1 na cena:** nome/retrato no Panel, tela de nome e `CharacterData` dos personagens; rodar os testes no Test Runner.
-2. **Fase 2:** `SceneTransitionManager` + prefab Nucleo, greyboxing do Prologo (Tarefa 3) e o pipeline de sprites com Animator.
-3. **Fase 3:** QTE generico (agressor e ataque de panico) e investigacao.
+Com o codigo das Fases 1 e 2 pronto, a prioridade sera:
+1. **No Editor:** rodar os testes no Test Runner (EditMode), nome/retrato no Panel, tela de nome, prefab `Nucleo` e `EPEC > Criar Animator Base`.
+2. **Greyboxing do Prologo** (Tarefa 3) usando `PortaDeCena`/`PontoDeSpawn`.
+3. **Fase 3:** QTE generico (agressor e ataque de panico, que chama o `FimDoDia` do desmaio) e investigacao.

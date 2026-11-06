@@ -1,0 +1,83 @@
+{
+  "limpar": [
+    "florSuperPositivaDia1", "florPositivaDia1", "florNeutraPositivaDia1",
+    "florNeutraNegativaDia1", "florNegativaDia1", "florSuperNegativaDia1"
+  ],
+  "regras": [
+    {
+      "nome": "1 - Colorida, brilhante",
+      "condicoes": [
+        {"flag": "tobiasInterage"},
+        {"flag": "tobiasOlhoMachucado", "negar": true},
+        {"flag": "tobiasCego", "negar": true},
+        {"flag": "abortedRotaR", "negar": true},
+        {"flag": "protagonistaNumeroVeterinaria"},
+        {"flag": "agressorEscapa", "negar": true},
+        {"flag": "auxiliouTobias"},
+        {"flag": "fezCarinhoTobias"},
+        {"flag": "aceitaAjudarTobias"}
+      ],
+      "efeitos": [{"flag": "florSuperPositivaDia1"}]
+    },
+    {
+      "nome": "2 - Colorida",
+      "condicoes": [
+        {"flag": "abortedRotaR"},
+        {"flag": "auxiliouTobias", "negar": true},
+        {"flag": "tobiasOlhoMachucado"},
+        {"flag": "tobiasInterageMaisOuMenos"},
+        {"flag": "tobiasInterage", "negar": true},
+        {"flag": "tobiasCego", "negar": true},
+        {"flag": "protagonistaNumeroVeterinaria", "negar": true},
+        {"flag": "agressorEscapa"},
+        {"flag": "fezCarinhoTobias"},
+        {"flag": "aceitaAjudarTobias"}
+      ],
+      "efeitos": [{"flag": "florPositivaDia1"}]
+    },
+    {
+      "nome": "3 - Neutra, mas ainda com cor",
+      "condicoes": [
+        {"flag": "abortedRotaR"},
+        {"flag": "tobiasCego"},
+        {"flag": "tobiasInterage", "negar": true},
+        {"flag": "aceitaAjudarTobias"},
+        {"flag": "agressorEscapa"},
+        {"flag": "fezCarinhoTobias"},
+        {"flag": "protagonistaNumeroVeterinaria", "negar": true},
+        {"flag": "auxiliouTobias", "negar": true}
+      ],
+      "efeitos": [{"flag": "florNeutraPositivaDia1"}]
+    },
+    {
+      "nome": "4 - Neutra, sem cor",
+      "condicoes": [
+        {"flag": "abortedRotaR"},
+        {"flag": "tobiasCego"},
+        {"flag": "tobiasInterage", "negar": true},
+        {"flag": "aceitaAjudarTobias", "negar": true},
+        {"flag": "agressorEscapa"},
+        {"flag": "fezCarinhoTobias", "negar": true},
+        {"flag": "protagonistaNumeroVeterinaria", "negar": true},
+        {"flag": "auxiliouTobias", "negar": true}
+      ],
+      "efeitos": [{"flag": "florNeutraNegativaDia1"}]
+    },
+    {
+      "nome": "5 - Quase morta",
+      "condicoes": [
+        {"flag": "abortedRotaR", "negar": true},
+        {"flag": "florNegativaDia1", "negar": true}
+      ],
+      "efeitos": [{"flag": "florNegativaDia1"}]
+    },
+    {
+      "nome": "6 - A beira da morte",
+      "condicoes": [
+        {"flag": "abortedRotaR", "negar": true},
+        {"flag": "florNegativaDia1"}
+      ],
+      "efeitos": [{"flag": "florSuperNegativaDia1"}]
+    }
+  ]
+}

@@ -118,3 +118,17 @@ Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.u
 - **Formato antigo mantido:** os JSONs e cenas existentes continuam funcionando; o v2 so entra quando `linhas`/`opcoes` estao preenchidos.
 - **Sprites:** decidido usar Animator com controllers base por tipo de corpo e um `AnimatorOverrideController` por personagem (Fase 2); retratos de dialogo ficam no `CharacterData`, sem Animator.
 - **Nomes de flags:** a grafia oficial esta em `Docs/MattyNotations.md` 2.1 e no roteiro revisado (`abortedRotaR`, `florQuaseMorta` mantida como status de decisao negativa maxima, `protagonistaNumeroVeterinaria`, `auxiliouTobias`, `tobiasInterage`).
+
+---
+
+## 9. Fase 2 do Roteiro: Decisoes de Design (06/11/2026)
+
+- **Prefab Nucleo em toda cena:** cada cena roda sozinha no Play. A copia que chega depois se desliga no `Awake` do `SceneTransitionManager` (`DefaultExecutionOrder(-1000)`), antes de os filhos acordarem. Se ela so fosse apagada, o `OnDisable` do `MovementScript`/`InteractionSystem` da copia desligaria as InputActions compartilhadas e o player de verdade parava de andar.
+- **Cena nao aponta para o Nucleo no Inspector:** a copia da cena some quando se chega por porta. `FimDoDia` acha o `SaveManager` com `FindAnyObjectByType`; o `WakeUpPrototype.telaDeNome` ficou com um `// REVIEW:` para quando existir uma cena antes do quarto.
+- **Trava na troca de cena:** o player e travado so durante o fade-out e solto antes de carregar, porque o `Start` da cena nova pode travar de novo (cutscene) e isso nao pode ser desfeito pela troca.
+- **Flor do dia como dados:** `Regra`/`ListaDeRegras` reaproveitam `Condicao` e `Efeito`; as 6 flores estao em `Assets/Dados/Regras/flor_dia1.json` na ordem do roteiro e vale a primeira que bate. Antes de ligar a flor escolhida, as 6 flags de flor sao desligadas, porque o roteiro usa os mesmos nomes de manha (`florNeutraPositivaDia1`/`florNeutraNegativaDia1` no jardim) e no meio do dia (`florNegativaDia1` ao recusar o Tobias). No fim do dia sobra uma flor so.
+- **Animator gerado por menu:** `EPEC > Criar Animator Base` cria controllers e clips vazios, para os nomes de parametro baterem com o `AnimacaoPorMovimento`; nada e sobrescrito se ja existir. O limiar de corrida (5.5) esta no gerador e precisa mudar se o `baseSpeed` mudar.
+
+### 9.1. Perguntas abertas do roteiro (flor do dia)
+- **Rota B sem ser perfeita:** quem aceitou ajudar o Tobias nunca liga `abortedRotaR`. Se faltar qualquer item da flor 1 (ex: `agressorEscapa`), a regra 5 ("Quase morta") bate. Talvez as regras 5 e 6 devam exigir `{"rota": "R"}`.
+- **Combinacoes fora das 4 primeiras regras:** as regras 1 a 4 pedem combinacoes exatas (ex: abortou, mas o Tobias nem ficou cego nem machucou o olho). Nesses casos nenhuma regra bate, nada e ligado e o `FimDoDia` so avisa no Console. Falta decidir uma flor padrao (uma ultima regra sem condicoes resolve, sem codigo).
