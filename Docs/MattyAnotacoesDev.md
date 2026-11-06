@@ -84,16 +84,16 @@ Anteriormente, o `MovementScript` e o `InteractionSystem` liam o teclado diretam
 
 ## 7. Code Review Geral (06/11/2026)
 
-Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.unity`, dos JSONs de dialogo e de todos os docs. Nenhuma logica foi alterada: os achados estao marcados no codigo com `// REVIEW:` (busque por `REVIEW` no VS Code) e campos/metodos sem comentario ganharam comentario no padrao do projeto.
+Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.unity`, dos JSONs de dialogo e de todos os docs. Os 7 bugs da 7.1 foram corrigidos; o resto continua marcado no codigo com `// REVIEW:` (busque por `REVIEW` no VS Code) e campos/metodos sem comentario ganharam comentario no padrao do projeto.
 
-### 7.1. Bugs (corrigir antes de montar o Prologo)
-1. **Itens somem no load** (`SaveManager.cs`): o codigo busca `Resources/Itens`, mas a pasta e `Assets/Resources/Items`. Todo item salvo e descartado e a mochila volta vazia. Correcao: renomear a pasta para `Itens` no Unity.
-2. **Estado de teste vaza para o jogo** (`GlobalStateManager`, `InventoryData`): ScriptableObjects alterados em Play Mode ficam salvos no asset. `MemoriaDoJogo.asset` ja esta commitado com `portaAberta = true` e `aceitaAjudarTobias = true`, e `Mochila 1` com a Chave: a build comecaria com a porta aberta. Correcao: limpar os assets e criar um `Resetar()` chamado no Novo Jogo.
-3. **O Enter da ultima fala pode escolher a opcao 0 sozinho** (`ChoiceSystemGlobal` + `DialogueSystemGlobal`): os dois usam o mesmo action `Submit` e nao ha ordem de execucao definida. Correcao: ignorar o submit no frame em que a tela de escolha abriu.
-4. **A trava de 0.2s so vale no primeiro dialogo** (`DialogueSystemGlobal.podeAvancar`): nunca volta a `false`. Como `Interact` e `Submit` estao ambos no Enter, o Enter que abre um dialogo pode pular a 1a fala. Correcao: `podeAvancar = false` em `IniciarDialogo`.
-5. **Jogador interage durante cutscene** (`InteractionSystem`): so bloqueia com o Panel aberto. Na pausa de 2s do `WakeUpPrototype` o jogador pode abrir outro dialogo e o `DialogueTrigger` destrava o movimento; se a cutscene abrir o proximo dialogo por cima, as duas digitacoes escrevem no mesmo texto. Correcao: checar `podeMover` no `InteractionSystem`.
-6. **NullReferenceException ao destruir durante um rebind** (`InputRebindManager.CancelarRebindAtivo`): `Cancel()` ja zera o campo pelo callback. Correcao: `activeRebindOperation?.Dispose()`.
-7. **A build provavelmente quebra por causa dos testes** (`Assets/Tests/GlobalStateManagerTests.cs`): sem asmdef nem pasta Editor, entra no Assembly-CSharp com `using NUnit`. Correcao: mover para `Assets/Tests/Editor/` (confirmar com um Build).
+### 7.1. Bugs (todos corrigidos em 06/11/2026, branch `review-geral`)
+1. **Itens sumiam no load** (`SaveManager.cs`): o codigo buscava `Resources/Itens`, mas a pasta era `Assets/Resources/Items`. **Corrigido:** pasta renomeada para `Itens` (GUID mantido).
+2. **Estado de teste vazava para o jogo** (`GlobalStateManager`, `InventoryData`): ScriptableObjects alterados em Play Mode ficam salvos no asset, e `MemoriaDoJogo.asset` (`portaAberta`, `aceitaAjudarTobias`) e `Mochila 1` (Chave) estavam commitados assim. **Corrigido:** `GlobalStateManager.Resetar()` e `InventoryData.Limpar()`, chamados pelo `SaveManager` quando nao existe save (Novo Jogo); assets limpos; teste `Resetar_ApagaVariaveisEReputacoes`.
+3. **O Enter da ultima fala podia escolher a opcao 0 sozinho** (`ChoiceSystemGlobal`): mesmo action `Submit` do dialogo, sem ordem de execucao definida. **Corrigido:** o Submit do frame em que a tela abriu e ignorado (`frameAbertura`).
+4. **A trava de 0.2s so valia no primeiro dialogo** (`DialogueSystemGlobal.podeAvancar`). **Corrigido:** `IniciarDialogo` zera `podeAvancar` e chama `StopAllCoroutines()`, entao um dialogo aberto por cima de outro tambem nao mistura digitacoes.
+5. **Jogador interagia durante cutscene** (`InteractionSystem`): so bloqueava com o Panel aberto. **Corrigido:** com `MovementScript.podeMover = false` nao ha interacao nem prompt.
+6. **NullReferenceException ao destruir durante um rebind** (`InputRebindManager.CancelarRebindAtivo`). **Corrigido:** `activeRebindOperation?.Dispose()`.
+7. **Testes no Assembly-CSharp quebravam a build do player** (`using NUnit`). **Corrigido:** movidos para `Assets/Tests/Editor/` (agora compilam no Assembly-CSharp-Editor).
 
 ### 7.2. Riscos e decisoes de design
 - `SaveManager` carrega no `Start`, junto com outros `Start` que leem estado (ex: `FlowerStateListener`). Mover o load para o `Awake`.
@@ -110,7 +110,7 @@ Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.u
 |---|---|
 | `GameFlag { flagName, isTrue }`, `DefinirFlag/ObterFlag` | `VariavelNarrativa { nome, valor }`, `SetVariavel/GetVariavel/AddReputacao/GetReputacao`, `Reputacao.pontos` |
 | "Nao usa Dicionarios" | usa dicionarios privados como cache |
-| `InventoryData.AdicionarItem/RemoverItem/ContemItem/Limpar` | `Additem/AddItem/RemoveItem` |
+| `InventoryData.AdicionarItem/RemoverItem/ContemItem` | `Additem/AddItem/RemoveItem` (`Limpar` agora existe) |
 | `ItemData { nomeItem, descricao, icone }` | `itemName, itemDescription, itemIcon` |
 | `MovementScript { speed, runMultiplier }`, `MovementScript.podeMover = false` | `baseSpeed, shiftMultiplier`; `podeMover` e de instancia (usar `CutsceneManager.Instance.TravarJogador()`) |
 | `InteractionSystem.rayDistance`, tecla E / Gamepad South | `interactionRange`, so Enter no `PlayerControls` |
@@ -122,4 +122,4 @@ Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.u
 | `InputRebindManager` cancela no `OnDisable` | so no `OnDestroy` |
 | `PostProcessingManager` "Concluido" | classe vazia |
 | JSON do `Docs/README.md`: `variavelParaAlterar, textoPergunta, variavelDaEscolha, temTimer` | `variavelAlteradaPorDialogo, variavelParaSalvar, temTempoLimite` (o JsonUtility ignora o resto sem aviso) |
-| `.agents/rules`: pasta `Resources/Itens`; "DialogueSystemGlobal destrava o jogador" | a pasta e `Items`; quem destrava e o callback do `DialogueTrigger` |
+| `.agents/rules`: "DialogueSystemGlobal destrava o jogador" | quem destrava e o callback do `DialogueTrigger` |
