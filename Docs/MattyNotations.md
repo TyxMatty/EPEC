@@ -32,10 +32,13 @@ public class Reputacao
 ## 2. Status dos Sistemas do Roteiro (Prologo & Cap 1)
 
 ### 2.1. Variaveis Globais Mapeadas
-O `GlobalStateManager` ja suporta todas as flags necessarias para o fluxo narrativo:
+Grafia oficial (igual ao roteiro revisado e aos JSONs; o codigo diferencia maiusculas):
 - **Prologo:** `acordouPrimeiroDia`, `respondeuChamada`, `respondeuMensagemMaria`, `seAlimentou`, `falouComGi`.
-- **Rotas e Flores:** `florSuperPositivaDia1`, `florPositivaDia1`, `florNeutraPositivaDia1`, `florNeutraNegativaDia1`, `florNegativaDia1`, `florSuperNegativaDia1`, `RotaB`, `RotaN`, `RotaR`, `abortedRotaR`.
-- **Tobias:** `aceitaAjudarTobias`, `fezCarinhoTobias`, `auxiliouTobias`, `agressorEscapa`, `protagonistaNumeroVeterinaria`, `tobiasInterage`, `tobiasInterageMaisOuMenos`, `tobiasOlhoMachucado`, `tobiasCego`.
+- **Rotas e Flores:** `florSuperPositivaDia1`, `florPositivaDia1`, `florNeutraPositivaDia1`, `florNeutraNegativaDia1`, `florNegativaDia1`, `florSuperNegativaDia1`, `florQuaseMorta` (status de uma decisao negativa maxima), `RotaB`, `RotaN`, `RotaR`, `abortedRotaR`.
+  - `RotaB/RotaN/RotaR` sao uma rota so (`GlobalStateManager.rota`): ligar uma desliga as outras.
+  - `florNegativaDia1` e ligada no meio do Cap 1 (Decisao 1.2 / recusar o Tobias) e lida no fim do dia: se ja estava ligada, a flor do dia vira `florSuperNegativaDia1`.
+- **Tobias:** `aceitaAjudarTobias`, `mariaVindo`, `foiAjudarTobias`, `fezCarinhoTobias`, `auxiliouTobias`, `agressorEscapa`, `protagonistaNumeroVeterinaria`, `tobiasInterage`, `tobiasInterageMaisOuMenos`, `tobiasOlhoMachucado`, `tobiasCego`.
+- **Reputacao:** alvos `Tobias` e `Maria` (o roteiro escreve `repTobias` / `repMaria`).
 
 ### 2.2. Mecanicas e Modulos
 1. **Sistema de Flores (Concluido):**

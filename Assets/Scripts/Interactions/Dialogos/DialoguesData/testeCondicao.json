@@ -8,7 +8,6 @@
     "variavelAlteradaPorDialogo": "",
     "temFrasesAlternativas": true,
     "variavelDaCondicao":"aceitaAjudarTobias",
-    "valorEsperado": "true",
     "falasAlternativas": [
         "Você ajudou Tobias!!",
         "Obrigado, você é incrível!!"

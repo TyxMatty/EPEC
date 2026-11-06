@@ -2,7 +2,7 @@
 {
     "dialogueID": "porta",
     "falas": [
-        "É uma porta. Você consegueria abrir ela, se tivesse uma chave.."
+        "É uma porta. Você conseguiria abrir ela, se tivesse uma chave.."
     ],
     "alteraVariavel": false,
     "dialogoAlternativoAlteraVariavel": true,

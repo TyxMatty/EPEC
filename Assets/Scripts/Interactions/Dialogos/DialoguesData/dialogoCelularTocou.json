@@ -9,7 +9,7 @@
     "alteraVariavel": false,
     "temFrasesAlternativas": false,
     "terminaEmEscolha": true,
-    "variavelParaSalvar": "atendeuCelular",
+    "variavelParaSalvar": "respondeuChamada",
     "textosDasOpcoes": [
         "Sim",
         "Não."
