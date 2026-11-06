@@ -115,8 +115,7 @@ public class SaveManager : MonoBehaviour
                     
                     if (data.itensSalvos != null && data.itensSalvos.Count > 0)
                     {
-                        // REVIEW (BUG): a pasta real e Assets/Resources/Items; "Itens" nao acha nada e todo item salvo e descartado no load.
-                        // Renomear a pasta para Itens no Unity (regra do projeto) resolve sem mexer no codigo.
+                        // Todo ItemData precisa estar em Assets/Resources/Itens para ser achado aqui
                         ItemData[] todosItensDoJogo = Resources.LoadAll<ItemData>("Itens");
 
                         foreach (string savedID in data.itensSalvos)
