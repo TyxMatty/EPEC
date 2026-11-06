@@ -13,6 +13,10 @@ public class WakeUpPrototype : MonoBehaviour
     // Arquivo JSON do dialogo com o celular tocando que leva a escolha Levantar/Dormir
     public TextAsset dialogoCelularTocou;
 
+    [Header("Jogo Novo (opcional)")]
+    // Tela de nome mostrada antes do despertar quando o jogador ainda nao escolheu um nome
+    public NomeDoJogadorUI telaDeNome;
+
     void Start()
     {
         StartCoroutine(RotinaAcordar());
@@ -29,6 +33,11 @@ public class WakeUpPrototype : MonoBehaviour
         // REVIEW: nao checa flag nenhuma (ex: acordouPrimeiroDia); com o save carregado a cutscene toca toda vez que a cena abre.
         // 1. Pausa o jogador e nao deixa ele se mexer
         CutsceneManager.Instance.TravarJogador();
+
+        if (telaDeNome != null && telaDeNome.FaltaNome)
+        {
+            yield return telaDeNome.PedirNome();
+        }
 
         if (dialogoPensamento != null)
         {
