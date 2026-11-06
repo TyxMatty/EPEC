@@ -4,7 +4,7 @@ using UnityEngine;
 
 // ScriptableObject que armazena a lista de itens atualmente no inventario do Player
 // Como no GlobalStateManager, itens pegos em Play Mode ficam no asset; o SaveManager chama Limpar() quando nao ha save
-// REVIEW: os READMEs citam AdicionarItem/RemoverItem/ContemItem; os metodos reais sao Additem/AddItem/RemoveItem.
+// REVIEW: os READMEs citam AdicionarItem/RemoverItem; os metodos reais sao Additem/AddItem/RemoveItem.
 [CreateAssetMenu(fileName = "PlayerInventory", menuName = "Scriptable Objects/Inventory")]
 public class InventoryData : ScriptableObject
 {
@@ -37,6 +37,12 @@ public class InventoryData : ScriptableObject
             itens.Remove(itemRemovido);
             Debug.Log($"[Inventory] Item removido: {itemRemovido.itemName} foi removido do inventario.");
         }
+    }
+
+    // true se a mochila tem um item com esse itemName ou itemID (usado pelas Condicoes de item)
+    public bool ContemItem(string nomeOuId)
+    {
+        return itens != null && itens.Exists(i => i != null && (i.itemName == nomeOuId || i.itemID == nomeOuId));
     }
 
     // Esvazia a mochila (Novo Jogo e antes de carregar um save)

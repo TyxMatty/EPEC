@@ -11,6 +11,10 @@ public class GameSaveData
     public List<Reputacao> reputacoesSalvas;
     // Lista de IDs dos itens que estao no inventario do jogador
     public List<string> itensSalvos;
+    // Rota atual ("B", "N", "R"), medidor de instabilidade e nome do jogador
+    public string rota;
+    public int instabilidade;
+    public string nomeJogador;
 }
 
 // Origem: Assets/Scripts/SistemasBase/Escolhas/SaveManager.cs
@@ -57,6 +61,9 @@ public class SaveManager : MonoBehaviour
             data.variaveisSalvas = stateManager.variaveisGlobais != null ? new List<VariavelNarrativa>(stateManager.variaveisGlobais) : new List<VariavelNarrativa>();
             data.reputacoesSalvas = stateManager.reputacoes != null ? new List<Reputacao>(stateManager.reputacoes) : new List<Reputacao>();
             data.itensSalvos = new List<string>();
+            data.rota = stateManager.rota;
+            data.instabilidade = stateManager.instabilidade;
+            data.nomeJogador = stateManager.nomeJogador;
 
             if (inventory.itens != null)
             {
@@ -102,7 +109,11 @@ public class SaveManager : MonoBehaviour
                     {
                         stateManager.reputacoes = data.reputacoesSalvas;
                     }
-                    stateManager.Inicializar(); 
+                    // Saves antigos nao tem rota/nome: ficam os valores de um jogo novo
+                    stateManager.rota = string.IsNullOrEmpty(data.rota) ? "B" : data.rota;
+                    stateManager.instabilidade = data.instabilidade;
+                    stateManager.nomeJogador = data.nomeJogador ?? "";
+                    stateManager.Inicializar();
 
                     inventory.Limpar();
 
