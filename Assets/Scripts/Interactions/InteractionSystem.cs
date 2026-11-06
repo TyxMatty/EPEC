@@ -27,7 +27,9 @@ public class InteractionSystem : MonoBehaviour
     private Transform objectToInteractWith;
     // Ultima direcao de movimento (o raycast aponta para ela)
     private Vector2 interactionDirection = Vector2.down;
-    
+    // MovementScript do player: podeMover = false (cutscene/dialogo) tambem bloqueia a interacao
+    private MovementScript movement;
+
     void OnEnable()
     {
         if (moveAction != null && moveAction.action != null)
@@ -56,6 +58,8 @@ public class InteractionSystem : MonoBehaviour
 
     void Start()
     {
+        movement = GetComponent<MovementScript>();
+
         if (interactionPrompt != null)
         {
             interactionPrompt.SetActive(false);
@@ -64,9 +68,14 @@ public class InteractionSystem : MonoBehaviour
 
     void Update()
     {   
-        // REVIEW: so bloqueia com o Panel de dialogo aberto e ignora podeMover; cutscenes sem dialogo na tela
-        // (ex: pausa de 2s do WakeUpPrototype) deixam o jogador interagir. Checar tambem MovementScript.podeMover.
-        if (dialogueSystem != null && dialogueSystem.gameObject.activeSelf) return; 
+        if (dialogueSystem != null && dialogueSystem.gameObject.activeSelf) return;
+
+        // Player travado por cutscene sem dialogo na tela (ex: pausa de 2s do WakeUpPrototype): sem interacao nem prompt
+        if (movement != null && !movement.podeMover)
+        {
+            if (interactionPrompt != null) interactionPrompt.SetActive(false);
+            return;
+        }
 
         VerificarInteracao();
         AtualizarDirecaoInteracao(); 

@@ -41,9 +41,8 @@ public class DialogueTrigger : MonoBehaviour, IInteractAction
 
             interactor.dialogueSystem.gameObject.SetActive(true); 
             
-            // REVIEW: o callback sempre devolve podeMover=true, mesmo se uma cutscene tinha travado o player.
-            // (A regra em .agents/rules diz que e o DialogueSystemGlobal que destrava; na pratica e aqui.)
             // Inicia o dialogo passando um callback para destravar o jogador quando acabar
+            // (seguro: o InteractionSystem nao interage com o player travado, entao isso nunca destrava uma cutscene)
             interactor.dialogueSystem.IniciarDialogo(dataCache, () => {
                 if (moveScript != null) moveScript.podeMover = true;
             });

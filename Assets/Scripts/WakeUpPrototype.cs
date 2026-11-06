@@ -35,8 +35,6 @@ public class WakeUpPrototype : MonoBehaviour
             yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogoPensamento);
         }
         
-        // REVIEW: nesta pausa o InteractionSystem segue ativo (so checa o Panel aberto): Enter num objeto abre outro dialogo,
-        // o DialogueTrigger devolve podeMover=true e o player anda no meio da cutscene.
         // 2. Pausa dramatica de 2 segundos de silencio
         yield return new WaitForSeconds(2f);
 
