@@ -39,6 +39,8 @@ public class ChoiceSystemGlobal : MonoBehaviour
     private float tempoRestante = 0f;
     private bool escolhaNeutraAtivada = false;
     private int ultimoSegundoExibido = -1;
+    // Frame em que a tela abriu (o Submit desse frame ainda e o Enter da ultima fala)
+    private int frameAbertura = -1;
 
     private bool[] valoresDasEscolhas;
     private int totalOpcoesAtuais = 0;
@@ -100,9 +102,8 @@ public class ChoiceSystemGlobal : MonoBehaviour
             else if (nav.y < -0.5f) MudarEscolha(1);
         }
 
-        // REVIEW (BUG): este Submit e o mesmo do DialogueSystemGlobal; o Enter que fecha a ultima fala abre esta tela e, se este
-        // Update rodar depois do dele no mesmo frame, ja confirma a opcao 0. Ignorar o submit no frame em que a tela abriu (Time.frameCount).
-        if (submitAction != null && submitAction.action != null && submitAction.action.WasPressedThisFrame() && escolhaAtual != -1)
+        // Submit e o mesmo action do DialogueSystemGlobal: ignora o frame de abertura para o Enter da ultima fala nao confirmar a opcao 0
+        if (submitAction != null && submitAction.action != null && submitAction.action.WasPressedThisFrame() && escolhaAtual != -1 && Time.frameCount != frameAbertura)
         {
             ConfirmarEscolha();
         }
@@ -114,6 +115,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
     {
         variavelAtualParaSalvar = variavelAlvo;
         isChoosing = true;
+        frameAbertura = Time.frameCount;
         escolhaAtual = 0; 
         totalOpcoesAtuais = opcoesTextos != null ? opcoesTextos.Length : 0;
         usarTempoLimite = temTempo;
