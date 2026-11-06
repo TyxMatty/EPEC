@@ -1,6 +1,9 @@
 using NUnit.Framework;
 using UnityEngine;
 
+// Testes EditMode do GlobalStateManager (rodar pelo Test Runner)
+// REVIEW: sem asmdef nem pasta Editor este arquivo entra no Assembly-CSharp; o NUnit nao vai para a build do player,
+// entao a build provavelmente quebra. Mover para Assets/Tests/Editor/ resolve (confirmar com um Build).
 public class GlobalStateManagerTests
 {
     [Test]

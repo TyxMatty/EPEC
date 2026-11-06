@@ -2,6 +2,7 @@ using UnityEngine;
 
 // Origem: Assets/Scripts/Cameras/CameraFollow.cs
 // Script de camera para seguir o alvo suavemente em espaco 2D
+// REVIEW: o README cita limites min/max em X e Y que nao existem aqui. Desativado na cena 0 (quem roda e o SceneFollow).
 public class CameraFollow : MonoBehaviour
 {
     [Header("Target")]

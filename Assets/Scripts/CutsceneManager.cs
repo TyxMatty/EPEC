@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+// Origem: Assets/Scripts/CutsceneManager.cs
+// Singleton que trava/libera o jogador e toca dialogos JSON esperando o fim, para uso em corrotinas de cutscene
 public class CutsceneManager : MonoBehaviour
 {
     // Instancia estatica global para acesso rapido das cutscenes sem busca por cena
@@ -44,6 +46,7 @@ public class CutsceneManager : MonoBehaviour
         if (dialogueJson == null || dialogueSystem == null) 
         {
             Debug.LogError("[CutsceneManager] Falta o JSON ou o Sistema de Dialogo!");
+            // REVIEW: so este erro libera o jogador; os de JSON invalido abaixo nao. No meio de uma cutscene isso destrava o player antes da hora.
             LiberarJogador();
             yield break;
         }
@@ -72,6 +75,7 @@ public class CutsceneManager : MonoBehaviour
             dialogoTerminou = true;
         });
 
+        // REVIEW: nao ha timeout (os docs falam em tempo limite); a unica guarda e o Panel ficar inativo.
         // Aguarda com verificacao de seguranca caso o sistema de dialogo seja desativado externamente
         yield return null;
         while (!dialogoTerminou)

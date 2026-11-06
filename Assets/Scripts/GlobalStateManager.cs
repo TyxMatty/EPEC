@@ -21,6 +21,9 @@ public class Reputacao
     public int pontos;
 }
 
+// ScriptableObject central com todas as flags narrativas e reputacoes do jogo
+// REVIEW: por ser asset, tudo que SetVariavel/AddReputacao grava em Play Mode fica salvo no MemoriaDoJogo.asset
+// (ja commitado com portaAberta=1 e aceitaAjudarTobias=1) e a build comeca com esses valores. Falta um Resetar() no Novo Jogo.
 [CreateAssetMenu(fileName = "GlobalStateManager", menuName = "Scriptable Objects/GlobalStateManager")]
 public class GlobalStateManager : ScriptableObject
 {
@@ -32,6 +35,9 @@ public class GlobalStateManager : ScriptableObject
     // Lista visivel no Inspector contendo os pontos de reputacao de cada NPC/animal
     public List<Reputacao> reputacoes = new List<Reputacao>(); 
     
+    // Cache de busca rapida espelhando as listas acima (montado em Inicializar)
+    // REVIEW: editar uma flag no Inspector durante o Play nao atualiza o dicionario e GetVariavel devolve o valor antigo.
+    // Com ~30 flags um List.Find ja e rapido; apagar os dicts elimina essa dessincronia.
     private Dictionary<string, bool> dictVariaveis = new Dictionary<string, bool>();
     private Dictionary<string, int> dictReputacoes = new Dictionary<string, int>();
 

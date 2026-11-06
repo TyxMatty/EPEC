@@ -5,8 +5,11 @@ using UnityEngine.InputSystem;
 public class InteractionSystem : MonoBehaviour
 {
     [Header("Interaction Configurations")]
+    // Alcance do raycast em unidades
     [SerializeField] private float interactionRange = 2f;
+    // Layer dos objetos interagiveis (layer 6 na cena 0)
     [SerializeField] private LayerMask interactableLayer;
+    // Icone de interacao mostrado quando ha algo na frente
     [SerializeField] private GameObject interactionPrompt;
 
     [Header("Sistemas Globais")]
@@ -16,10 +19,13 @@ public class InteractionSystem : MonoBehaviour
     public InventoryData inventarioGlobal;
 
     [Header("Input Actions")]
+    // Move define a direcao do raycast; Interact dispara (Interact e Submit estao ambos no Enter)
     [SerializeField] private InputActionReference moveAction; 
     [SerializeField] private InputActionReference interactAction; 
 
+    // Objeto atingido pelo raycast neste frame
     private Transform objectToInteractWith;
+    // Ultima direcao de movimento (o raycast aponta para ela)
     private Vector2 interactionDirection = Vector2.down;
     
     void OnEnable()
@@ -34,6 +40,8 @@ public class InteractionSystem : MonoBehaviour
         }
     }
 
+    // REVIEW: Move e o mesmo InputAction do MovementScript; desligar este componente desliga o movimento tambem.
+    // Habilitar o mapa Gameplay uma vez (ex: no InputRebindManager) e nao desligar por componente evita isso.
     void OnDisable()
     {
         if (moveAction != null && moveAction.action != null)
@@ -56,6 +64,8 @@ public class InteractionSystem : MonoBehaviour
 
     void Update()
     {   
+        // REVIEW: so bloqueia com o Panel de dialogo aberto e ignora podeMover; cutscenes sem dialogo na tela
+        // (ex: pausa de 2s do WakeUpPrototype) deixam o jogador interagir. Checar tambem MovementScript.podeMover.
         if (dialogueSystem != null && dialogueSystem.gameObject.activeSelf) return; 
 
         VerificarInteracao();
@@ -67,6 +77,7 @@ public class InteractionSystem : MonoBehaviour
         }
     }
 
+    // Guarda a ultima direcao de input nao-nula
     private void AtualizarDirecaoInteracao()
     {
         if (moveAction == null || moveAction.action == null) return;
@@ -78,6 +89,7 @@ public class InteractionSystem : MonoBehaviour
         }
     }
 
+    // Raycast na direcao atual; liga/desliga o prompt
     private void VerificarInteracao()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, interactionDirection, interactionRange, interactableLayer);
@@ -109,6 +121,7 @@ public class InteractionSystem : MonoBehaviour
             interactionPrompt.SetActive(false); 
         }
 
+        // Roda todas as acoes do objeto (ex: DialogueTrigger + ItemPickup). O componente Interactable nao e lido aqui.
         IInteractAction[] actions = objectToInteractWith.GetComponents<IInteractAction>();
         
         if (actions.Length == 0)

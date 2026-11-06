@@ -2,6 +2,7 @@ using UnityEngine;
 
 // Origem: Assets/Scripts/Interactions/Interactable.cs
 // Tag opcional para categorizacao de objetos do cenario
+// REVIEW: nenhum script le estes bools; o InteractionSystem detecta so por layer + IInteractAction. Hoje e so marcador.
 public class Interactable : MonoBehaviour
 {
     [Header("Tipos de Objeto (Opcional para categorizacao futura)")]

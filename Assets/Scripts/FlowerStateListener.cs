@@ -25,6 +25,7 @@ public class FlowerStateListener : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    // REVIEW: o SaveManager tambem carrega no Start e nao ha ordem de execucao definida; a flor pode ler o estado de antes do load.
     void Start()
     {
         AtualizarEstadoFlor();
@@ -44,6 +45,8 @@ public class FlowerStateListener : MonoBehaviour
         {
             spriteRenderer.sprite = spriteMurcha;
         }
+        // REVIEW: so 2 sprites e so le no Start; as 6 flags florXxxDia1 do GDD vao precisar de uma lista flag->sprite
+        // e de alguem chamar AtualizarEstadoFlor quando a flag mudar.
         // podemos adicionar mais futuramente, quando precisar.
     }
 }

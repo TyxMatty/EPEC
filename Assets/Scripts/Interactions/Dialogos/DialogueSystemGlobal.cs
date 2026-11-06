@@ -8,12 +8,18 @@ using System.Linq;
 public class DialogueSystemGlobal : MonoBehaviour
 {
     [Header("Configuracoes do Sistema de Dialogo")]
+    // Segundos entre cada letra do typewriter
     [SerializeField] private float typingSpeed = 0.05f;
+    // Indicador opcional (nulo na cena 0)
+    // REVIEW: so e ligado no fim do dialogo (Transicao) e nunca desligado; se for a setinha de continuar, ligar quando a linha termina.
     [SerializeField] private Transform nextDialogueBox;
+    // Texto TMP onde as falas sao digitadas
     [SerializeField] private TextMeshProUGUI dialogueText;
     
     [Header("Efeitos de Transicao")] 
+    // CanvasGroup do Panel usado no fade de saida
     [SerializeField] private CanvasGroup canvasGroup; 
+    // Duracao do fade de saida em segundos
     [SerializeField] private float fadeDuration = 0.5f; 
     
     [Header("Integracao de Escolhas")]
@@ -24,17 +30,26 @@ public class DialogueSystemGlobal : MonoBehaviour
     // Acao de input configurada para avancar ou acelerar falas (Enter, Botao A, Click)
     [SerializeField] private InputActionReference submitAction; 
     
+    // Falas do dialogo atual (normais ou alternativas)
     private string[] dialogueLines;
+    // Indice da FALA atual (apesar do nome, nao e letra)
     private int letraAtual = 0; 
+    // Travas: digitando a linha atual / fazendo o fade de saida
     private bool isTyping = false; 
     private bool isTransitioning = false; 
 
     // Variavel publica que sinaliza se o jogador ja pode pressionar o botao para avancar a fala
+    // REVIEW: so volta a false no caminho da escolha; do 2o dialogo em diante a espera de 0.2s nao vale e o Enter que abriu
+    // o dialogo pode pular a 1a linha. Zerar em IniciarDialogo (e deixar private: hoje fica serializado na cena).
     public bool podeAvancar = false; 
     
+    // Dados do dialogo em andamento
     private DialogueData interacaoAtual; 
+    // true quando as condicoes bateram e as falas alternativas foram usadas
     private bool usouFalasAlternativas = false;
+    // Callback de quem abriu o dialogo (DialogueTrigger destrava o player, CutsceneManager segue a rotina)
     private System.Action onDialogueEndedCallback;
+    // Corrotina de digitacao atual (guardada para poder pular a linha)
     private Coroutine typingCoroutine;
 
     void OnEnable()
@@ -60,6 +75,8 @@ public class DialogueSystemGlobal : MonoBehaviour
         }
     }
 
+    // REVIEW: o Panel comeca ativo na cena 0.unity e nada o esconde aqui; sem uma cutscene abrindo dialogo no inicio,
+    // o InteractionSystem fica bloqueado (ele so roda com o Panel inativo).
     void Awake()
     {
         if (nextDialogueBox != null)
@@ -72,6 +89,7 @@ public class DialogueSystemGlobal : MonoBehaviour
         }
     }
 
+    // Enter durante a digitacao completa a linha; depois dela avanca para a proxima fala
     void Update()
     {
         if (isTransitioning || !podeAvancar) return;
@@ -94,6 +112,7 @@ public class DialogueSystemGlobal : MonoBehaviour
         }
     }
 
+    // Comeca da fala 0 e libera o avanco depois de 0.2s (evita pular com o mesmo Enter que abriu)
     private void StartDialogue()
     {
         letraAtual = 0;
@@ -110,6 +129,7 @@ public class DialogueSystemGlobal : MonoBehaviour
         podeAvancar = true;
     }
 
+    // Avanca a fala; na ultima abre as escolhas ou faz o fade de saida
     private void ProximoDialogo()
     {
         letraAtual++;
@@ -143,6 +163,8 @@ public class DialogueSystemGlobal : MonoBehaviour
         }
     }
 
+    // Typewriter retro: concatena letra a letra (escolha deliberada, ver MattyAnotacoesDev secao 5)
+    // REVIEW: tags de rich text (<color>, <b>) aparecem cruas enquanto digita; se forem usadas, pular a tag inteira de uma vez.
     private IEnumerator DigitarLinha()
     {
         isTyping = true;
@@ -159,6 +181,7 @@ public class DialogueSystemGlobal : MonoBehaviour
         isTyping = false;
     }
 
+    // Fade de saida, aplica flags/reputacao do dialogo, chama o callback e desliga o Panel
     private IEnumerator Transicao()
     {
         isTransitioning = true;
@@ -179,6 +202,8 @@ public class DialogueSystemGlobal : MonoBehaviour
             nextDialogueBox.gameObject.SetActive(true);
         }
         
+        // REVIEW: flags e reputacao so sao aplicadas com choiceSystem ligado (gravam via ChoiceSystemGlobal.SalvarEscolha),
+        // e sem ReputationSystem na cena o alteraReputacao some sem nenhum aviso.
         if (interacaoAtual != null && choiceSystem != null) 
         {
             if (usouFalasAlternativas)
@@ -205,6 +230,9 @@ public class DialogueSystemGlobal : MonoBehaviour
         gameObject.SetActive(false); 
     }
 
+    // Ponto de entrada: escolhe falas normais ou alternativas e comeca a digitar
+    // REVIEW: nao para a typingCoroutine anterior nem avisa o callback antigo; se chamado com outro dialogo aberto
+    // (cutscene + jogador), duas digitacoes escrevem no mesmo texto e quem abriu o primeiro nunca e avisado.
     public void IniciarDialogo(DialogueData data, System.Action onComplete = null) 
     {
         if (data == null)

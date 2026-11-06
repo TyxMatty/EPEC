@@ -26,6 +26,7 @@ public class WakeUpPrototype : MonoBehaviour
             yield break;
         }
 
+        // REVIEW: nao checa flag nenhuma (ex: acordouPrimeiroDia); com o save carregado a cutscene toca toda vez que a cena abre.
         // 1. Pausa o jogador e nao deixa ele se mexer
         CutsceneManager.Instance.TravarJogador();
 
@@ -34,6 +35,8 @@ public class WakeUpPrototype : MonoBehaviour
             yield return CutsceneManager.Instance.TocarDialogoEEsperar(dialogoPensamento);
         }
         
+        // REVIEW: nesta pausa o InteractionSystem segue ativo (so checa o Panel aberto): Enter num objeto abre outro dialogo,
+        // o DialogueTrigger devolve podeMover=true e o player anda no meio da cutscene.
         // 2. Pausa dramatica de 2 segundos de silencio
         yield return new WaitForSeconds(2f);
 

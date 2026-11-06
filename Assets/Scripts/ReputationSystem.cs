@@ -18,6 +18,7 @@ public class ReputationSystem : MonoBehaviour
     // Tempo em segundos que o popup permanece visivel na tela
     public float tempoDoPopup = 2f;
 
+    // REVIEW: nao existe ReputationSystem na cena 0.unity; os campos de reputacao dos JSONs sao ignorados sem aviso.
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -31,7 +32,8 @@ public class ReputationSystem : MonoBehaviour
         if (Instance == this) Instance = null;
     }
 
-    public void AdicionarReputacao(string alvo, int pontos) // 
+    // Soma pontos de afinidade (negativo subtrai) no GlobalStateManager e mostra o popup
+    public void AdicionarReputacao(string alvo, int pontos)
     {
         if (stateManager != null)
         {
@@ -50,6 +52,7 @@ public class ReputationSystem : MonoBehaviour
         }
     }
 
+    // Mostra o texto de afinidade colorido (verde/vermelho) por tempoDoPopup segundos
     private IEnumerator ShowPopup(string alvo, int pontos)
     {
         popupText.gameObject.SetActive(true);

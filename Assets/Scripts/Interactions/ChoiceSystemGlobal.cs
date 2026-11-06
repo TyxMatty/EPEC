@@ -2,26 +2,36 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Origem: Assets/Scripts/Interactions/ChoiceSystemGlobal.cs
+// Painel de escolhas: Navigate troca a opcao, Submit confirma e o bool da opcao e gravado no GlobalStateManager
 public class ChoiceSystemGlobal : MonoBehaviour
 {
     [Header("Variaveis Globais de Narrativa")]
     [Header("Base de Dados")]
+    // Asset onde as escolhas sao gravadas como flags
     [SerializeField] private GlobalStateManager stateManager; 
     
     [Header("Inventario")]
+    // Mochila consultada por ChecarItem (condicoes de dialogo)
     [SerializeField] private InventoryData inventarioGlobal;
     
     [Header("UI de Escolha")]
+    // Painel da Canvas com as opcoes
     [SerializeField] private GameObject choiceUI; 
+    // Textos das opcoes, um por botao, na ordem do JSON
     [SerializeField] private TMPro.TextMeshProUGUI[] choiceTexts; 
+    // Cor da opcao normal e da selecionada
     [SerializeField] private Color corNormal = Color.white;
     [SerializeField] private Color corSelecionada = Color.yellow; 
+    // Contador regressivo (opcional; nulo na cena 0)
     [SerializeField] private TMPro.TextMeshProUGUI textoTempo; 
     
     [Header("Input Actions")]
+    // Navigate (W/S, setas) troca a opcao; Submit (Enter) confirma
     [SerializeField] private InputActionReference navigateAction; 
     [SerializeField] private InputActionReference submitAction; 
     
+    // Estado da escolha em andamento
     private bool isChoosing = false;
     private int escolhaAtual = -1; 
     private string variavelAtualParaSalvar = "";
@@ -90,12 +100,16 @@ public class ChoiceSystemGlobal : MonoBehaviour
             else if (nav.y < -0.5f) MudarEscolha(1);
         }
 
+        // REVIEW (BUG): este Submit e o mesmo do DialogueSystemGlobal; o Enter que fecha a ultima fala abre esta tela e, se este
+        // Update rodar depois do dele no mesmo frame, ja confirma a opcao 0. Ignorar o submit no frame em que a tela abriu (Time.frameCount).
         if (submitAction != null && submitAction.action != null && submitAction.action.WasPressedThisFrame() && escolhaAtual != -1)
         {
             ConfirmarEscolha();
         }
     }
 
+    // Abre o painel com as opcoes do JSON; callbackDeSucesso roda depois de gravar a escolha
+    // REVIEW: se o JSON tiver mais opcoes que choiceTexts (4 na cena), da para selecionar uma opcao invisivel.
     public void IniciarTelaDeEscolhas(string variavelAlvo, string[] opcoesTextos, bool[] opcoesValores, bool temTempo, float limiteDeTempo, bool escolhaNeutra, System.Action callbackDeSucesso)
     {
         variavelAtualParaSalvar = variavelAlvo;
@@ -132,6 +146,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         AtualizarUI();
     }
 
+    // Move a selecao com wrap-around
     private void MudarEscolha(int direcao)
     {
         if (totalOpcoesAtuais <= 0) return;
@@ -144,6 +159,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         AtualizarUI();
     }
 
+    // Pinta a opcao selecionada
     private void AtualizarUI()
     {
         if (choiceTexts != null)
@@ -158,6 +174,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         }
     }
 
+    // Grava o bool da opcao selecionada (true se faltar valor) e avisa o dialogo
     private void ConfirmarEscolha()
     {
         isChoosing = false;
@@ -177,6 +194,9 @@ public class ChoiceSystemGlobal : MonoBehaviour
         onChoiceMadeCallback = null;
     }
 
+    // Timer zerou: grava escolhaNeutra na mesma flag
+    // REVIEW: nao responder vira um Sim/Nao comum e a Rota N (hesitar) nao da para detectar depois.
+    // Considerar gravar tambem uma flag propria (ex: variavel + "_semResposta").
     private void FinalizarEscolhaPorTempo()
     {
         isChoosing = false;
@@ -191,6 +211,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         onChoiceMadeCallback = null;
     }
 
+    // Grava uma flag no GlobalStateManager (usado tambem pelo DialogueSystemGlobal)
     public void SalvarEscolha(string variavel, bool valor) 
     {
         if (stateManager != null)
@@ -200,6 +221,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         }
     }
     
+    // Le uma flag do GlobalStateManager (false se nao existir)
     public bool ChecarCondicao(string variavel)
     {
         if (stateManager != null)
@@ -209,6 +231,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
         return false;
     }
     
+    // true se a mochila tem um item com esse itemName ou itemID
     public bool ChecarItem(string itemNameOrID)
     {
         if (inventarioGlobal != null && inventarioGlobal.itens != null)

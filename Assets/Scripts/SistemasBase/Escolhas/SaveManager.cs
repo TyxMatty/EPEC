@@ -35,6 +35,8 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    // REVIEW: carregar no Start corre contra outros Start que leem estado (ex: FlowerStateListener). Pode ir para o Awake:
+    // stateManager e inventory sao assets, ja existem antes de qualquer cena.
     void Start()
     {
         CarregarJogo();
@@ -93,6 +95,7 @@ public class SaveManager : MonoBehaviour
                 {
                     if (data.variaveisSalvas != null)
                     {
+                        // REVIEW: troca a lista inteira; flags que entrarem no asset depois do save somem (so importa se alguma tiver default true).
                         stateManager.variaveisGlobais = data.variaveisSalvas;
                     }
                     if (data.reputacoesSalvas != null)
@@ -112,6 +115,8 @@ public class SaveManager : MonoBehaviour
                     
                     if (data.itensSalvos != null && data.itensSalvos.Count > 0)
                     {
+                        // REVIEW (BUG): a pasta real e Assets/Resources/Items; "Itens" nao acha nada e todo item salvo e descartado no load.
+                        // Renomear a pasta para Itens no Unity (regra do projeto) resolve sem mexer no codigo.
                         ItemData[] todosItensDoJogo = Resources.LoadAll<ItemData>("Itens");
 
                         foreach (string savedID in data.itensSalvos)
@@ -133,6 +138,8 @@ public class SaveManager : MonoBehaviour
             }
             catch (System.Exception ex)
             {
+                // REVIEW: com save corrompido o jogo segue vazio e o OnApplicationQuit sobrescreve o arquivo, perdendo o save antigo.
+                // Copiar para savegame.bak aqui (e gravar via .tmp + File.Replace no SalvarJogo) evita a perda.
                 Debug.LogError("[SaveManager] Erro ao ler arquivo de save: " + ex.Message);
             }
         }
@@ -142,6 +149,8 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    // Autosave ao fechar o jogo (no Editor: ao parar o Play)
+    // REVIEW: junto com o load no Start, cada Play continua o anterior; falta um jeito de apagar o save para testar do zero.
     private void OnApplicationQuit()
     {
         SalvarJogo();

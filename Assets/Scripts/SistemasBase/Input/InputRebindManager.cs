@@ -8,16 +8,16 @@ public class InputRebindManager : MonoBehaviour
     // Referencia ao InputActionAsset contendo todos os Action Maps (ex: PlayerControls)
     public InputActionAsset inputActions;
 
+    // Operacao de rebind em andamento (null quando nenhuma)
     private InputActionRebindingExtensions.RebindingOperation activeRebindOperation;
 
+    // REVIEW: nao ha InputRebindManager na cena 0.unity, entao binds salvos nunca sao carregados.
     private void Start()
     {
         CarregarBindsSalvos();
     }
 
-    /// Inicia o processo de rebind para uma acao especifica.
-    /// Exemplo de chamada no UI Button: StartRebind("Gameplay/Move", 0, textComponent);
-
+    // Cancela um rebind em andamento ao destruir o objeto
     private void OnDestroy()
     {
         CancelarRebindAtivo();
@@ -28,13 +28,16 @@ public class InputRebindManager : MonoBehaviour
         if (activeRebindOperation != null)
         {
             activeRebindOperation.Cancel();
+            // REVIEW (BUG): Cancel() roda o OnCancel na hora, que ja faz Dispose e zera activeRebindOperation;
+            // esta linha da NullReferenceException. Trocar por activeRebindOperation?.Dispose().
             activeRebindOperation.Dispose();
             activeRebindOperation = null;
         }
     }
 
     // Metodo publico chamado pela UI para remapear uma tecla
-    // Exemplo: StartRebind("Gameplay/Move", 0, textComponent)
+    // Exemplo: StartRebind("Gameplay/Interact", 0, textComponent)
+    // Em Move o indice 0 e o composite 2DVector, nao uma tecla: 1=W 2=S 3=A 4=D, 6 a 9 = setas
     public void StartRebind(string actionName, int bindingIndex, TMPro.TextMeshProUGUI buttonText)
     {
         if (activeRebindOperation != null) return; 

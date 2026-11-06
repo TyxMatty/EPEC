@@ -3,6 +3,8 @@ using UnityEngine;
 
 
 // ScriptableObject que armazena a lista de itens atualmente no inventario do Player
+// REVIEW: como no GlobalStateManager, itens pegos em Play Mode ficam gravados no asset (Mochila 1 ja tem a Chave commitada).
+// Os READMEs citam AdicionarItem/RemoverItem/ContemItem/Limpar; os metodos reais sao Additem/AddItem/RemoveItem.
 [CreateAssetMenu(fileName = "PlayerInventory", menuName = "Scriptable Objects/Inventory")]
 public class InventoryData : ScriptableObject
 {

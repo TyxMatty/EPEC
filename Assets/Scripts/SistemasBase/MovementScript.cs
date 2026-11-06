@@ -1,19 +1,24 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// Origem: Assets/Scripts/SistemasBase/MovementScript.cs
+// Movimento top-down: le Move/Sprint no Update e aplica a velocidade no Rigidbody2D no FixedUpdate
 [RequireComponent(typeof(Rigidbody2D))] 
 public class MovementScript : MonoBehaviour 
 {
     [Header("Speed Configurations")]
     // Velocidade base de caminhada do jogador
     public float baseSpeed = 5f;
+    // Multiplicador de velocidade segurando Sprint (Shift)
     [SerializeField] private float shiftMultiplier = 1.5f;
 
     [Header("Input Actions")]
+    // Move (WASD/setas) e Sprint (Shift) do mapa Gameplay
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference sprintAction;
 
     private Rigidbody2D rb;
+    // Direcao e velocidade calculadas no Update e aplicadas no FixedUpdate
     private Vector2 movementDirection;
     private float currentSpeed;
 
