@@ -44,7 +44,12 @@ public class ChoiceSystemGlobal : MonoBehaviour
 
     private bool[] valoresDasEscolhas;
     private int totalOpcoesAtuais = 0;
-    private System.Action onChoiceMadeCallback;
+    // Recebe o indice da opcao escolhida (-1 quando o tempo acabou)
+    private System.Action<int> onChoiceMadeCallback;
+
+    // Assets usados pelo DialogueSystemGlobal para avaliar Condicoes e aplicar Efeitos
+    public GlobalStateManager Estado => stateManager;
+    public InventoryData Inventario => inventarioGlobal;
 
     void OnEnable()
     {
@@ -109,15 +114,21 @@ public class ChoiceSystemGlobal : MonoBehaviour
         }
     }
 
-    // Abre o painel com as opcoes do JSON; callbackDeSucesso roda depois de gravar a escolha
-    // REVIEW: se o JSON tiver mais opcoes que choiceTexts (4 na cena), da para selecionar uma opcao invisivel.
-    public void IniciarTelaDeEscolhas(string variavelAlvo, string[] opcoesTextos, bool[] opcoesValores, bool temTempo, float limiteDeTempo, bool escolhaNeutra, System.Action callbackDeSucesso)
+    // Abre o painel com as opcoes do JSON; callbackDeSucesso recebe o indice escolhido depois de gravar a escolha
+    public void IniciarTelaDeEscolhas(string variavelAlvo, string[] opcoesTextos, bool[] opcoesValores, bool temTempo, float limiteDeTempo, bool escolhaNeutra, System.Action<int> callbackDeSucesso)
     {
         variavelAtualParaSalvar = variavelAlvo;
         isChoosing = true;
         frameAbertura = Time.frameCount;
-        escolhaAtual = 0; 
+        escolhaAtual = 0;
         totalOpcoesAtuais = opcoesTextos != null ? opcoesTextos.Length : 0;
+        int botoes = choiceTexts != null ? choiceTexts.Length : 0;
+        if (totalOpcoesAtuais > botoes)
+        {
+            // Sem isso daria para selecionar uma opcao que nao aparece na tela
+            Debug.LogWarning($"[ChoiceSystem] {totalOpcoesAtuais} opcoes mas so {botoes} textos na UI; as extras foram cortadas.");
+            totalOpcoesAtuais = botoes;
+        }
         usarTempoLimite = temTempo;
         tempoRestante = limiteDeTempo;
         escolhaNeutraAtivada = escolhaNeutra;
@@ -191,9 +202,10 @@ public class ChoiceSystemGlobal : MonoBehaviour
             }
             SalvarEscolha(variavelAtualParaSalvar, valorEscolhido);
         }
-        
-        onChoiceMadeCallback?.Invoke();
+
+        var callback = onChoiceMadeCallback;
         onChoiceMadeCallback = null;
+        callback?.Invoke(escolhaAtual);
     }
 
     // Timer zerou: grava escolhaNeutra na mesma flag
@@ -208,9 +220,10 @@ public class ChoiceSystemGlobal : MonoBehaviour
         {
             SalvarEscolha(variavelAtualParaSalvar, escolhaNeutraAtivada);
         }
-        
-        onChoiceMadeCallback?.Invoke();
+
+        var callback = onChoiceMadeCallback;
         onChoiceMadeCallback = null;
+        callback?.Invoke(-1);
     }
 
     // Grava uma flag no GlobalStateManager (usado tambem pelo DialogueSystemGlobal)
@@ -236,17 +249,7 @@ public class ChoiceSystemGlobal : MonoBehaviour
     // true se a mochila tem um item com esse itemName ou itemID
     public bool ChecarItem(string itemNameOrID)
     {
-        if (inventarioGlobal != null && inventarioGlobal.itens != null)
-        {
-            foreach(var item in inventarioGlobal.itens)
-            {
-                if (item != null && (item.itemName == itemNameOrID || item.itemID == itemNameOrID))
-                {
-                    return true; 
-                }
-            }
-        }
-        return false; 
+        return inventarioGlobal != null && inventarioGlobal.ContemItem(itemNameOrID);
     }
 }
 

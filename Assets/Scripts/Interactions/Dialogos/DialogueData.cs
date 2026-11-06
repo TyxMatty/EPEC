@@ -3,13 +3,23 @@ using System.Collections.Generic;
 
 // Origem: Assets/Scripts/Interactions/Dialogos/DialogueData.cs
 // Espelho do JSON de dialogo lido via JsonUtility (cada campo aqui = uma chave do .json)
-// REVIEW: JsonUtility ignora sem aviso chaves que nao existem aqui: o exemplo do Docs/README.md (variavelParaAlterar,
-// textoPergunta, variavelDaEscolha, temTimer) e o valorEsperado do testeCondicao.json nao fazem nada.
+// O JsonUtility ignora sem aviso chaves que nao existem aqui: um nome errado no JSON simplesmente nao faz nada.
+// Formato v2 (linhas/opcoes/efeitos) convive com o antigo; ver Docs/README.md secao 7.
 [System.Serializable]
 public class DialogueData
 {
     // ID do dialogo (nenhum script le hoje; teste.json e testeCondicao.json repetem maria_prologo_01)
     public string dialogueID;
+
+    [Header("Formato v2")]
+    // Falas com falante, expressao e condicao por fala; se preenchido, falas/falasAlternativas sao ignorados
+    public List<Fala> linhas;
+    // Opcoes ao fim das falas: cada uma com condicoes para aparecer, efeitos e o proximo dialogo
+    public List<Opcao> opcoes;
+    // Efeitos aplicados quando as falas acabam (antes das opcoes)
+    public List<Efeito> efeitos;
+
+    [Header("Formato antigo")]
     // Falas exibidas em ordem pelo typewriter
     public List<string> falas;
     
@@ -55,4 +65,34 @@ public class DialogueData
     public bool temTempoLimite;
     public float tempoLimite;
     public bool escolhaNeutra;
+}
+
+// Uma fala do formato v2: {"personagem":"Maria","expressao":"feliz","texto":"Voce veio, {X}!"}
+[System.Serializable]
+public class Fala
+{
+    // Nome do personagem (asset em Resources/Personagens); vazio = narracao; "X" = protagonista
+    public string personagem;
+    // Expressao do retrato (vazio = "neutra")
+    public string expressao;
+    // Texto da fala; {X} vira o nome do jogador
+    public string texto;
+    // A fala so aparece se TODAS de 'condicoes' valem e (se houver) ALGUMA de 'condicoesQualquer'
+    public List<Condicao> condicoes;
+    public List<Condicao> condicoesQualquer;
+}
+
+// Uma opcao do formato v2: {"texto":"Pode... ser?","efeitos":[...],"proximoDialogo":"cap1_maria_conta_tobias"}
+[System.Serializable]
+public class Opcao
+{
+    // Texto do botao; {X} vira o nome do jogador
+    public string texto;
+    // A opcao so aparece se as condicoes valem (ex: escondida na Rota R)
+    public List<Condicao> condicoes;
+    public List<Condicao> condicoesQualquer;
+    // Efeitos aplicados ao escolher
+    public List<Efeito> efeitos;
+    // Nome do JSON em Resources/Dialogos tocado em seguida (vazio = encerra o dialogo)
+    public string proximoDialogo;
 }
