@@ -22,8 +22,7 @@ public class Reputacao
 }
 
 // ScriptableObject central com todas as flags narrativas e reputacoes do jogo
-// REVIEW: por ser asset, tudo que SetVariavel/AddReputacao grava em Play Mode fica salvo no MemoriaDoJogo.asset
-// (ja commitado com portaAberta=1 e aceitaAjudarTobias=1) e a build comeca com esses valores. Falta um Resetar() no Novo Jogo.
+// Por ser asset, o que for gravado em Play Mode fica no MemoriaDoJogo.asset; o SaveManager chama Resetar() quando nao ha save
 [CreateAssetMenu(fileName = "GlobalStateManager", menuName = "Scriptable Objects/GlobalStateManager")]
 public class GlobalStateManager : ScriptableObject
 {
@@ -43,6 +42,14 @@ public class GlobalStateManager : ScriptableObject
 
     private void OnEnable()
     {
+        Inicializar();
+    }
+
+    // Zera flags e reputacoes (Novo Jogo)
+    public void Resetar()
+    {
+        variaveisGlobais = new List<VariavelNarrativa>();
+        reputacoes = new List<Reputacao>();
         Inicializar();
     }
 

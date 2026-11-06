@@ -34,4 +34,18 @@ public class GlobalStateManagerTests
         // Assert
         Assert.IsFalse(result);
     }
+
+    [Test]
+    public void Resetar_ApagaVariaveisEReputacoes()
+    {
+        var stateManager = ScriptableObject.CreateInstance<GlobalStateManager>();
+        stateManager.SetVariavel("portaAberta", true);
+        stateManager.AddReputacao("Tobias", 10);
+
+        stateManager.Resetar();
+
+        Assert.IsFalse(stateManager.GetVariavel("portaAberta"));
+        Assert.AreEqual(0, stateManager.GetReputacao("Tobias"));
+        Assert.AreEqual(0, stateManager.variaveisGlobais.Count);
+    }
 }

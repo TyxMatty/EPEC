@@ -104,15 +104,8 @@ public class SaveManager : MonoBehaviour
                     }
                     stateManager.Inicializar(); 
 
-                    if (inventory.itens != null)
-                    {
-                        inventory.itens.Clear();
-                    }
-                    else
-                    {
-                        inventory.itens = new List<ItemData>();
-                    }
-                    
+                    inventory.Limpar();
+
                     if (data.itensSalvos != null && data.itensSalvos.Count > 0)
                     {
                         // Todo ItemData precisa estar em Assets/Resources/Itens para ser achado aqui
@@ -144,6 +137,9 @@ public class SaveManager : MonoBehaviour
         }
         else
         {
+            // Sem save = Novo Jogo: descarta o que os assets guardaram de sessoes anteriores (Play Mode / valores commitados)
+            stateManager.Resetar();
+            inventory.Limpar();
             Debug.Log("[SaveManager] Nenhum save encontrado. Comecando um jogo novo.");
         }
     }
