@@ -41,21 +41,21 @@ Grafia oficial (igual ao roteiro revisado e aos JSONs; o codigo diferencia maius
 - **Reputacao:** alvos `Tobias` e `Maria` (o roteiro escreve `repTobias` / `repMaria`).
 
 ### 2.2. Mecanicas e Modulos
-1. **Sistema de Flores (Concluido):**
-   - Implementado via `FlowerStateListener.cs`. Escuta flags no `GlobalStateManager` e troca o sprite para refletir a saude do jardim.
+1. **Sistema de Flores (Parcial):**
+   - `FlowerStateListener.cs` le uma flag no `Start` e troca entre 2 sprites. Os 6 estados do roteiro e a reacao a mudancas ficam para a Fase 3 do `MattyDevPlan.md`.
 2. **Sistema de Reputacao / Afinidade (Concluido):**
    - Implementado via `ReputationSystem.cs` e integrado ao `GlobalStateManager` e `SaveManager.cs`. Permite acompanhar pontuacoes de relacionamento (+/- pontos com animais e NPCs).
 3. **Data-Driven Dialogues e Escolhas (Concluido):**
-   - Dialogos gerenciados por arquivos JSON em `DialogueData.cs` e processados por `DialogueSystemGlobal.cs` com typewriter suave.
-   - Suporte a condicoes por inventario, falas alternativas e alteracao automatica de flags.
+   - Dialogos gerenciados por arquivos JSON em `Assets/Resources/Dialogos/` (classes em `DialogueData.cs`) e processados por `DialogueSystemGlobal.cs` com typewriter suave.
+   - Formato v2: falante e retrato por fala, condicao por fala (flag, reputacao minima, item, rota; E/OU), opcoes com efeitos e `proximoDialogo`, e `{X}` com o nome do jogador.
 4. **Sistema de Cutscenes Standalone (Concluido):**
    - `CutsceneManager.cs` permite orquestrar sequencias narrativas com bloqueio de player e corrotinas sincronizadas.
 5. **Modernizacao de Input e Rebinding (Concluido):**
    - `MovementScript.cs` e `InteractionSystem.cs` migrados para `InputActionReference`.
    - `InputRebindManager.cs` adicionado para remapeamento dinamico em tempo de execucao.
-6. **Sistema de Pos-Processamento (Concluido):**
-   - `PostProcessingManager.cs` criado para controlar os filtros da Rota R e distorcoes emocionais.
-7. **Sistema de QTE (Ataque de Panico) (Pendente para amanha):**
+6. **Sistema de Pos-Processamento (Pendente):**
+   - `PostProcessingManager.cs` existe mas esta vazio; os filtros da Rota R e distorcoes emocionais entram na Fase 4.
+7. **Sistema de QTE (Ataque de Panico) (Pendente):**
    - Mini-game ritmico/reacao com janela de tempo. Maximo de 3 falhas antes do desmaio.
 8. **Mecanica de Investigacao (Pendente):**
    - Interface de "juntar as pontas" para cruzar evidencias e gerar conclusoes.

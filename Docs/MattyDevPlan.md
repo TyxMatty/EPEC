@@ -17,7 +17,40 @@ O objetivo deste plano e garantir progresso modular constante, sem acoplamentos 
 - [x] Sistema de Cutscenes e Dialogos Standalone com Corrotinas (`CutsceneManager`, `WakeUpPrototype`).
 - [x] Sistema de Reputacao com Persistencia (`ReputationSystem`, `GlobalStateManager`).
 - [x] Sistema de Save/Load em JSON com integracao total (`SaveManager`).
-- [x] Reatividade Visual de Flores e Pos-Processamento (`FlowerStateListener`, `PostProcessingManager`).
+- [x] Reatividade Visual de Flores com 2 sprites (`FlowerStateListener`). O `PostProcessingManager` ainda e uma classe vazia.
+- [x] Condicoes, Efeitos, Rota (B/N/R), Instabilidade e Nome do jogador (`Condicao`, `Efeito`, `GlobalStateManager`, `NomeDoJogadorUI`).
+- [x] Dialogo v2: falante, retrato por expressao/rota, condicao por fala e opcoes ramificadas (`DialogueSystemGlobal`, `CharacterData`).
+
+---
+
+## Roteiro ate o Capitulo 1 (plano de 06/11/2026)
+
+Levantado a partir do roteiro revisado (`Entre Patas e Caminhos (revisado).docx`). Cada fase destrava a seguinte.
+
+### Fase 1 - Dados do roteiro (CONCLUIDA)
+- [x] **Condicoes e Efeitos:** flag, reputacao minima, item e rota; listas E/OU; efeitos de flag, reputacao, rota e instabilidade.
+- [x] **Dialogo v2:** personagem + expressao por fala, retrato (`CharacterData` em `Resources/Personagens`), `{X}`, condicao por fala.
+- [x] **Escolhas ramificadas:** opcoes com condicao, efeitos e `proximoDialogo` (JSONs em `Resources/Dialogos`).
+- [x] **Rota + instabilidade:** uma rota so (`rota`), `MudarRota` B -> N -> R, medidor `instabilidade`, tudo no save.
+- [x] **Nome do jogador:** `NomeDoJogadorUI`, chamado pelo `WakeUpPrototype` em jogo novo.
+- [x] Exemplo real: abrigo do Cap 1 (Decisoes 1.1 e 1.2) em `cap1_abrigo_apresentacao.json`.
+- [ ] Na cena: criar `nomeText`/`retratoImage` no Panel de dialogo, o painel da `NomeDoJogadorUI` e os `CharacterData` de X, Maria, Gi, Tobias e enfermeira.
+
+### Fase 2 - Montar as cenas
+- [ ] **Troca de cenas:** `SceneTransitionManager` com fade e ponto de spawn + prefab "Nucleo" (player, camera, UI, managers) com DontDestroyOnLoad.
+- [ ] **NPCs em cutscene:** `MoverPara(posicao)` e `SeguirAlvo(distancia)` (Tobias mais perto se `fezCarinhoTobias`).
+- [ ] **Fim do dia:** `EncerrarDia()` com fade, calculo da flor, save e proxima cena (desmaio e Rota R profunda).
+- [ ] **Sprites com Animator:** controller base `Humano4Dir` e `Quadrupede4Dir` (Blend Trees Idle/Walk/Run por DirX/DirY + estados avulsos como Abracar, Girar, Chutar, Latir), um `AnimatorOverrideController` por personagem, override extra para a Rota R e um `AnimacaoPorMovimento` substituindo o `SpriteChange`. Importacao: mesmo Pixels Per Unit, Filter Point, Compression None, pivot nos pes, Sprite Atlas por personagem e Transparency Sort Axis (0,1,0) no Renderer2D.
+
+### Fase 3 - Mecanicas do Cap 1
+- [ ] **QTE generico:** sequencia de teclas com janela de tempo; agressor (sucesso/falha -> `agressorEscapa`) e ataque de panico (mais de 3 falhas -> desmaio).
+- [ ] **Investigacao (juntar as pontas):** `PistaData`, `CasoData`, gatilho de pista e tela do quadro.
+- [ ] **Flores v2:** lista de regras (condicoes -> sprite), reacao a mudanca de estado e calculo da flor do dia pelas 6 regras do roteiro.
+
+### Fase 4 - Clima e tutorial
+- [ ] **Pos-processamento:** Volumes do URP por rota, flashback, panico e blur da cidade.
+- [ ] **Audio:** `AudioManager` com crossfade de musica por rota e SFX (alarme, celular, moto, latido).
+- [ ] **Seguranca e Bem-estar por animal:** dois numeros por animal + painel do tutorial do fim do Cap 1.
 
 ---
 
@@ -29,7 +62,7 @@ O objetivo deste plano e garantir progresso modular constante, sem acoplamentos 
 
 ### Tarefa 2: Reflexos Visuais do Mundo (O Sistema de Flores e Rota R)
 - [x] **Criar FlowerStateListener.cs:** Script que monitora flags e troca sprites de flores no cenario.
-- [x] **Criar PostProcessingManager.cs:** Ajustes de pos-processamento (blur, vinheta, cores) para rotas criticas.
+- [ ] **Criar PostProcessingManager.cs:** Ajustes de pos-processamento (blur, vinheta, cores) para rotas criticas. (Arquivo criado, mas vazio; ver Fase 4.)
 
 ### Tarefa 3: Montagem do Prologo na Cena (Greyboxing e Multi-Cenas)
 Dividir os mapas para facilitar versionamento, organizacao e desempenho:
@@ -70,9 +103,9 @@ Dividir os mapas para facilitar versionamento, organizacao e desempenho:
 
 ---
 
-## Ordem de Execucao para a Proxima Sessao (Amanha)
+## Ordem de Execucao para a Proxima Sessao
 
-Com os sistemas base e a arquitetura 100% estaveis e documentados, a prioridade sera:
-1. **Greyboxing do Prologo (Tarefa 3):** Criar as cenas separadas e testar o fluxo de navegacao fisica.
-2. **Sistema de Transicao de Cenas (`SceneTransitionManager`):** Fazer a troca suave entre o quarto e o jardim.
-3. **Mecanica de Ataque de Panico / QTE (Tarefa 5):** Implementar o mini-game de respiracao/panico.
+Com a Fase 1 pronta, a prioridade sera:
+1. **Ligar a Fase 1 na cena:** nome/retrato no Panel, tela de nome e `CharacterData` dos personagens; rodar os testes no Test Runner.
+2. **Fase 2:** `SceneTransitionManager` + prefab Nucleo, greyboxing do Prologo (Tarefa 3) e o pipeline de sprites com Animator.
+3. **Fase 3:** QTE generico (agressor e ataque de panico) e investigacao.

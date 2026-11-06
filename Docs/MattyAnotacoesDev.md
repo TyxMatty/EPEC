@@ -106,20 +106,15 @@ Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.u
 - `Interactable` nao e lido por nenhum script.
 
 ### 7.3. Docs desatualizados em relacao ao codigo
-| Doc diz | Codigo real |
-|---|---|
-| `GameFlag { flagName, isTrue }`, `DefinirFlag/ObterFlag` | `VariavelNarrativa { nome, valor }`, `SetVariavel/GetVariavel/AddReputacao/GetReputacao`, `Reputacao.pontos` |
-| "Nao usa Dicionarios" | usa dicionarios privados como cache |
-| `InventoryData.AdicionarItem/RemoverItem/ContemItem` | `Additem/AddItem/RemoveItem` (`Limpar` agora existe) |
-| `ItemData { nomeItem, descricao, icone }` | `itemName, itemDescription, itemIcon` |
-| `MovementScript { speed, runMultiplier }`, `MovementScript.podeMover = false` | `baseSpeed, shiftMultiplier`; `podeMover` e de instancia (usar `CutsceneManager.Instance.TravarJogador()`) |
-| `InteractionSystem.rayDistance`, tecla E / Gamepad South | `interactionRange`, so Enter no `PlayerControls` |
-| `ReputationSystem.globalState` | `stateManager` |
-| `DialogueTrigger.dialogueJSON`, `onlyOnce` | `dialogueJson`, sem `onlyOnce` |
-| `FlowerStateListener { targetFlag, activeSprite, defaultSprite, AtualizarEstadoVisual() }` | `variavelFlor, spriteViva, spriteMurcha, AtualizarEstadoFlor()` |
-| `CameraFollow` com limites min/max | nao tem limites |
-| `CutsceneManager` com tempo limite | nao tem timeout, so checa o Panel inativo |
-| `InputRebindManager` cancela no `OnDisable` | so no `OnDestroy` |
-| `PostProcessingManager` "Concluido" | classe vazia |
-| JSON do `Docs/README.md`: `variavelParaAlterar, textoPergunta, variavelDaEscolha, temTimer` | `variavelAlteradaPorDialogo, variavelParaSalvar, temTempoLimite` (o JsonUtility ignora o resto sem aviso) |
-| `.agents/rules`: "DialogueSystemGlobal destrava o jogador" | quem destrava e o callback do `DialogueTrigger` |
+**Corrigido em 06/11/2026:** `Docs/README.md` e `Assets/Scripts/README.md` foram reescritos com os nomes reais de classes, campos e metodos (GlobalStateManager, InventoryData, ItemData, MovementScript, InteractionSystem, ReputationSystem, DialogueTrigger, FlowerStateListener, CameraFollow, CutsceneManager, InputRebindManager), o `PostProcessingManager` voltou a constar como pendente e o JSON de exemplo usa os campos que existem. A regra em `.agents/rules` agora diz que quem destrava o jogador e o `DialogueTrigger`.
+
+---
+
+## 8. Fase 1 do Roteiro: Decisoes de Design (06/11/2026)
+
+- **Regras como dados:** `Condicao` e `Efeito` sao classes serializaveis lidas do JSON. Qualquer sistema novo (flores, gatilhos, QTE) deve reusar `Condicao.Valem` e `Efeito.AplicarTodos` em vez de criar campos proprios como `variavelDaCondicao`.
+- **Uma rota so:** a rota e um campo (`rota` = B/N/R) e nao tres bools, porque o roteiro anda nela ("na B vai para N, na N vai para R"). As flags `RotaB/N/R` continuam funcionando como leitura/escrita desse campo.
+- **Pastas Resources por nome:** dialogos (`Resources/Dialogos`) e personagens (`Resources/Personagens`) sao achados pelo nome escrito no JSON, sem ligar nada no Inspector.
+- **Formato antigo mantido:** os JSONs e cenas existentes continuam funcionando; o v2 so entra quando `linhas`/`opcoes` estao preenchidos.
+- **Sprites:** decidido usar Animator com controllers base por tipo de corpo e um `AnimatorOverrideController` por personagem (Fase 2); retratos de dialogo ficam no `CharacterData`, sem Animator.
+- **Nomes de flags:** a grafia oficial esta em `Docs/MattyNotations.md` 2.1 e no roteiro revisado (`abortedRotaR`, `florQuaseMorta` mantida como status de decisao negativa maxima, `protagonistaNumeroVeterinaria`, `auxiliouTobias`, `tobiasInterage`).

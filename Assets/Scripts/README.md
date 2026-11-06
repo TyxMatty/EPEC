@@ -1,6 +1,6 @@
 # Documentacao Tecnica de Scripts - Projeto EPEC
 
-Este documento detalha a arquitetura tecnica, a organizacao de diretorios e o funcionamento dos scripts no diretorio `Assets/Scripts/`. Todos os sistemas foram desenvolvidos com foco em modularidade, desacoplamento e manutencao limpa (Anti-Spaghetti).
+Este documento detalha a arquitetura tecnica, a organizacao de diretorios e o funcionamento dos scripts no diretorio `Assets/Scripts/`. Todos os sistemas foram desenvolvidos com foco em modularidade, desacoplamento e manutencao limpa (Anti-Spaghetti). O guia de uso no Inspector e o formato dos JSONs ficam em `Docs/README.md`.
 
 ---
 
@@ -9,32 +9,36 @@ Este documento detalha a arquitetura tecnica, a organizacao de diretorios e o fu
 ```text
 Assets/Scripts/
 |-- Cameras/
-|   |-- CameraFollow.cs           # Camera suave com lerp e foco no alvo
-|   +-- SceneFollow.cs            # Camera por salas (bounding box ortografico)
+|   |-- CameraFollow.cs           # Camera suave com lerp seguindo o alvo
+|   +-- SceneFollow.cs            # Camera por salas (grade do tamanho da tela)
 |-- Interactions/
-|   |-- ChoiceSystemGlobal.cs     # Painel de escolhas ramificadas com timer
+|   |-- ChoiceSystemGlobal.cs     # Painel de escolhas com timer; devolve a opcao escolhida
 |   |-- Dialogos/
-|   |   |-- DialogueData.cs       # Estruturas de dados e classes para JSON
-|   |   |-- DialogueSystemGlobal.cs # Maquina de escrever retro e controle de UI
+|   |   |-- CharacterData.cs      # ScriptableObject de personagem (nome, cor, retratos)
+|   |   |-- DialogueData.cs       # Classes do JSON de dialogo (v2: Fala, Opcao)
+|   |   |-- DialogueSystemGlobal.cs # Maquina de escrever retro, falante e encadeamento
 |   |   +-- DialogueTrigger.cs    # Gatilho de dialogo baseado em JSON
 |   |-- IInteractAction.cs        # Interface para acoes polimorficas de interacao
-|   |-- Interactable.cs           # Componente base detectado pelo Raycast
+|   |-- Interactable.cs           # Marcador opcional (nenhum script le hoje)
 |   |-- InteractionSystem.cs      # Raycast do jogador e disparo de acoes
 |   |-- InventoryData.cs          # ScriptableObject de inventario (mochila)
 |   |-- ItemData.cs               # ScriptableObject de definicao de item
 |   +-- ItemPickup.cs             # Gatilho de coleta de itens do cenario
 |-- SistemasBase/
 |   |-- Escolhas/
-|   |   +-- SaveManager.cs        # Persistencia de flags, reputacao e inventario
+|   |   +-- SaveManager.cs        # Persistencia de flags, reputacao, rota, nome e inventario
 |   |-- Input/
 |   |   +-- InputRebindManager.cs # Gerenciador de remapeamento dinamico de inputs
 |   |-- MovementScript.cs         # Fisica de movimento 2D com Input System
+|   |-- NomeDoJogadorUI.cs        # Tela onde o jogador escolhe o nome ({X})
 |   +-- SpriteChange.cs           # Animacao orientada por velocidade e direcao
+|-- Condicao.cs                   # Checagem de flag/reputacao/item/rota usada por dados
 |-- CutsceneManager.cs            # Orquestrador de cutscenes e sequencias lineares
+|-- Efeito.cs                     # Mudanca de flag/reputacao/rota/instabilidade usada por dados
 |-- FlowerStateListener.cs        # Reatividade visual de sprites baseada em flags
-|-- GlobalStateManager.cs         # ScriptableObject central de flags e reputacoes
-|-- PostProcessingManager.cs      # Controle de efeitos visuais e pos-processamento
-|-- ReputationSystem.cs           # Singleton gerenciador de afinidades e reputacao
+|-- GlobalStateManager.cs         # ScriptableObject central de flags, reputacoes, rota e nome
+|-- PostProcessingManager.cs      # Reservado (ainda vazio) para efeitos de pos-processamento
+|-- ReputationSystem.cs           # Singleton de popup de afinidade
 +-- WakeUpPrototype.cs            # Sequencia scriptada do prologo (acordar do protagonista)
 ```
 
@@ -45,38 +49,46 @@ Assets/Scripts/
 ### 2.1. Movimentacao e Input (`SistemasBase/`)
 
 - **`MovementScript.cs`**:
-  - Controla o movimento top-down do jogador com aceleracao linear no `Rigidbody2D`.
+  - Controla o movimento top-down do jogador no `Rigidbody2D` (`baseSpeed`, `shiftMultiplier`).
   - Integrado ao Unity Input System moderno via `InputActionReference` (`moveAction`, `sprintAction`).
-  - Possui a propriedade publica `podeMover` (bool). Quando definida como `false`, o script zera a velocidade fisica imediatamente, travando o player durante dialogos ou cutscenes.
+  - Possui a propriedade publica `podeMover` (bool). Quando `false`, o script zera a velocidade fisica e o `InteractionSystem` deixa de interagir, travando o player durante dialogos ou cutscenes.
   - Implementa protecao de nulidade caso as `InputActionReference` nao estejam associadas no Inspector.
 
 - **`SpriteChange.cs`**:
-  - Atualiza os frames de animacao sem usar o componente Animator do Unity, eliminando alocacao desnecessaria de memoria.
-  - Avalia a velocidade (`linearVelocity`) para alternar entre estados: parado, caminhando e correndo em 4 direcoes cardeais.
+  - Atualiza os sprites sem usar o componente Animator do Unity.
+  - Avalia a velocidade (`linearVelocity`) para alternar entre estados: parado, transicao, caminhando e correndo em 4 direcoes cardeais.
 
 - **`InputRebindManager.cs`** (`SistemasBase/Input/`):
   - Permite remapear teclas e botoes em tempo de execucao usando `InputActionRebindingExtensions`.
-  - Salva e restaura sobreposicoes de vinculacao no formato JSON (`SaveBindingOverrides` / `LoadBindingOverrides`).
-  - Possui descarte seguro de operacoes assincronas em `OnDisable()` e `OnDestroy()` para evitar vazamento de memoria.
+  - Salva e restaura sobreposicoes de vinculacao no formato JSON (`SaveBindingOverridesAsJson` / `LoadBindingOverridesFromJson`) via PlayerPrefs.
+  - Cancela e descarta a operacao pendente em `OnDestroy()`.
+
+- **`NomeDoJogadorUI.cs`**:
+  - Painel com `TMP_InputField`; `Confirmar()` grava `GlobalStateManager.nomeJogador` (sem `<` `>` e sem nome vazio).
+  - `PedirNome()` e uma corrotina para cutscenes; `FaltaNome` indica jogo novo.
 
 ---
 
 ### 2.2. Gerenciamento de Estado e Persistencia
 
 - **`GlobalStateManager.cs`** (ScriptableObject):
-  - Mantem a lista serializavel de flags booleanas (`List<GameFlag>`) e a lista de reputacoes (`List<Reputacao>`).
-  - Evita o uso de Dicionarios para garantir total visibilidade no Inspector do Unity e facilitar a serializacao para JSON.
-  - Inclui metodos seguros: `DefinirFlag`, `ObterFlag`, `AdicionarReputacao`, `ObterReputacao`, com busca segura e auto-inicializacao em `OnEnable()`.
+  - Mantem as listas serializaveis `variaveisGlobais` (`List<VariavelNarrativa>` com `nome`/`valor`) e `reputacoes` (`List<Reputacao>` com `nome`/`pontos`), mais `rota`, `instabilidade` e `nomeJogador`.
+  - Listas no Inspector para visibilidade e JSON; dicionarios privados so como cache de busca.
+  - Metodos: `SetVariavel`, `GetVariavel`, `AddReputacao`, `GetReputacao`, `DefinirRota`, `MudarRota`, `AddInstabilidade`, `Resetar`, `NomeExibido`.
+  - `RotaB/RotaN/RotaR` sao derivadas de `rota` (uma rota por vez).
+
+- **`Condicao.cs`** e **`Efeito.cs`**:
+  - Classes serializaveis lidas dos JSONs. `Condicao.Valem(todas, qualquer, estado, mochila)` avalia listas E/OU; `Efeito.AplicarTodos(lista, estado)` aplica flags, reputacao, rota e instabilidade.
+  - Pensadas para serem reaproveitadas por flores, gatilhos e mecanicas das proximas fases.
 
 - **`ReputationSystem.cs`** (Singleton MonoBehaviour):
-  - Atua como fachada (Facade) acessivel globalmente (`ReputationSystem.Instance`) para manipular a reputacao de NPCs e faccoes.
-  - Consulta e modifica os valores diretamente no `GlobalStateManager`.
+  - Mostra o popup de afinidade e soma no `GlobalStateManager` (`ReputationSystem.Instance`).
   - Limpa sua instancia estatica no ciclo de vida `OnDestroy()`.
 
 - **`SaveManager.cs`** (`SistemasBase/Escolhas/`):
-  - Salva e carrega o estado da sessao em arquivo JSON no caminho `Application.persistentDataPath/savegame.json`.
-  - Serializa as flags globais, os valores de reputacao e os IDs de itens presentes no `InventoryData`.
-  - Ao carregar, reconecta automaticamente os assets de `ItemData` a partir da pasta `Resources/Itens/`.
+  - Salva e carrega o estado da sessao em `Application.persistentDataPath/savegame.json`.
+  - Serializa flags, reputacoes, rota, instabilidade, nome e os IDs de itens do `InventoryData`.
+  - Ao carregar, reconecta os `ItemData` a partir de `Resources/Itens/`. Sem save, chama `Resetar()` e `Limpar()`.
 
 ---
 
@@ -85,22 +97,22 @@ Assets/Scripts/
 - **`InteractionSystem.cs`**:
   - Executado no jogador. Dispara um `Physics2D.Raycast` na direcao do ultimo movimento registrado.
   - Ao detectar um collider na camada `interactableLayer`, exibe o prompt visual (`interactionPrompt`).
-  - Ao pressionar a acao de interacao (`interactAction`), invoca o metodo de interacao do objeto alvo.
+  - Ao pressionar `interactAction`, chama `OnInteract` de todos os `IInteractAction` do objeto. Nao interage com o dialogo aberto nem com `podeMover = false`.
 
 - **`Interactable.cs`**:
-  - Componente base anexado aos objetos de cenario para identificacao pelo Raycast.
-  - Oferece suporte a componentes polimorficos que implementem `IInteractAction`.
+  - Marcador com bools de categoria; o raycast usa so a layer + `IInteractAction`.
 
 - **`InventoryData.cs`** e **`ItemData.cs`**:
-  - `InventoryData`: ScriptableObject que gerencia a lista de itens coletados pelo jogador. Possui metodos utilitarios como `AdicionarItem`, `RemoverItem`, `ContemItem`, `Limpar` e um alias retrocompativel `AddItem`.
-  - `ItemData`: ScriptableObject que descreve propriedades basicas do item (`itemID`, `nomeItem`, `descricao`, `icone`).
+  - `InventoryData`: lista `itens` com `AddItem` (alias `Additem`), `RemoveItem`, `ContemItem` e `Limpar`.
+  - `ItemData`: `itemID`, `itemName`, `itemDescription`, `itemIcon`.
 
 - **`ItemPickup.cs`**:
-  - Script anexado a itens fisicos no cenario. Ao ser acionado, adiciona o `ItemData` associado a mochila (`InventoryData`) e desativa o objeto no cenario.
+  - Ao ser acionado, adiciona o `ItemData` a mochila (depois do dialogo, se o objeto tiver `DialogueTrigger`) e desativa o objeto.
 
 - **`ChoiceSystemGlobal.cs`**:
-  - Gerencia a exibicao de opcoes de escolha na tela com suporte opcional a temporizador regressivo.
-  - Modifica flags no `GlobalStateManager` ou adiciona itens no `InventoryData` dependendo da decisao tomada pelo jogador.
+  - Mostra as opcoes com temporizador opcional e devolve o indice escolhido (-1 no tempo esgotado).
+  - No formato antigo grava o bool da opcao em uma flag; no v2 os efeitos ficam na propria opcao.
+  - Expoe `Estado` e `Inventario` para o `DialogueSystemGlobal`.
 
 ---
 
@@ -108,20 +120,23 @@ Assets/Scripts/
 
 - **`DialogueSystemGlobal.cs`**:
   - Controla o painel de dialogo e o efeito de escrita caractere por caractere (retro typewriter).
-  - Executa interpolacao suave de transparencia via `CanvasGroup`.
-  - Processa dialogos condicionais: se o jogador possuir determinado item no inventario, exibe falas alternativas e pode alterar flags especificas (`dialogoAlternativoAlteraVariavel`).
-  - Garante chamada de encerramento (`onDialogueComplete`) mesmo quando desativado subitamente (`OnDisable`), prevenindo travamento do jogador em cutscenes.
+  - Formato v2: falas com personagem/expressao (nome e retrato via `CharacterData`), condicoes por fala, efeitos e opcoes que encadeiam outro JSON (`proximoDialogo`) no mesmo painel.
+  - `{X}` e trocado pelo nome do jogador.
+  - Formato antigo continua: falas alternativas por flag/item e flags ao fim.
+  - Garante a chamada de encerramento mesmo quando desativado subitamente (`OnDisable`), prevenindo travamento em cutscenes.
+
+- **`CharacterData.cs`**:
+  - ScriptableObject em `Resources/Personagens/`: `nomeExibido`, `corDoNome`, `expressoes` (com variante opcional por rota).
 
 - **`DialogueTrigger.cs`**:
-  - Conecta um arquivo JSON (`DialogueData`) ao mundo fisico atraves da interface de interacao.
+  - Conecta um arquivo JSON (`DialogueData`) ao mundo fisico atraves da interface de interacao e destrava o jogador no fim.
 
 - **`CutsceneManager.cs`**:
-  - Singleton que fornece utilitarios para sequencias scriptadas.
-  - Metodo `TocarDialogoEEsperar(TextAsset json)` roda uma Coroutine que aguarda a conclusao do dialogo antes de prosseguir com a execucao.
-  - Inclui guardas de tempo limite para evitar que a cutscene fique em estado de deadlock caso a janela de dialogo feche inesperadamente.
+  - Singleton com `TravarJogador`, `LiberarJogador` e `TocarDialogoEEsperar(TextAsset json)`, que espera o fim de toda a cadeia de dialogos.
+  - Se o painel de dialogo for desligado no meio, a espera e liberada (nao ha timeout).
 
 - **`WakeUpPrototype.cs`**:
-  - Implementa a sequencia inicial do despertar do protagonista.
+  - Sequencia inicial do despertar: pede o nome (se `telaDeNome` estiver ligado e for jogo novo), toca o pensamento e o celular.
   - Utiliza `[FormerlySerializedAs("dialogopensamento")]` para preservar referencias configuradas em cenas legadas.
 
 ---
@@ -129,17 +144,16 @@ Assets/Scripts/
 ### 2.5. Cameras e Efeitos (`Cameras/` e Raiz)
 
 - **`CameraFollow.cs`**:
-  - Segue suavemente o jogador utilizando interpolacao linear (`Vector3.Lerp`) dentro de `LateUpdate`.
-  - Possui limites configuraveis (min e max para eixos X e Y).
+  - Segue suavemente o jogador utilizando `Vector3.Lerp` dentro de `LateUpdate` (sem limites de mapa).
 
 - **`SceneFollow.cs`**:
-  - Implementa transicao de camera por salas baseado nas dimensoes da tela (`orthographicSize` e proporcao de aspecto).
+  - Camera por salas baseada no tamanho da tela (`orthographicSize` e proporcao de aspecto); as salas comecam em (0,0).
 
 - **`FlowerStateListener.cs`**:
-  - Monitora uma flag especifica no `GlobalStateManager` e troca o sprite do elemento floral para refletir o estado emocional ou narrativo do mundo.
+  - Le `variavelFlor` no `GlobalStateManager` e troca entre `spriteViva` e `spriteMurcha`.
 
 - **`PostProcessingManager.cs`**:
-  - Aplica ajustes de pos-processamento (como blur, saturacao e vinheta) em resposta a rotas narrativas especificas (ex: Rota R).
+  - Classe reservada, ainda vazia; os efeitos por rota entram na Fase 4 do `Docs/MattyDevPlan.md`.
 
 ---
 
