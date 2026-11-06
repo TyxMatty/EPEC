@@ -1,0 +1,32 @@
+{
+    "dialogueID": "cap1_abrigo_apresentacao",
+    "linhas": [
+        { "personagem": "Maria", "expressao": "feliz", "texto": "Você veio mesmo! Não acredito!!" },
+        { "personagem": "Maria", "texto": "Eu sei o quão difícil isso deve ser para você, mas acho que pode ser uma maneira de você superar..." },
+        {
+            "personagem": "Gi", "expressao": "feliz",
+            "texto": "{X}! A Maria me contou muitas coisas boas sobre você! Tenho certeza de que será uma ótima adição à equipe.",
+            "condicoes": [ { "flag": "falouComGi" } ]
+        },
+        {
+            "personagem": "Gi",
+            "texto": "Vejo que você conhece esse daqui, Maria! É esse o tal {X}? Espero que seja tão esforçado quanto você me disse! Haha!",
+            "condicoes": [ { "flag": "falouComGi", "negar": true } ]
+        },
+        { "personagem": "Gi", "texto": "Ah, aliás! Tenho um pedido: você pode ajudar o Tobias? Ele anda muito agressivo, correndo atrás de motoqueiros. Acha que consegue realizar uma ação com ele?" }
+    ],
+    "opcoes": [
+        { "texto": "...", "proximoDialogo": "cap1_maria_conta_tobias" },
+        { "texto": "Quem é Tobias?", "proximoDialogo": "cap1_maria_conta_tobias" },
+        {
+            "texto": "Ando muito ocupado...",
+            "efeitos": [ { "flag": "aceitaAjudarTobias", "negar": true }, { "rota": "R" } ],
+            "proximoDialogo": "cap1_maria_entende"
+        },
+        {
+            "texto": "Pode... ser?",
+            "efeitos": [ { "flag": "aceitaAjudarTobias" }, { "rota": "B" } ],
+            "proximoDialogo": "cap1_maria_conta_tobias"
+        }
+    ]
+}

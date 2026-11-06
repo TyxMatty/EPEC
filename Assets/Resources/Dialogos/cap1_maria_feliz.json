@@ -1,0 +1,8 @@
+{
+    "dialogueID": "cap1_maria_feliz",
+    "linhas": [
+        { "personagem": "Maria", "expressao": "feliz", "texto": "Okay!!!" },
+        { "personagem": "Maria", "expressao": "feliz", "texto": "Eu vou esperar você lá!! A Gi me deixou responsável de supervisionar você!" }
+    ],
+    "efeitos": [ { "flag": "aceitaAjudarTobias" } ]
+}

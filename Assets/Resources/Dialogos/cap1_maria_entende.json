@@ -1,0 +1,9 @@
+{
+    "dialogueID": "cap1_maria_entende",
+    "linhas": [
+        { "personagem": "Maria", "expressao": "triste", "texto": "Ah… entendo, se mudar de ideia… é só me chamar." },
+        { "personagem": "Maria", "expressao": "triste", "texto": "Me manda mensagem, tá? Eu tô preocupada com você." },
+        { "personagem": "Maria", "texto": "Se você quiser, é só você ajudar o Tobias sem a gente, eu ficarei sabendo e conto pra Gi." }
+    ],
+    "efeitos": [ { "flag": "florNegativaDia1" } ]
+}

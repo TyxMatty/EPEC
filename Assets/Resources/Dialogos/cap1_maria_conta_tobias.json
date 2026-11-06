@@ -1,0 +1,22 @@
+{
+    "dialogueID": "cap1_maria_conta_tobias",
+    "linhas": [
+        { "personagem": "Maria", "expressao": "feliz", "texto": "Ah, claro! Você não conhece o Tobias né?! Deixa eu te contar:" },
+        { "personagem": "Maria", "texto": "Ele é um cachorro mestiço, marrom com manchas pretas. Costuma ficar perto do jardim da FEB, e nos dias frios fica num abrigo improvisado." },
+        { "personagem": "Maria", "texto": "Mas, recentemente, ele começou a correr atrás de motos, bicicletas e de quem passa rápido." },
+        { "personagem": "Maria", "expressao": "triste", "texto": "Alguns estudantes acham que ele está \"bravo\" ou \"querendo atacar\". Outros gritam e correm atrás dele pra afastar ele." },
+        { "personagem": "Maria", "texto": "E aí? Tá interessado?" }
+    ],
+    "opcoes": [
+        {
+            "texto": "Ando muito ocupado...",
+            "efeitos": [ { "flag": "aceitaAjudarTobias", "negar": true }, { "rota": "R" } ],
+            "proximoDialogo": "cap1_maria_entende"
+        },
+        {
+            "texto": "Não vai machucar tentar...",
+            "efeitos": [ { "flag": "aceitaAjudarTobias" }, { "rota": "B" } ],
+            "proximoDialogo": "cap1_maria_feliz"
+        }
+    ]
+}
