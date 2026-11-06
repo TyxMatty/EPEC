@@ -50,6 +50,15 @@ public class GlobalStateManager : ScriptableObject
     private Dictionary<string, bool> dictVariaveis = new Dictionary<string, bool>();
     private Dictionary<string, int> dictReputacoes = new Dictionary<string, int>();
 
+    // Disparado a cada mudanca de flag, reputacao, rota ou instabilidade e depois de Resetar/carregar o save
+    // (flores e outros visuais se inscrevem no OnEnable e saem no OnDisable)
+    public event System.Action Mudou;
+
+    public void AvisarMudanca()
+    {
+        Mudou?.Invoke();
+    }
+
     private void OnEnable()
     {
         Inicializar();
@@ -64,6 +73,7 @@ public class GlobalStateManager : ScriptableObject
         instabilidade = 0;
         nomeJogador = "";
         Inicializar();
+        AvisarMudanca();
     }
 
     // Nome que substitui {X} nos dialogos
@@ -72,7 +82,11 @@ public class GlobalStateManager : ScriptableObject
     // Define a rota ("B", "N" ou "R"); qualquer outro valor e ignorado com aviso
     public void DefinirRota(string novaRota)
     {
-        if (!string.IsNullOrEmpty(novaRota) && novaRota.Length == 1 && OrdemRotas.Contains(novaRota)) rota = novaRota;
+        if (!string.IsNullOrEmpty(novaRota) && novaRota.Length == 1 && OrdemRotas.Contains(novaRota))
+        {
+            rota = novaRota;
+            AvisarMudanca();
+        }
         else Debug.LogWarning($"[GlobalStateManager] Rota invalida '{novaRota}'. Use B, N ou R.");
     }
 
@@ -81,12 +95,14 @@ public class GlobalStateManager : ScriptableObject
     {
         int atual = Mathf.Max(0, OrdemRotas.IndexOf(rota));
         rota = OrdemRotas[Mathf.Clamp(atual + passos, 0, OrdemRotas.Length - 1)].ToString();
+        AvisarMudanca();
     }
 
     // Soma no medidor de instabilidade (nunca abaixo de 0)
     public void AddInstabilidade(int valor)
     {
         instabilidade = Mathf.Max(0, instabilidade + valor);
+        AvisarMudanca();
     }
 
     // RotaB/RotaN/RotaR nao ficam na lista de flags: sao derivadas de 'rota'
@@ -126,7 +142,11 @@ public class GlobalStateManager : ScriptableObject
         if (EhFlagDeRota(nome))
         {
             // Ligar RotaX troca a rota; desligar nao faz nada (sempre existe uma rota)
-            if (valor) rota = nome.Substring(4);
+            if (valor)
+            {
+                rota = nome.Substring(4);
+                AvisarMudanca();
+            }
             return;
         }
         if (dictVariaveis.Count == 0 && variaveisGlobais.Count > 0) Inicializar();
@@ -142,6 +162,7 @@ public class GlobalStateManager : ScriptableObject
             dictVariaveis.Add(nome, valor); 
             variaveisGlobais.Add(new VariavelNarrativa { nome = nome, valor = valor });
         }
+        AvisarMudanca();
     }
 
     // Retorna o valor de uma flag narrativa booleana
@@ -173,6 +194,7 @@ public class GlobalStateManager : ScriptableObject
             dictReputacoes.Add(nome, pontos);
             reputacoes.Add(new Reputacao { nome = nome, pontos = pontos });
         }
+        AvisarMudanca();
     }
 
     // Retorna os pontos de afinidade de um NPC ou animal

@@ -39,7 +39,8 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    // REVIEW: carregar no Start corre contra outros Start que leem estado (ex: FlowerStateListener). Pode ir para o Awake:
+    // REVIEW: carregar no Start corre contra outros Start que leem estado uma vez so (as flores se inscrevem em Mudou e
+    // ja se atualizam depois do load). Pode ir para o Awake:
     // stateManager e inventory sao assets, ja existem antes de qualquer cena.
     void Start()
     {
@@ -136,6 +137,7 @@ public class SaveManager : MonoBehaviour
                             }
                         }
                     }
+                    stateManager.AvisarMudanca();
                     Debug.Log("[SaveManager] Jogo carregado com sucesso!");
                 }
             }

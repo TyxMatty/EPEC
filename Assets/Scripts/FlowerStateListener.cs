@@ -1,22 +1,19 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 // Origem: Assets/Scripts/FlowerStateListener.cs
-// Componente anexado ao GameObject/Prefab da Flor para reagir as mudancas no GlobalStateManager
+// Flor (ou qualquer sprite do cenario) que muda com o estado narrativo. A lista 'estados' vai em ordem de prioridade:
+// vale o PRIMEIRO cujas condicoes batem; um ultimo estado sem condicoes serve de padrao.
+// Reage sozinha a toda mudanca do GlobalStateManager (evento Mudou), inclusive ao carregar o save.
+[RequireComponent(typeof(SpriteRenderer))]
 public class FlowerStateListener : MonoBehaviour
 {
     [Header("Referencias Globais")]
-    // Referencia ao ScriptableObject GlobalStateManager que armazena as variaveis narrativas
     public GlobalStateManager stateManager;
 
-    [Header("Configuracao da Flor")]
-    // Nome da variavel no GlobalStateManager que controla a flor (ex: flor_regada ou flor_viva)
-    public string variavelFlor = "flor_regada";
-
-    // Sprite quando a flor esta viva ou regada
-    public Sprite spriteViva;
-
-    // Sprite quando a flor esta murcha ou seca
-    public Sprite spriteMurcha;
+    [Header("Estados da Flor")]
+    // Ex: florSuperPositivaDia1 -> brilhante, florNegativaDia1 -> quase morta, ..., (sem condicao) -> normal
+    public List<EstadoVisual> estados = new List<EstadoVisual>();
 
     private SpriteRenderer spriteRenderer;
 
@@ -25,28 +22,32 @@ public class FlowerStateListener : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    // REVIEW: o SaveManager tambem carrega no Start e nao ha ordem de execucao definida; a flor pode ler o estado de antes do load.
-    void Start()
+    void OnEnable()
     {
+        if (stateManager != null) stateManager.Mudou += AtualizarEstadoFlor;
         AtualizarEstadoFlor();
     }
 
-    // Metodo publico chamado para atualizar o visual da flor baseado no estado global
+    void OnDisable()
+    {
+        if (stateManager != null) stateManager.Mudou -= AtualizarEstadoFlor;
+    }
+
+    // Publico para quem quiser forcar a atualizacao (ex: depois de trocar a lista em codigo)
     public void AtualizarEstadoFlor()
     {
         if (stateManager == null || spriteRenderer == null) return;
 
-        bool estaViva = stateManager.GetVariavel(variavelFlor);
-        if (estaViva && spriteViva != null)
-        {
-            spriteRenderer.sprite = spriteViva;
-        }
-        else if (!estaViva && spriteMurcha != null)
-        {
-            spriteRenderer.sprite = spriteMurcha;
-        }
-        // REVIEW: so 2 sprites e so le no Start; as 6 flags florXxxDia1 do GDD vao precisar de uma lista flag->sprite
-        // e de alguem chamar AtualizarEstadoFlor quando a flag mudar.
-        // podemos adicionar mais futuramente, quando precisar.
+        EstadoVisual escolhido = estados.Find(e => e != null && Condicao.Valem(e.condicoes, null, stateManager, null));
+        if (escolhido != null && escolhido.sprite != null) spriteRenderer.sprite = escolhido.sprite;
     }
+}
+
+[System.Serializable]
+public class EstadoVisual
+{
+    // So para identificar no Inspector (vira o titulo do elemento da lista)
+    public string nome;
+    public List<Condicao> condicoes = new List<Condicao>();
+    public Sprite sprite;
 }

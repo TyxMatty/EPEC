@@ -1,0 +1,33 @@
+{
+  "titulo": "Por que o Tobias corre atrás das motos?",
+  "pistas": [
+    {
+      "id": "motoRapida",
+      "texto": "A moto passou quase a 80 km/h, fazendo um barulho enorme.",
+      "condicoes": [{"flag": "pistaMotoRapida"}]
+    },
+    {
+      "id": "tobiasCorre",
+      "texto": "O Tobias latiu e correu atrás da moto, como numa caçada.",
+      "condicoes": [{"flag": "pistaTobiasCorre"}]
+    },
+    {
+      "id": "motoqueiroXinga",
+      "texto": "O motoqueiro xingou o Tobias.",
+      "condicoes": [{"flag": "pistaMotoqueiroXinga"}]
+    },
+    {
+      "id": "tobiasDocil",
+      "texto": "O Tobias deixou eu fazer carinho; com gente ele é calmo.",
+      "condicoes": [{"flag": "fezCarinhoTobias"}]
+    }
+  ],
+  "conclusoes": [
+    {
+      "pistas": ["motoRapida", "tobiasCorre"],
+      "texto": "É o barulho das motos em alta velocidade: é isso que dispara a reação defensiva do Tobias.",
+      "efeitos": [{"flag": "descobriuGatilhoTobias"}]
+    }
+  ],
+  "erro": "Isso não se encaixa... ainda falta alguma coisa."
+}

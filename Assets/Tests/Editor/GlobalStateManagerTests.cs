@@ -47,4 +47,18 @@ public class GlobalStateManagerTests
         Assert.AreEqual(0, stateManager.GetReputacao("Tobias"));
         Assert.AreEqual(0, stateManager.variaveisGlobais.Count);
     }
+
+    [Test]
+    public void Mudou_DisparaEmFlagERota()
+    {
+        var stateManager = ScriptableObject.CreateInstance<GlobalStateManager>();
+        stateManager.Resetar();
+        int avisos = 0;
+        stateManager.Mudou += () => avisos++;
+
+        stateManager.SetVariavel("florNegativaDia1", true);
+        stateManager.DefinirRota("R");
+
+        Assert.AreEqual(2, avisos);
+    }
 }

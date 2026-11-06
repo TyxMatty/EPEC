@@ -39,10 +39,12 @@ Grafia oficial (igual ao roteiro revisado e aos JSONs; o codigo diferencia maius
   - `florNegativaDia1` e ligada no meio do Cap 1 (Decisao 1.2 / recusar o Tobias) e lida no fim do dia: se ja estava ligada, a flor do dia vira `florSuperNegativaDia1`.
 - **Tobias:** `aceitaAjudarTobias`, `mariaVindo`, `foiAjudarTobias`, `fezCarinhoTobias`, `auxiliouTobias`, `agressorEscapa`, `protagonistaNumeroVeterinaria`, `tobiasInterage`, `tobiasInterageMaisOuMenos`, `tobiasOlhoMachucado`, `tobiasCego`.
 - **Reputacao:** alvos `Tobias` e `Maria` (o roteiro escreve `repTobias` / `repMaria`).
+- **Investigacao (nomes propostos, o roteiro nao nomeia):** pistas `pistaMotoRapida`, `pistaTobiasCorre`, `pistaMotoqueiroXinga` (a do carinho usa `fezCarinhoTobias`) e a conclusao `descobriuGatilhoTobias`.
 
 ### 2.2. Mecanicas e Modulos
-1. **Sistema de Flores (Parcial):**
-   - `FlowerStateListener.cs` le uma flag no `Start` e troca entre 2 sprites. Os 6 estados do roteiro e a reacao a mudancas ficam para a Fase 3 do `MattyDevPlan.md`.
+1. **Sistema de Flores (Concluido no codigo, falta arte):**
+   - `FlowerStateListener.cs` escolhe o sprite por uma lista de estados (condicoes -> sprite) e reage a toda mudanca do `GlobalStateManager`.
+   - `FimDoDia.cs` calcula a flor do dia pelas 6 regras do roteiro (`Assets/Dados/Regras/flor_dia1.json`).
 2. **Sistema de Reputacao / Afinidade (Concluido):**
    - Implementado via `ReputationSystem.cs` e integrado ao `GlobalStateManager` e `SaveManager.cs`. Permite acompanhar pontuacoes de relacionamento (+/- pontos com animais e NPCs).
 3. **Data-Driven Dialogues e Escolhas (Concluido):**
@@ -55,10 +57,10 @@ Grafia oficial (igual ao roteiro revisado e aos JSONs; o codigo diferencia maius
    - `InputRebindManager.cs` adicionado para remapeamento dinamico em tempo de execucao.
 6. **Sistema de Pos-Processamento (Pendente):**
    - `PostProcessingManager.cs` existe mas esta vazio; os filtros da Rota R e distorcoes emocionais entram na Fase 4.
-7. **Sistema de QTE (Ataque de Panico) (Pendente):**
-   - Mini-game ritmico/reacao com janela de tempo. Maximo de 3 falhas antes do desmaio.
-8. **Mecanica de Investigacao (Pendente):**
-   - Interface de "juntar as pontas" para cruzar evidencias e gerar conclusoes.
+7. **Sistema de QTE (Concluido no codigo, falta a UI na cena):**
+   - `QTESystem.cs`: direcoes com janela de tempo e limite de falhas; serve para o agressor e para o ataque de panico (mais de 3 falhas = desmaio pelo `FimDoDia`).
+8. **Mecanica de Investigacao (Concluido no codigo, falta a UI na cena):**
+   - `QuadroInvestigacao.cs` + casos em JSON (`Assets/Dados/Investigacoes/`); caso do Cap 1: `cap1_tobias_motos.json`.
 
 ---
 

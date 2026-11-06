@@ -132,3 +132,22 @@ Revisao de todos os scripts de `Assets/Scripts/` e `Assets/Tests/`, da cena `0.u
 ### 9.1. Perguntas abertas do roteiro (flor do dia)
 - **Rota B sem ser perfeita:** quem aceitou ajudar o Tobias nunca liga `abortedRotaR`. Se faltar qualquer item da flor 1 (ex: `agressorEscapa`), a regra 5 ("Quase morta") bate. Talvez as regras 5 e 6 devam exigir `{"rota": "R"}`.
 - **Combinacoes fora das 4 primeiras regras:** as regras 1 a 4 pedem combinacoes exatas (ex: abortou, mas o Tobias nem ficou cego nem machucou o olho). Nesses casos nenhuma regra bate, nada e ligado e o `FimDoDia` so avisa no Console. Falta decidir uma flor padrao (uma ultima regra sem condicoes resolve, sem codigo).
+
+---
+
+## 10. Fase 3 do Roteiro: Decisoes de Design (06/11/2026)
+
+- **Um QTE so:** agressor e ataque de panico usam o mesmo `QTESystem.Rodar(quantidade, janela, falhasMaximas)`.
+  - Quem chama decide o que o resultado liga: `agressorEscapa`, instabilidade ou o `FimDoDia` do desmaio.
+  - Por isso nao existe um `PanicAttackSystem` separado.
+- **Direcoes do Navigate em vez de teclas fixas:** respeita o rebind e funciona com WASD e setas. Limite conhecido: segurar uma direcao e apertar outra nao conta como novo aperto.
+- **Pista e flag:** ganhar uma pista e ligar uma flag (efeito de dialogo).
+  - Nao precisou de `PistaData` nem de componente de gatilho.
+  - A pista aparece no quadro pelas `condicoes` do JSON do caso; a do carinho usa `fezCarinhoTobias` direto.
+- **Conclusao = conjunto exato de pistas,** em qualquer ordem. Uma conclusao pode ligar a flag de outra pista, entao um caso pode ter varias etapas sem codigo novo.
+- **Telas pela Instance:** `QTESystem` e `QuadroInvestigacao` moram no Canvas do Nucleo, e as cutscenes da cena chamam pela `Instance` (regra do Nucleo da secao 9). Nenhuma das duas trava o player: quem chama e uma cutscene, que ja travou.
+- **Evento `GlobalStateManager.Mudou`:** disparado por todo setter, por `Resetar` e pelo load do `SaveManager`.
+  - As flores se inscrevem e reagem sozinhas, o que tambem resolve para elas a corrida do load no `Start`.
+  - Pos-processamento e audio por rota (Fase 4) podem usar o mesmo evento.
+- **Flores v2 sem dados novos:** a lista `estados` usa as mesmas `Condicao` no Inspector. A ordem de prioridade decide qual flor aparece quando a da manha e a do meio do dia estao ligadas juntas.
+- **Flags novas propostas:** `pistaMotoRapida`, `pistaTobiasCorre`, `pistaMotoqueiroXinga` e `descobriuGatilhoTobias` (o roteiro nao nomeia). Os textos das pistas no JSON sao provisorios, para o roteiro revisar.

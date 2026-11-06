@@ -11,6 +11,7 @@ Para manter o projeto limpo e desacoplado, os scripts estao organizados nos segu
 - `Assets/Scripts/`: Gerenciadores globais e regras narrativas (`GlobalStateManager.cs`, `Condicao.cs`, `Efeito.cs`, `Regra.cs`, `ReputationSystem.cs`, `CutsceneManager.cs`, `PostProcessingManager.cs`, `FlowerStateListener.cs`, `WakeUpPrototype.cs`).
 - `Assets/Scripts/SistemasBase/`: Movimentacao, animacao e tela de nome (`MovementScript.cs`, `MovimentoNPC.cs`, `AnimacaoPorMovimento.cs`, `SpriteChange.cs`, `NomeDoJogadorUI.cs`).
 - `Assets/Scripts/SistemasBase/Cenas/`: Troca de cena e fim do dia (`SceneTransitionManager.cs`, `PontoDeSpawn.cs`, `PortaDeCena.cs`, `FimDoDia.cs`).
+- `Assets/Scripts/Mecanicas/`: QTE e investigacao (`QTESystem.cs`, `QuadroInvestigacao.cs`, `CasoData.cs`).
 - `Assets/Scripts/Editor/`: Ferramentas do Editor (`GeradorAnimatorBase.cs`, menu `EPEC > Criar Animator Base`).
 - `Assets/Scripts/SistemasBase/Input/`: Rebind e gerenciamento de entradas (`InputRebindManager.cs`).
 - `Assets/Scripts/SistemasBase/Escolhas/`: Persistencia de dados em disco (`SaveManager.cs`).
@@ -23,7 +24,7 @@ Dados carregados por nome ficam em `Assets/Resources/`:
 - `Resources/Dialogos/`: todos os JSONs de dialogo (o `proximoDialogo` acha os arquivos por aqui).
 - `Resources/Personagens/`: um `CharacterData` por personagem (nome e retratos da caixa de dialogo).
 
-Regras ligadas por campo no Inspector ficam em `Assets/Dados/Regras/` (ex: `flor_dia1.json`, usado pelo `FimDoDia`).
+Regras ligadas por campo no Inspector ficam em `Assets/Dados/Regras/` (ex: `flor_dia1.json`, usado pelo `FimDoDia`) e os casos de investigacao em `Assets/Dados/Investigacoes/`.
 
 ---
 
@@ -146,9 +147,12 @@ Para criar um objeto que o jogador pode inspecionar, falar ou coletar:
 - Ao interagir, o item e adicionado ao `InventoryData` e o GameObject e desativado (se houver `DialogueTrigger`, depois do dialogo).
 
 ### C - Para Cenarios Reativos: `FlowerStateListener`
-- Anexe o script `FlowerStateListener` em flores ou elementos do cenario que reagem ao estado narrativo.
-- Configure `variavelFlor` (nome da flag no `GlobalStateManager`), `spriteViva` e `spriteMurcha`.
-- O script atualiza o sprite no `Start()` e pode ser chamado a qualquer momento via `AtualizarEstadoFlor()`.
+- Anexe o script `FlowerStateListener` em flores ou elementos do cenario que reagem ao estado narrativo (vale fazer um prefab de flor).
+- Ligue `stateManager` e preencha `estados` em ordem de prioridade:
+  - cada estado tem `nome`, `condicoes` (as mesmas da secao 7.2) e `sprite`;
+  - vale o primeiro que bate; deixe por ultimo um estado sem condicoes como padrao.
+- Ordem sugerida para o jardim do dia 1: `florSuperPositivaDia1`, `florPositivaDia1`, `florSuperNegativaDia1`, `florQuaseMorta`, `florNegativaDia1`, `florNeutraPositivaDia1`, `florNeutraNegativaDia1`, padrao.
+- O sprite troca sozinho a cada mudanca do `GlobalStateManager` (evento `Mudou`), inclusive ao carregar o save.
 
 ---
 
@@ -320,7 +324,56 @@ Montagem (uma vez, na cena atual):
 
 ---
 
-## 10. Boas Praticas e Convencoes de Codigo
+## 10. Mecanicas do Cap 1: QTE e Investigacao
+
+As duas telas ficam no Canvas do `Nucleo`. Sao chamadas por cutscene, pela `Instance`, com o player ja travado (`TravarJogador`).
+
+### 10.1. `QTESystem`
+- **UI:**
+  - `painel` e `textoTecla` (TMP);
+  - `barraTempo` (Image Filled, opcional);
+  - `rotulos` (textos de cima, baixo, esquerda e direita; troque por setas se a fonte tiver);
+  - cores e `intervalo`.
+- **Input:** `navigateAction` (WASD/setas).
+- **Uso:** `yield return QTESystem.Instance.Rodar(quantidade, janela, falhasMaximas);` e depois leia `Passou` e `Falhas`.
+```csharp
+// Agressor (roteiro 2/4): falhou = o agressor escapa
+yield return QTESystem.Instance.Rodar(5, 1.2f, 1);
+estado.SetVariavel("agressorEscapa", !QTESystem.Instance.Passou);
+
+// Ataque de panico (roteiro 3/4): mais de 3 falhas = desmaio
+yield return QTESystem.Instance.Rodar(8, 1f, 3);
+estado.AddInstabilidade(QTESystem.Instance.Falhas);
+if (!QTESystem.Instance.Passou) { fimDoDiaDesmaio.EncerrarDia(); yield break; }
+```
+
+### 10.2. `QuadroInvestigacao` (juntar as pontas)
+- **UI:**
+  - `painel` e `titulo`;
+  - `linhas` (TMP; uma por pista + "Juntar" + "Voltar");
+  - `resposta` e cores.
+- **Input:** `navigateAction` e `submitAction`.
+- **Estado:** `estado` e `mochila` (opcional).
+- **Uso:** `yield return QuadroInvestigacao.Instance.Investigar(casoJson);` e depois leia `UltimaConclusao` (null = o jogador escolheu Voltar).
+- **Como joga:**
+  - Enter marca ou desmarca a pista; "Juntar" testa a combinacao.
+  - Se as marcadas forem exatamente as de uma conclusao, os efeitos dela sao aplicados e o texto fica na tela ate o proximo Enter.
+  - Se nao forem, aparece o texto de `erro`.
+- **Pistas:** aparecem quando suas `condicoes` valem. O normal e um dialogo ligar a flag da pista: `"efeitos": [{"flag": "pistaMotoRapida"}]`.
+- **Formato** (`Assets/Dados/Investigacoes/cap1_tobias_motos.json`):
+```json
+{
+  "titulo": "Por que o Tobias corre atrás das motos?",
+  "pistas": [ {"id": "motoRapida", "texto": "...", "condicoes": [{"flag": "pistaMotoRapida"}]} ],
+  "conclusoes": [ {"pistas": ["motoRapida", "tobiasCorre"], "texto": "...", "efeitos": [{"flag": "descobriuGatilhoTobias"}]} ],
+  "erro": "Isso não se encaixa..."
+}
+```
+- Uma conclusao pode ligar a flag de outra pista: assim um caso tem varias etapas.
+
+---
+
+## 11. Boas Praticas e Convencoes de Codigo
 
 1. **Null Checks em Campos Serializados:** Sempre valide campos `[SerializeField]` com verificacao nula antes de acessar membros para prevenir `NullReferenceException` quando referencias forem esquecidas no Inspector.
 2. **Preservacao de Nomes no Inspector:** Ao renomear variaveis serializadas em scripts C#, utilize o atributo `[FormerlySerializedAs("nomeAntigo")]` para evitar que as ligacoes nas cenas (`.unity`) e prefabs sejam perdidas.

@@ -17,7 +17,7 @@ O objetivo deste plano e garantir progresso modular constante, sem acoplamentos 
 - [x] Sistema de Cutscenes e Dialogos Standalone com Corrotinas (`CutsceneManager`, `WakeUpPrototype`).
 - [x] Sistema de Reputacao com Persistencia (`ReputationSystem`, `GlobalStateManager`).
 - [x] Sistema de Save/Load em JSON com integracao total (`SaveManager`).
-- [x] Reatividade Visual de Flores com 2 sprites (`FlowerStateListener`). O `PostProcessingManager` ainda e uma classe vazia.
+- [x] Reatividade Visual de Flores por lista de estados, reagindo a mudancas (`FlowerStateListener`). O `PostProcessingManager` ainda e uma classe vazia.
 - [x] Condicoes, Efeitos, Rota (B/N/R), Instabilidade e Nome do jogador (`Condicao`, `Efeito`, `GlobalStateManager`, `NomeDoJogadorUI`).
 - [x] Dialogo v2: falante, retrato por expressao/rota, condicao por fala e opcoes ramificadas (`DialogueSystemGlobal`, `CharacterData`).
 
@@ -45,10 +45,17 @@ Levantado a partir do roteiro revisado (`Entre Patas e Caminhos (revisado).docx`
 - [ ] No Editor: montar o prefab `Nucleo` (README 8.1), rodar `EPEC > Criar Animator Base` e greyboxing do Prologo (`Prologo_Quarto`, `Prologo_Jardim`, `Prologo_Rua`).
 - [ ] Depois, quando houver arte: estados avulsos (Abracar, Girar, Chutar, Latir) e override da Rota R (so se o mundo tambem mudar de sprite; os retratos ja mudam pelo `CharacterData`).
 
-### Fase 3 - Mecanicas do Cap 1
-- [ ] **QTE generico:** sequencia de teclas com janela de tempo; agressor (sucesso/falha -> `agressorEscapa`) e ataque de panico (mais de 3 falhas -> desmaio).
-- [ ] **Investigacao (juntar as pontas):** `PistaData`, `CasoData`, gatilho de pista e tela do quadro.
-- [ ] **Flores v2:** lista de regras (condicoes -> sprite), reacao a mudanca de estado e calculo da flor do dia pelas 6 regras do roteiro.
+### Fase 3 - Mecanicas do Cap 1 (CODIGO PRONTO, falta a UI na cena)
+- [x] **QTE generico:** `QTESystem.Rodar(quantidade, janela, falhasMaximas)` com direcoes do Navigate.
+  - Agressor: `agressorEscapa = !Passou`.
+  - Ataque de panico: mais de 3 falhas chama o `FimDoDia` do desmaio.
+  - Exemplos no README 10.1.
+- [x] **Investigacao (juntar as pontas):** `CasoData` em JSON (pistas com condicoes, conclusoes com efeitos) + `QuadroInvestigacao`.
+  - A pista e ganha por flag (efeito de dialogo), sem componente novo.
+  - Caso do Cap 1: `cap1_tobias_motos.json`.
+- [x] **Flores v2:** `FlowerStateListener` com lista de estados (condicoes -> sprite) e evento `GlobalStateManager.Mudou`; a flor do dia ja sai do `FimDoDia`.
+- [ ] No Editor: paineis do QTE e do quadro no Canvas do Nucleo, prefab de flor com os 6 estados.
+- [ ] Cutscenes do Cap 1 que chamam o QTE do agressor, o ataque de panico e o quadro (dependem das cenas do greyboxing).
 
 ### Fase 4 - Clima e tutorial
 - [ ] **Pos-processamento:** Volumes do URP por rota, flashback, panico e blur da cidade.
@@ -79,13 +86,9 @@ Dividir os mapas para facilitar versionamento, organizacao e desempenho:
 - [x] **Otimizacao e Tratamento de Erros:** Guardas com try/catch e null checks rigorosos.
 
 ### Tarefa 5: Sistemas de Gameplay Especificos do Cap 1 (QTE e Investigacao)
-- [ ] **Criar Mecanica de Ataque de Panico (QTE):**
-  - Script `PanicAttackSystem.cs` com janela de tempo para reacao de botoes.
-  - Maximo de 3 falhas antes do desmaio do protagonista.
-- [ ] **Criar Mecanica de Investigacao (Juntar as Pontas):**
-  - Interface que permite selecionar pistas e combina-las logicamente para conclusao.
-- [ ] **Criar Mecanica de QTEs
-  - QTES.
+- [x] **Criar Mecanica de Ataque de Panico (QTE):** feita pelo `QTESystem` generico (sem `PanicAttackSystem` separado), maximo de 3 falhas antes do desmaio.
+- [x] **Criar Mecanica de Investigacao (Juntar as Pontas):** `QuadroInvestigacao` + `CasoData`.
+- [x] **Criar Mecanica de QTEs:** `QTESystem` (mesmo script do agressor e do panico).
 ### Tarefa 6: Escalabilidade do DialogueSystem e Cutscenes
 - [x] **Desacoplar o DialogueSystemGlobal:** Eliminacao do "God Object", uso de triggers independentes.
 - [x] **Criar CutsceneManager.cs Global:** Suporte a corrotinas de espera (`TocarDialogoEEsperar`).
@@ -108,7 +111,10 @@ Dividir os mapas para facilitar versionamento, organizacao e desempenho:
 
 ## Ordem de Execucao para a Proxima Sessao
 
-Com o codigo das Fases 1 e 2 pronto, a prioridade sera:
-1. **No Editor:** rodar os testes no Test Runner (EditMode), nome/retrato no Panel, tela de nome, prefab `Nucleo` e `EPEC > Criar Animator Base`.
-2. **Greyboxing do Prologo** (Tarefa 3) usando `PortaDeCena`/`PontoDeSpawn`.
-3. **Fase 3:** QTE generico (agressor e ataque de panico, que chama o `FimDoDia` do desmaio) e investigacao.
+Com o codigo das Fases 1, 2 e 3 pronto, a prioridade sera:
+1. **No Editor:**
+   - rodar os testes no Test Runner (EditMode);
+   - nome/retrato no Panel, tela de nome e os paineis do QTE e do quadro;
+   - prefab `Nucleo` e `EPEC > Criar Animator Base`.
+2. **Greyboxing do Prologo e do Cap 1** (Tarefa 3) usando `PortaDeCena`/`PontoDeSpawn`, e as cutscenes que chamam QTE, quadro e `FimDoDia`.
+3. **Fase 4:** pos-processamento por rota, audio e o tutorial de Seguranca/Bem-estar.

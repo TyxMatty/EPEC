@@ -26,6 +26,10 @@ Assets/Scripts/
 |   +-- ItemPickup.cs             # Gatilho de coleta de itens do cenario
 |-- Editor/
 |   +-- GeradorAnimatorBase.cs    # Menu EPEC > Criar Animator Base (Humano4Dir / Quadrupede4Dir)
+|-- Mecanicas/
+|   |-- CasoData.cs               # Classes do JSON de investigacao (Pista, Conclusao)
+|   |-- QTESystem.cs              # QTE de direcoes com janela de tempo e limite de falhas
+|   +-- QuadroInvestigacao.cs     # Tela de juntar as pontas
 |-- SistemasBase/
 |   |-- Cenas/
 |   |   |-- FimDoDia.cs           # Resumo do dia por regras, save e proxima cena
@@ -45,7 +49,7 @@ Assets/Scripts/
 |-- CutsceneManager.cs            # Orquestrador de cutscenes e sequencias lineares
 |-- Efeito.cs                     # Mudanca de flag/reputacao/rota/instabilidade usada por dados
 |-- Regra.cs                      # Condicoes -> efeitos; ListaDeRegras aplica a primeira que bate
-|-- FlowerStateListener.cs        # Reatividade visual de sprites baseada em flags
+|-- FlowerStateListener.cs        # Sprite do cenario por lista de estados (condicoes -> sprite)
 |-- GlobalStateManager.cs         # ScriptableObject central de flags, reputacoes, rota e nome
 |-- PostProcessingManager.cs      # Reservado (ainda vazio) para efeitos de pos-processamento
 |-- ReputationSystem.cs           # Singleton de popup de afinidade
@@ -95,6 +99,7 @@ Assets/Scripts/
   - Listas no Inspector para visibilidade e JSON; dicionarios privados so como cache de busca.
   - Metodos: `SetVariavel`, `GetVariavel`, `AddReputacao`, `GetReputacao`, `DefinirRota`, `MudarRota`, `AddInstabilidade`, `Resetar`, `NomeExibido`.
   - `RotaB/RotaN/RotaR` sao derivadas de `rota` (uma rota por vez).
+  - Evento `Mudou`: disparado por todo setter, por `Resetar` e pelo `SaveManager` depois do load (`AvisarMudanca`).
 
 - **`Condicao.cs`** e **`Efeito.cs`**:
   - Classes serializaveis lidas dos JSONs. `Condicao.Valem(todas, qualquer, estado, mochila)` avalia listas E/OU; `Efeito.AplicarTodos(lista, estado)` aplica flags, reputacao, rota e instabilidade.
@@ -172,7 +177,8 @@ Assets/Scripts/
   - Camera por salas baseada no tamanho da tela (`orthographicSize` e proporcao de aspecto); as salas comecam em (0,0).
 
 - **`FlowerStateListener.cs`**:
-  - Le `variavelFlor` no `GlobalStateManager` e troca entre `spriteViva` e `spriteMurcha`.
+  - Lista `estados` (`EstadoVisual`: `nome`, `condicoes`, `sprite`); vale o primeiro que bate.
+  - Se inscreve em `GlobalStateManager.Mudou` no `OnEnable`, entao reage a qualquer mudanca e ao load do save.
 
 - **`PostProcessingManager.cs`**:
   - Classe reservada, ainda vazia; os efeitos por rota entram na Fase 4 do `Docs/MattyDevPlan.md`.
@@ -186,6 +192,20 @@ Assets/Scripts/
 - **`PortaDeCena.cs`**: `IInteractAction` (Enter) ou `OnTriggerEnter2D` (encostar), chama `IrPara`.
 - **`PontoDeSpawn.cs`**: so um `id` e um gizmo.
 - **`FimDoDia.cs`**: aplica um `ListaDeRegras` em JSON (ex: `Assets/Dados/Regras/flor_dia1.json`), salva pelo `SaveManager` do Nucleo e chama `IrPara`.
+
+---
+
+### 2.7. Mecanicas (`Mecanicas/`)
+
+- **`QTESystem.cs`**:
+  - Singleton no Canvas do Nucleo.
+  - `Rodar(quantidade, janela, falhasMaximas)` pede direcoes do Navigate e para antes se passar do limite de falhas.
+  - O resultado fica em `Passou` e `Falhas`.
+- **`QuadroInvestigacao.cs`**:
+  - Singleton no Canvas do Nucleo.
+  - `Investigar(TextAsset)` lista as pistas visiveis; Submit marca e "Juntar" testa.
+  - O resultado fica em `UltimaConclusao`.
+- **`CasoData.cs`**: `CasoData.Encontrar(marcadas)` acha a conclusao com exatamente aquelas pistas (ordem nao importa).
 
 ---
 
