@@ -28,9 +28,8 @@ public class InputRebindManager : MonoBehaviour
         if (activeRebindOperation != null)
         {
             activeRebindOperation.Cancel();
-            // REVIEW (BUG): Cancel() roda o OnCancel na hora, que ja faz Dispose e zera activeRebindOperation;
-            // esta linha da NullReferenceException. Trocar por activeRebindOperation?.Dispose().
-            activeRebindOperation.Dispose();
+            // Cancel() roda o OnCancel na hora, que ja faz Dispose e zera o campo; o ?. evita a NullReferenceException
+            activeRebindOperation?.Dispose();
             activeRebindOperation = null;
         }
     }
